@@ -34,28 +34,36 @@ async function autoFetchTeams() {
     }
 }
 
-function renderTable(teams) {
-    const tbody = document.getElementById('table-body');
+function renderCards(teamsList) {
+    const container = document.getElementById('team-container');
     
-    // 如果沒有資料
-    if (teams.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4">目前該賽事尚無參賽隊伍資料</td></tr>';
-        return;
-    }
-
-    // 全自動生成 HTML 字串
-    container.innerHTML = teams.map(t => `
-    <div class="team-card">
-        <div class="card-header">
-            <span class="team-number"># ${t.team_number}</span>
-            <span class="team-state">${t.state_prov}</span>
-            <span class="team-city">${t.city}</span>
-            
+    // Map (映射): 掃描清單，一對一轉換成 HTML
+    container.innerHTML = teamsList.map(t => `
+        <div class="team-card">
+            <div class="card-header">
+                <span class="team-number"># ${t.team_number}</span>
+                <span class="team-state">${t.state_prov || ""}</span>
+                <span class="team-city">${t.city || ""}</span>
+            </div>
+            <div class="team-name">${t.nickname || "無名稱"}</div>
         </div>
-        <div class="team-name">${t.nickname || "無名稱"}</div>
-    </div>
-`   ).join('');
+    `).join('');
 }
+
+// Event Listener (事件監聽器): 像是一個警衛，盯著輸入框有沒有人打字
+document.getElementById('search-bar').addEventListener('input', (e) => {
+    // Value (值): 使用者目前打進去的文字
+    const searchText = e.target.value;
+    
+    // Filter (過濾): 像是篩子，只留下符合條件的隊伍
+    const filteredTeams = allTeams.filter(team => {
+        // 檢查隊號是否「包含」使用者輸入的數字
+        return team.team_number.toString().includes(searchText);
+    });
+    
+    // 把篩選後的結果重新畫出來
+    renderCards(filteredTeams);
+});
 
 // 網頁載入後立即執行
 window.onload = autoFetchTeams;
