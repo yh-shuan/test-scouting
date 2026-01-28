@@ -75,6 +75,21 @@
             gap: 15px; 
             padding: 10px; /* 跟 card 邊界保持距離 */
             box-sizing: border-box;
+            
+            }.team-location {
+                flex: 1;
+                font-size: 64px !important; /* 強制超大字體 */
+                background-color: rgba(0, 255, 255, 0.5);
+                border-radius: 12px;
+                padding: 10px;
+                
+                /* 處理長網址字串的關鍵 */
+                word-break: break-all;     /* 強制網址斷行 */
+                line-height: 1.1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
             }.card-button > * {
                 flex: 1; /* 關鍵：讓所有子物件平分寬度 */
                         

@@ -1,89 +1,75 @@
-// 你的合法 API KEY
 const API_KEY = "tGy3U4VfP85N98m17nqzN8XCof0zafvCckCLbgWgmy95bGE0Aw97b4lV7UocJvxl"; 
 
 async function autoFetchTeams() {
-    // 【修正點】必須使用 api/v3 且路徑結尾要是 /teams
     const event_key = "2026nysu";
     const url = `https://www.thebluealliance.com/api/v3/event/${event_key}/teams`;
     
-    console.log("正在全自動抓取 2026 NYSU 隊伍名單...");
-
     try {
         const response = await fetch(url, {
-            headers: { 
-                "X-TBA-Auth-Key": API_KEY,
-                "Accept": "application/json"
-            }
+            headers: { "X-TBA-Auth-Key": API_KEY, "Accept": "application/json" }
         });
-
-        if (!response.ok) {
-            throw new Error(`HTTP 錯誤！狀態碼: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`HTTP 錯誤！${response.status}`);
 
         const teams = await response.json();
-        
-        // 自動排序：按隊號從小到大
         teams.sort((a, b) => a.team_number - b.team_number);
         
-        console.log(`抓取成功！共 ${teams.length} 支隊伍`);
         renderCards(teams); 
 
+        // 【關鍵】畫完卡片後，啟動第二階段：去各隊網站抓 ID="team-location" 的 href
+        fetchTeamLocations(teams);
+
     } catch (e) {
-        console.error("全自動抓取失敗，原因:", e);
-        document.getElementById('table-body').innerHTML = `<tr><td colspan="4" style="color:red">抓取失敗: ${e.message}</td></tr>`;
+        console.error("抓取失敗:", e);
     }
 }
 
-
-
-
-
 function renderCards(teamsList) {
     const container = document.getElementById('team-container');
-    
-    // Map (映射): 掃描清單，一對一轉換成 HTML
     container.innerHTML = teamsList.map(t => {
-
         const tbaUrl = `https://www.thebluealliance.com/team/${t.team_number}`;
-        
-        return`
-
+        return `
         <div class="team-card">
             <div class="card-top">
                 <div class="team-number"># ${t.team_number}</div>
                 <div class="team-name">${t.nickname || "無名稱"}</div>
-                
             </div>
             <div class="card-button">
                 <div class="team-city">${t.city || ""}</div>
                 <div class="team-state">${t.state_prov || ""}</div>
-
-
-
-
-                
-                
+                <div class="team-location" id="loc-${t.team_number}">掃描中...</div>
             </div>
-            
         </div>
         `;
     }).join('');
 }
 
-// Event Listener (事件監聽器): 像是一個警衛，盯著輸入框有沒有人打字
-document.getElementById('search-bar').addEventListener('input', (e) => {
-    // Value (值): 使用者目前打進去的文字
-    const searchText = e.target.value;
-    
-    // Filter (過濾): 像是篩子，只留下符合條件的隊伍
-    const filteredTeams = allTeams.filter(team => {
-        // 檢查隊號是否「包含」使用者輸入的數字
-        return team.team_number.toString().includes(searchText);
-    });
-    
-    // 把篩選後的結果重新畫出來
-    renderCards(filteredTeams);
-});
+// 這是你要求的：根據 ID 尋找 href 的函式
+async function fetchTeamLocations(teamsList) {
+    for (let t of teamsList) {
+        const targetDiv = document.getElementById(`loc-${t.team_number}`);
+        const tbaUrl = `https://www.thebluealliance.com/team/${t.team_number}`;
 
-// 網頁載入後立即執行
+        try {
+            // 使用 Proxy 避開 CORS 限制（如果是純前端開發）
+            const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(tbaUrl)}`);
+            const data = await res.json();
+            const html = data.contents;
+
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, "text/html");
+
+            // 【索引目標】根據 id="team-location" 尋找標籤並抓 href
+            const locationEl = doc.getElementById('team-location');
+            
+            if (locationEl && locationEl.href) {
+                targetDiv.innerText = locationEl.getAttribute('href'); // 顯示純文字網址
+            } else {
+                targetDiv.innerText = "未找到網址";
+            }
+        } catch (e) {
+            targetDiv.innerText = "掃描失敗";
+        }
+    }
+}
+
 window.onload = autoFetchTeams;
