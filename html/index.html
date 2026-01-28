@@ -24,17 +24,23 @@
                 padding: 1px;
                 border: 3px solid #000000;
             }.team-card {
-                display: flex;
-                flex-direction: column; /* 讓內容由上往下排 */
-                align-items: center;    /* 讓內容水平居中 */
-                justify-content: center;/* 讓內容垂直居中 */
-                
-                background-color: #fefefe;
-                border: 3px solid #000000;
-                border-radius: 15px;
-                min-height: 120px;      /* 設定最小高度，讓框框看起來更紮實 */
-                margin: 10px 0;         /* 也可以在這裡設定上下間距 */
+            display: flex;
+            flex-direction: column; 
+            align-items: center;    
+            
+            /* 1. 把 center 改掉，讓東西「預設」從頂部開始，獲得活動空間 */
+            justify-content: flex-start; 
 
+            background-color: #fefefe;
+            border: 3px solid #000000;
+            border-radius: 15px;
+            min-height: 120px;
+            padding: 15px;          /* 增加內邊距，防止內容黏在邊框上 */
+            box-sizing: border-box; 
+            margin: 10px 0;
+            position: relative;     /* 如果想玩更高級的絕對定位，這行先留著 */
+
+            
             }.card-header {
                 display: flex;
                 align-items: center;    /* 讓內容水平居中 */
