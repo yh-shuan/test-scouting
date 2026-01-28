@@ -64,7 +64,7 @@ function renderCards(teamsList) {
             if (target) {
                 target.innerText = resultString; 
             }
-        }, index * 200); // 每 0.2 秒發出一個請求，保證穩定度
+        }, index * 1000); // 每 0.2 秒發出一個請求，保證穩定度
     });
 }
 
@@ -82,7 +82,7 @@ async function find(Web) {
         const doc = parser.parseFromString(data.contents, "text/html");
         
         // 抓取你在圖中指定的子物件 ID (team-location)
-        const element = doc.getElementById("team-location");
+        const element = doc.getElementById("team-name");
         
         // 只回傳純文字字串
         return element ? element.innerText.trim() : "無地址資訊";
