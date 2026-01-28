@@ -62,26 +62,22 @@ async function renderCards(teamsList) {
     }).join('');
 }
 
-async function find(Web){
+async function find(Web) {
     const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(Web)}`;
     try {
         const response = await fetch(proxyUrl);
-        const doc = response.getElementById("team-name");
-        const ans = doc.innerHTML;
-
-
-        return ans;
-
-
-    }catch(error) {
-        console.error("依循網址失敗:", error);
-        return null;
+        const data = await response.json(); // 這裡是關鍵：先拿到代理回傳的 JSON
+        
+        // 解析字串變成 DOM，這樣你才能用 getElementById
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(data.contents, "text/html");
+        
+        // 抓取目標 ID 的文字
+        const element = doc.getElementById("team-location");
+        return element ? element.innerText.trim() : "無地址";
+    } catch (error) {
+        return "讀取失敗";
     }
-
-
-
-    
-
 }
 
 
