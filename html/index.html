@@ -76,29 +76,34 @@
             padding: 10px; /* 跟 card 邊界保持距離 */
             box-sizing: border-box;
             
-            }.team-location{
-                font-size: 24px;
-
-
-
-            }.card-button > * {
-                flex: 1; /* 關鍵：讓所有子物件平分寬度 */
-                        
-                    /* 統一背景與透明度 (使用 rgba) */
-                    background-color: rgba(0, 255, 255, 0.5);
-                      
-                    /* 統一圓角與文字 */
-                    border-radius: 10px;
-                    font-size: 64px;
-                    text-align: center; /* 讓文字在背景框框裡置中 */
-                    
-                    
-                    padding: 15px 5px; /* 讓背景看起來「很大」但有距離感 */
-                    
-                    word-wrap: break-word;
-                    transition: all 0.3s; /* 增加一點點平滑度 */
+            }
+            .card-button > * {
+                flex: 1; 
+                background-color: rgba(0, 255, 255, 0.5);
+                border-radius: 10px;
+                padding: 10px;
+                margin: 5px;
+                
+                /* 關鍵：固定高度，並讓內容置中 */
+                height: 120px;       /* 你可以根據需求調整這個高度 */
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                
+                /* 關鍵：隱藏爆出去的部分，並強制換行/斷字 */
+                overflow: hidden;
+                word-break: break-all; /* 針對長網址強制斷行 */
+                box-sizing: border-box;
             }
 
+            /* 針對 location 網址文字的特殊處理 */
+            .team-location {
+                font-size: 12px;    /* 初始設定為最大 */
+                line-height: 1;
+                width: 100%;
+                text-align: center;
+                transition: font-size 0.2s; /* 縮放時平滑一點 */
+            }
 
 
 
