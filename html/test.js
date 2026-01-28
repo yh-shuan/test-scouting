@@ -74,9 +74,8 @@ function renderCards(teamsList) {
             <div class="card-button">
                 <div class="team-city">${t.city || ""}</div>
                 <div class="team-state">${t.state_prov || ""}</div>
-                <div class="team-location">${t.locate|| "N/A"}</div>
-            
-
+                <div class="team-location">https://www.thebluealliance.com/team/${t.team_number}/2026</div>
+                
 
                 
                 
