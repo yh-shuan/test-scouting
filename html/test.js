@@ -37,29 +37,33 @@ async function autoFetchTeams() {
 
 
 
-async function renderCards(teamsList) {
+function renderCards(teamsList) {
     const container = document.getElementById('team-container');
     
-    container.innerHTML = teamsList.map(t => {
-        const tbaUrl = `https://www.thebluealliance.com/team/${t.team_number}/2026`;
-        const teamloc = find(tbaUrl)
-        
-        return `
+    // Step 1: 先畫出所有卡片（房子）
+    container.innerHTML = teamsList.map(t => `
         <div class="team-card">
             <div class="card-top">
                 <div class="team-number"># ${t.team_number}</div>
-                <div class="team-name">${t.nickname || "無名稱"}</div>
+                <div class="team-name">${t.nickname}</div>
             </div>
             <div class="card-button">
-                <div class="team-city">${t.city || ""}</div>
-                <div class="team-state">${t.state_prov || ""}</div>
-                <div class="team-location">
-                    ${teamloc}
-                </div>
+                <div class="team-city">${t.city}</div>
+                <div id="loc-${t.team_number}" class="team-location">讀取中...</div>
             </div>
         </div>
-        `;
-    }).join('');
+    `).join('');
+
+    // Step 2: 依循網址抓字串，抓到後覆蓋掉「讀取中...」
+    teamsList.forEach(async (t) => {
+        const tbaUrl = `https://www.thebluealliance.com/team/${t.team_number}/2026`;
+        const addressString = await find(tbaUrl); // 呼叫上面的 find 拿字串
+        
+        const target = document.getElementById(`loc-${t.team_number}`);
+        if (target) {
+            target.innerText = addressString; // 單純塞入字串
+        }
+    });
 }
 
 async function find(Web) {
