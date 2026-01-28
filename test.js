@@ -48,7 +48,7 @@ function renderTable(teams) {
         <tr>
             <td style="font-weight:bold; color:#4a148c;">${t.team_number}</td>
             <td>${t.nickname || "無名稱"}</td>
-            <td>${t.City || "無程式"}</td>
+            <td>${t.city || "無程式"}</td>
         </tr>
     `).join('');
 }
