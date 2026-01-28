@@ -1,23 +1,39 @@
+// 1. 宣告全域變數 (放在最外面，確保搜尋功能讀得到)
 let allTeams = []; 
 const API_KEY = "tGy3U4VfP85N98m17nqzN8XCof0zafvCckCLbgWgmy95bGE0Aw97b4lV7UocJvxl"; 
 
 async function autoFetchTeams() {
     const event_key = "2026nysu";
     const url = `https://www.thebluealliance.com/api/v3/event/${event_key}/teams`;
-    const statsElem = document.getElementById('search-stats');
     
+    // 先找畫面上的統計文字元素
+    const statsElem = document.getElementById('search-stats');
+    if (statsElem) statsElem.innerText = "正在從 TBA 抓取數據...";
+
     try {
         const response = await fetch(url, {
-            headers: { "X-TBA-Auth-Key": API_KEY, "Accept": "application/json" }
+            headers: { 
+                "X-TBA-Auth-Key": API_KEY,
+                "Accept": "application/json"
+            }
         });
+
+        if (!response.ok) throw new Error(`連線失敗: ${response.status}`);
+
         allTeams = await response.json();
+        
+        // 按隊號從小到大排序
         allTeams.sort((a, b) => a.team_number - b.team_number);
         
-        statsElem.innerText = `找到 ${allTeams.length} 支隊伍`;
+        console.log("數據抓取成功:", allTeams.length, "支隊伍");
+        
+        // 渲染畫面
         renderCards(allTeams); 
 
     } catch (e) {
-        statsElem.innerText = "連線失敗，請檢查網路或 API KEY";
+        console.error("抓取失敗:", e);
+        const container = document.getElementById('team-container');
+        if (container) container.innerHTML = `<div style="color:red; padding:20px;">數據載入失敗，請確認 API KEY 是否正確。</div>`;
     }
 }
 
@@ -25,15 +41,18 @@ function renderCards(teamsList) {
     const container = document.getElementById('team-container');
     const statsElem = document.getElementById('search-stats');
     
+    if (!container) return;
+
+    // 更新統計數據
+    if (statsElem) statsElem.innerText = `找到 ${teamsList.length} 支隊伍`;
+
     if (teamsList.length === 0) {
-        container.innerHTML = `<div class="no-result">查無此隊伍，請嘗試其他關鍵字</div>`;
-        statsElem.innerText = `找到 0 支隊伍`;
+        container.innerHTML = `<div style="padding:20px; color:gray;">沒有符合條件的隊伍</div>`;
         return;
     }
 
-    container.innerHTML = teamsList.map(t => {
-        const initialLoc = t.school_name || t.address || "查詢詳細資訊中...";
-        return `
+    // Step 1: 渲染卡片框架
+    container.innerHTML = teamsList.map(t => `
         <div class="team-card">
             <div class="card-top">
                 <div class="team-number"># ${t.team_number}</div>
@@ -42,16 +61,14 @@ function renderCards(teamsList) {
             <div class="card-button">
                 <div class="team-city">📍 ${t.city || ""}</div>
                 <div class="team-state">${t.state_prov || ""}</div>
-                <div id="loc-${t.team_number}" class="team-location">${initialLoc}</div>
+                <div id="loc-${t.team_number}" class="team-location">
+                    ${t.school_name || "查詢詳細資訊中..."}
+                </div>
             </div>
         </div>
-        `;
-    }).join('');
+    `).join('');
 
-    // 更新統計文字
-    statsElem.innerText = `顯示中: ${teamsList.length} 支隊伍`;
-
-    // 異步補抓詳細校名
+    // Step 2: 針對沒有校名的隊伍進行深度補抓
     teamsList.forEach(async (t) => {
         if (!t.school_name) {
             try {
@@ -61,24 +78,30 @@ function renderCards(teamsList) {
                 const detail = await res.json();
                 const target = document.getElementById(`loc-${t.team_number}`);
                 if (target) {
-                    target.innerText = detail.school_name || detail.address || "無詳細地址";
+                    target.innerText = detail.school_name || detail.address || "無詳細地址資訊";
                 }
-            } catch (err) { /* 靜默失敗 */ }
+            } catch (err) {
+                console.warn(`隊伍 ${t.team_number} 詳細資料補抓失敗`);
+            }
         }
     });
 }
 
-// 搜尋監聽：支援隊號與隊名關鍵字
-document.getElementById('search-bar').addEventListener('input', (e) => {
-    const searchText = e.target.value.toLowerCase().trim();
-    
-    const filteredTeams = allTeams.filter(team => {
-        const numMatch = team.team_number.toString().includes(searchText);
-        const nameMatch = team.nickname && team.nickname.toLowerCase().includes(searchText);
-        return numMatch || nameMatch;
+// 搜尋條事件監聽器
+const searchBar = document.getElementById('search-bar');
+if (searchBar) {
+    searchBar.addEventListener('input', (e) => {
+        const searchText = e.target.value.toLowerCase().trim();
+        
+        // 從全域變數 allTeams 過濾
+        const filteredTeams = allTeams.filter(team => {
+            return team.team_number.toString().includes(searchText) || 
+                   (team.nickname && team.nickname.toLowerCase().includes(searchText));
+        });
+        
+        renderCards(filteredTeams);
     });
-    
-    renderCards(filteredTeams);
-});
+}
 
+// 網頁載入後啟動
 window.onload = autoFetchTeams;
