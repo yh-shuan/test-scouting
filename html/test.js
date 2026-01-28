@@ -1,54 +1,32 @@
-const API_KEY = "tGy3U4VfP85N98m17nqzN8XCof0zafvCckCLbgWgmy95bGE0Aw97b4lV7UocJvxl"; 
-
-async function autoFetchTeams() {
-    const event_key = "2026nysu";
-    const url = `https://www.thebluealliance.com/api/v3/event/${event_key}/teams`;
-    
-    try {
-        const response = await fetch(url, {
-            headers: { "X-TBA-Auth-Key": API_KEY, "Accept": "application/json" }
-        });
-        const teams = await response.json();
-        teams.sort((a, b) => a.team_number - b.team_number);
-        
-        // 1. 渲染基礎卡片
-        renderCards(teams); 
-
-        // 2. 啟動「區域賽頁面索引器」
-        // 直接去 2026nysu 的頁面抓取所有隊伍的正確連結
-        scrapeEventPageAndFill(event_key);
-
-    } catch (e) {
-        console.error("API 抓取失敗", e);
-    }
-}
-
-async function scrapeEventPageAndFill(eventKey) {
+// 第一步：從區域賽網頁出發 (第一張圖的情境)
+async function startDeepScrape(eventKey) {
     const eventUrl = `https://www.thebluealliance.com/event/${eventKey}#teams`;
     
     try {
-        // 透過 Proxy 讀取區域賽頁面 (第一張圖的內容)
+        // 抓取區域賽大表
         const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(eventUrl)}`);
         const data = await res.json();
         const doc = new DOMParser().parseFromString(data.contents, "text/html");
 
-        // 找出所有隊伍連結 (假設連結格式包含 /team/ 數字)
-        const teamLinks = doc.querySelectorAll('a[href*="/team/"]');
+        // 索引：找到表裡面所有的隊伍連結 (例如 <a href="/team/7589/2026">)
+        const teamLinks = doc.querySelectorAll('table.team-list a[href^="/team/"]');
 
         teamLinks.forEach(async (link) => {
-            const href = link.getAttribute('href'); // 例如 /team/7589/2026
-            const teamNumber = href.split('/')[2];
-            const fullTeamUrl = `https://www.thebluealliance.com${href}`;
+            // 直接讀取這張圖裡現有的 href
+            const teamPath = link.getAttribute('href'); 
+            const teamNumber = teamPath.split('/')[2]; // 從路徑拔出隊號，用來定位 UI 上的卡片
+            const fullTeamUrl = `https://www.thebluealliance.com${teamPath}`;
 
-            // 拿到正確連結後，立刻進去抓 team-location (第二張圖的內容)
-            fetchLocationFromTeamPage(teamNumber, fullTeamUrl);
+            // 既然已經拿到精準連結了，直接鑽進去讀取第二張圖的東西
+            fetchLocationValue(teamNumber, fullTeamUrl);
         });
     } catch (e) {
-        console.error("區域賽頁面索引失敗", e);
+        console.error("區域賽網頁讀取失敗", e);
     }
 }
 
-async function fetchLocationFromTeamPage(teamNumber, teamUrl) {
+// 第二步：鑽進隊伍網頁讀取 id="team-location"
+async function fetchLocationValue(teamNumber, teamUrl) {
     const targetDiv = document.getElementById(`loc-${teamNumber}`);
     if (!targetDiv) return;
 
@@ -57,10 +35,11 @@ async function fetchLocationFromTeamPage(teamNumber, teamUrl) {
         const data = await res.json();
         const doc = new DOMParser().parseFromString(data.contents, "text/html");
 
-        // 【最終目標】根據 ID 索引 href
-        const locElement = doc.getElementById('team-location');
-        if (locElement) {
-            targetDiv.innerText = locElement.getAttribute('href');
+        // 直接根據 ID 索引那個 href 屬性
+        const locationEl = doc.getElementById('team-location');
+        if (locationEl) {
+            // 抓到你要的網址純文字，直接顯示
+            targetDiv.innerText = locationEl.getAttribute('href');
         } else {
             targetDiv.innerText = "N/A";
         }
@@ -69,21 +48,27 @@ async function fetchLocationFromTeamPage(teamNumber, teamUrl) {
     }
 }
 
-function renderCards(teamsList) {
-    const container = document.getElementById('team-container');
-    container.innerHTML = teamsList.map(t => `
-        <div class="team-card">
-            <div class="card-top">
-                <div class="team-number"># ${t.team_number}</div>
-                <div class="team-name">${t.nickname || "無名稱"}</div>
-            </div>
-            <div class="card-button">
-                <div class="team-city">${t.city || ""}</div>
-                <div class="team-state">${t.state_prov || ""}</div>
-                <div class="team-location" id="loc-${t.team_number}">尋找連結中...</div>
-            </div>
-        </div>
-    `).join('');
+// 修改後的 autoFetchTeams：API 畫完圖就啟動深度爬取
+async function autoFetchTeams() {
+    const event_key = "2026nysu";
+    // ... API 抓取與 renderCards ...
+    const response = await fetch(url, { headers: { "X-TBA-Auth-Key": API_KEY } });
+    const teams = await response.json();
+    renderCards(teams);
+
+    // 直接執行深度爬取
+    startDeepScrape(event_key);
 }
+
+// 搜尋功能的事件監聽
+document.getElementById('search-bar').addEventListener('input', (e) => {
+    const searchText = e.target.value;
+    const filteredTeams = allTeams.filter(team => 
+        team.team_number.toString().includes(searchText)
+    );
+    renderCards(filteredTeams);
+    // 搜尋後也要重新觸發掃描
+    filteredTeams.forEach(t => fetchAndFillLocation(t.team_number));
+});
 
 window.onload = autoFetchTeams;
