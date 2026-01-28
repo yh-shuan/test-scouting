@@ -40,33 +40,60 @@ async function autoFetchTeams() {
 function renderCards(teamsList) {
     const container = document.getElementById('team-container');
     
-    // Map (映射): 掃描清單，一對一轉換成 HTML
     container.innerHTML = teamsList.map(t => {
-
-        const tbaUrl = `https://www.thebluealliance.com/team/${t.team_number}/2026`;
-        
-        return`
-
+        return `
         <div class="team-card">
             <div class="card-top">
                 <div class="team-number"># ${t.team_number}</div>
                 <div class="team-name">${t.nickname || "無名稱"}</div>
-                
             </div>
             <div class="card-button">
                 <div class="team-city">${t.city || ""}</div>
                 <div class="team-state">${t.state_prov || ""}</div>
-                <div class="team-location">${tbaUrl}</div>
-                
-
-                
-                
+                <div class="team-location" id="loc-${t.team_number}">抓取中...</div>
             </div>
-            
         </div>
         `;
     }).join('');
+
+    // 房子蓋好後，立刻啟動「填充任務」
+    teamsList.forEach(t => {
+        fetchAndFillLocation(t.team_number);
+    });
 }
+async function fetchAndFillLocation(teamNumber) {
+    // 門牌號碼
+    const targetId = `loc-${teamNumber}`;
+    const tbaUrl = `https://www.thebluealliance.com/team/${teamNumber}/2026`;
+    const proxy = "https://api.allorigins.win/get?url="; // 繞過 CORS 限制
+
+    try {
+        const response = await fetch(proxy + encodeURIComponent(tbaUrl));
+        const data = await response.json();
+        
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(data.contents, "text/html");
+        
+        // 索引出 Google Maps 網址
+        const element = doc.getElementById('team-location');
+        const mapUrl = element ? element.getAttribute('href') : "無位置資訊";
+
+        // 執行覆蓋！
+        const targetDiv = document.getElementById(targetId);
+        if (targetDiv) {
+            targetDiv.innerText = mapUrl;
+            
+            // 這裡可以順便呼叫你之前想要的「自動縮放字體」
+            // adjustFontSize(targetDiv); 
+        }
+    } catch (e) {
+        const targetDiv = document.getElementById(targetId);
+        if (targetDiv) targetDiv.innerText = "連線錯誤";
+    }
+}
+
+
+
 
 // Event Listener (事件監聽器): 像是一個警衛，盯著輸入框有沒有人打字
 document.getElementById('search-bar').addEventListener('input', (e) => {
