@@ -61,7 +61,7 @@ function renderCards(teamsList) {
 
 
 
-                <div class="team-location" id="loc-${t.team_number}" data-tba-url="${tbaUrl}">
+                
                 
             </div>
             
