@@ -1,74 +1,106 @@
-// 第一步：從區域賽網頁出發 (第一張圖的情境)
-async function startDeepScrape(eventKey) {
-    const eventUrl = `https://www.thebluealliance.com/event/${eventKey}#teams`;
-    
-    try {
-        // 抓取區域賽大表
-        const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(eventUrl)}`);
-        const data = await res.json();
-        const doc = new DOMParser().parseFromString(data.contents, "text/html");
+// 你的合法 API KEY
+const API_KEY = "tGy3U4VfP85N98m17nqzN8XCof0zafvCckCLbgWgmy95bGE0Aw97b4lV7UocJvxl"; 
 
-        // 索引：找到表裡面所有的隊伍連結 (例如 <a href="/team/7589/2026">)
-        const teamLinks = doc.querySelectorAll('table.team-list a[href^="/team/"]');
-
-        teamLinks.forEach(async (link) => {
-            // 直接讀取這張圖裡現有的 href
-            const teamPath = link.getAttribute('href'); 
-            const teamNumber = teamPath.split('/')[2]; // 從路徑拔出隊號，用來定位 UI 上的卡片
-            const fullTeamUrl = `https://www.thebluealliance.com${teamPath}`;
-
-            // 既然已經拿到精準連結了，直接鑽進去讀取第二張圖的東西
-            fetchLocationValue(teamNumber, fullTeamUrl);
-        });
-    } catch (e) {
-        console.error("區域賽網頁讀取失敗", e);
-    }
-}
-
-// 第二步：鑽進隊伍網頁讀取 id="team-location"
-async function fetchLocationValue(teamNumber, teamUrl) {
-    const targetDiv = document.getElementById(`loc-${teamNumber}`);
-    if (!targetDiv) return;
-
-    try {
-        const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(teamUrl)}`);
-        const data = await res.json();
-        const doc = new DOMParser().parseFromString(data.contents, "text/html");
-
-        // 直接根據 ID 索引那個 href 屬性
-        const locationEl = doc.getElementById('team-location');
-        if (locationEl) {
-            // 抓到你要的網址純文字，直接顯示
-            targetDiv.innerText = locationEl.getAttribute('href');
-        } else {
-            targetDiv.innerText = "N/A";
-        }
-    } catch (e) {
-        targetDiv.innerText = "Error";
-    }
-}
-
-// 修改後的 autoFetchTeams：API 畫完圖就啟動深度爬取
 async function autoFetchTeams() {
+    // 【修正點】必須使用 api/v3 且路徑結尾要是 /teams
     const event_key = "2026nysu";
-    // ... API 抓取與 renderCards ...
-    const response = await fetch(url, { headers: { "X-TBA-Auth-Key": API_KEY } });
-    const teams = await response.json();
-    renderCards(teams);
+    const url = `https://www.thebluealliance.com/api/v3/event/${event_key}/teams`;
+    
+    console.log("正在全自動抓取 2026 NYSU 隊伍名單...");
 
-    // 直接執行深度爬取
-    startDeepScrape(event_key);
+    try {
+        const response = await fetch(url, {
+            headers: { 
+                "X-TBA-Auth-Key": API_KEY,
+                "Accept": "application/json"
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP 錯誤！狀態碼: ${response.status}`);
+        }
+
+        const teams = await response.json();
+        
+        // 自動排序：按隊號從小到大
+        teams.sort((a, b) => a.team_number - b.team_number);
+        
+        console.log(`抓取成功！共 ${teams.length} 支隊伍`);
+        renderCards(teams); 
+
+    } catch (e) {
+        console.error("全自動抓取失敗，原因:", e);
+        document.getElementById('table-body').innerHTML = `<tr><td colspan="4" style="color:red">抓取失敗: ${e.message}</td></tr>`;
+    }
 }
 
-// 搜尋功能的事件監聽
+async function getHrefFromUrl(targetUrl) {
+    // 1. 抓取網頁的原始碼 (HTML 字串)
+    const response = await fetch(targetUrl);
+    const htmlString = await response.text();
+
+    // 2. 使用 DOMParser 將字串轉成可以被「索引」的 DOM 物件
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlString, "text/html");
+
+    // 3. 根據 ID 尋找標籤並拿走 href
+    const element = doc.getElementById('team-location');
+    
+    if (element) {
+        return element.getAttribute('href'); // 這裡就拿到你要的網址純文字了
+    } else {
+        return "找不到該 ID";
+    }
+}
+
+
+
+function renderCards(teamsList) {
+    const container = document.getElementById('team-container');
+    
+    // Map (映射): 掃描清單，一對一轉換成 HTML
+    container.innerHTML = teamsList.map(t => {
+
+        const tbaUrl = `https://www.thebluealliance.com/team/${t.team_number}`;
+        
+        return`
+
+        <div class="team-card">
+            <div class="card-top">
+                <div class="team-number"># ${t.team_number}</div>
+                <div class="team-name">${t.nickname || "無名稱"}</div>
+                
+            </div>
+            <div class="card-button">
+                <div class="team-city">${t.city || ""}</div>
+                <div class="team-state">${t.state_prov || ""}</div>
+                <div class="team-location">${getHrefFromUrl(tbaUrl) || ""}</div>
+            
+
+
+                
+                
+            </div>
+            
+        </div>
+        `;
+    }).join('');
+}
+
+// Event Listener (事件監聽器): 像是一個警衛，盯著輸入框有沒有人打字
 document.getElementById('search-bar').addEventListener('input', (e) => {
+    // Value (值): 使用者目前打進去的文字
     const searchText = e.target.value;
-    const filteredTeams = allTeams.filter(team => 
-        team.team_number.toString().includes(searchText)
-    );
+    
+    // Filter (過濾): 像是篩子，只留下符合條件的隊伍
+    const filteredTeams = allTeams.filter(team => {
+        // 檢查隊號是否「包含」使用者輸入的數字
+        return team.team_number.toString().includes(searchText);
+    });
+    
+    // 把篩選後的結果重新畫出來
     renderCards(filteredTeams);
-    // 搜尋後也要重新觸發掃描
-    filteredTeams.forEach(t => fetchAndFillLocation(t.team_number));
 });
 
+// 網頁載入後立即執行
 window.onload = autoFetchTeams;
