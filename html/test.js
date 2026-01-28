@@ -64,30 +64,44 @@ function renderCards(teamsList) {
 
 async function fetchAndFillLocation(teamNumber) {
     const targetId = `loc-${teamNumber}`;
+    const targetDiv = document.getElementById(targetId);
+    
+    // 1. 這是你的目標網址
     const tbaUrl = `https://www.thebluealliance.com/team/${teamNumber}/2026`;
+    
+    // 2. 【核心修正】加上這個跳板網址，這能解決你所有的連線錯誤
     const proxy = "https://api.allorigins.win/get?url="; 
 
     try {
+        // 透過跳板去抓
         const response = await fetch(proxy + encodeURIComponent(tbaUrl));
-        const data = await response.json();
+        
+        if (!response.ok) throw new Error("網路請求失敗");
+
+        const data = await response.json(); // AllOrigins 會回傳一個 JSON
+        
+        // 3. 從 JSON 裡的 .contents 拿到 HTML 字串
+        const htmlString = data.contents; 
         
         const parser = new DOMParser();
-        const doc = parser.parseFromString(data.contents, "text/html");
+        const doc = parser.parseFromString(htmlString, "text/html");
         
-        // 關鍵修正：改拿標籤內的「文字」
+        // 4. 索引地址文字
         const element = doc.getElementById('team-name');
-        const addressText = element ? element.innerText.trim() : "未提供地址";
-
-        const targetDiv = document.getElementById(targetId);
-        if (targetDiv) {
-            targetDiv.innerText = addressText; // 覆蓋成地址文字
+        
+        if (element) {
+            const address = element.innerText.trim();
+            targetDiv.innerText = address; // 覆蓋「抓取中...」
             
-            // 填入文字後，立即計算並縮放字體
+            // 5. 填入成功後，立刻執行字體縮放
             adjustFontSize(targetDiv); 
+        } else {
+            targetDiv.innerText = "查無地址";
         }
+
     } catch (e) {
-        const targetDiv = document.getElementById(targetId);
-        if (targetDiv) targetDiv.innerText = "讀取失敗";
+        console.error(`隊伍 ${teamNumber} 失敗:`, e);
+        targetDiv.innerText = "連線失敗"; // 這就是你現在看到的畫面
     }
 }
 
