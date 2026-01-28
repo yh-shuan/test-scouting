@@ -61,7 +61,7 @@ function renderCards(teamsList) {
     // Map (映射): 掃描清單，一對一轉換成 HTML
     container.innerHTML = teamsList.map(t => {
 
-        const tbaUrl = `https://www.thebluealliance.com/team/${t.team_number}`;
+        const tbaUrl = `https://www.thebluealliance.com/team/${t.team_number}/2026`;
         
         return`
 
@@ -74,7 +74,7 @@ function renderCards(teamsList) {
             <div class="card-button">
                 <div class="team-city">${t.city || ""}</div>
                 <div class="team-state">${t.state_prov || ""}</div>
-                <div class="team-location">https://www.thebluealliance.com/team/${t.team_number}/2026</div>
+                <div class="team-location">${getHrefFromUrl(tbaUrl)}</div>
                 
 
                 
