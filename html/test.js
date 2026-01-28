@@ -34,38 +34,67 @@ async function autoFetchTeams() {
     }
 }
 
+// ... (之前的 API_KEY 和 autoFetchTeams 不變)
+
 function renderCards(teamsList) {
     const container = document.getElementById('team-container');
     
-    // Map (映射): 掃描清單，一對一轉換成 HTML
     container.innerHTML = teamsList.map(t => {
-
-        const tbaUrl = `https://www.thebluealliance.com/team/${t.team_number}`;
+        const tbaTeamUrl = `https://www.thebluealliance.com/team/${t.team_number}`;
         
-        return`
-
+        return `
         <div class="team-card">
             <div class="card-top">
                 <div class="team-number"># ${t.team_number}</div>
                 <div class="team-name">${t.nickname || "無名稱"}</div>
-                
             </div>
             <div class="card-button">
                 <div class="team-city">${t.city || ""}</div>
                 <div class="team-state">${t.state_prov || ""}</div>
-
-
-
-
-                <div class="team-location">${tbaUrl.team-location || ""}</div>
-                
+                <div class="team-location" id="loc-${t.team_number}" data-source="${tbaTeamUrl}">
+                    掃描中...
+                </div>
             </div>
-            
         </div>
         `;
     }).join('');
+
+    // 【關鍵】畫完卡片後，啟動掃描索引程序
+    teamsList.forEach(t => fetchAndIndexLocation(t.team_number));
 }
 
+// 這是你要的「尋找隊伍網站 > 尋找 team-location」的索引邏輯
+async function fetchAndIndexLocation(teamNumber) {
+    const targetDiv = document.getElementById(`loc-${teamNumber}`);
+    const teamUrl = targetDiv.getAttribute('data-source');
+
+    try {
+        // 注意：前端直接 fetch TBA 網頁會被 CORS 擋住
+        // 這裡假設你後續會處理這部分，或是使用 Proxy 轉接
+        const response = await fetch(teamUrl); 
+        const html = await response.text();
+
+        // 建立一個臨時容器來解析 HTML
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, "text/html");
+
+        // 【索引核心】：尋找含有 Google Maps 特徵的 <a> 標籤
+        const mapLinkElement = doc.querySelector('a[href*="googleusercontent.com/maps.google.com"]');
+
+        if (mapLinkElement) {
+            // 拿到網址字串
+            const teamLocationUrl = mapLinkElement.getAttribute('href');
+            // 填回 div，這就是你要的網址顯示
+            targetDiv.innerText = teamLocationUrl;
+        } else {
+            targetDiv.innerText = "未找到連結";
+        }
+    } catch (e) {
+        // 如果還沒處理 CORS，這裡會報錯，我們先暫時顯示抓到的網址（示意）
+        console.warn(`隊伍 ${teamNumber} 掃描失敗 (可能是跨網域限制)`);
+        targetDiv.innerText = "待掃描連結"; 
+    }
+}
 // Event Listener (事件監聽器): 像是一個警衛，盯著輸入框有沒有人打字
 document.getElementById('search-bar').addEventListener('input', (e) => {
     // Value (值): 使用者目前打進去的文字
