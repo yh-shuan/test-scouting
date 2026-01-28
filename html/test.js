@@ -44,14 +44,17 @@ function renderTable(teams) {
     }
 
     // 全自動生成 HTML 字串
-    tbody.innerHTML = teams.map(t => `
-        <tr>
-            <td style="font-weight:bold; color:#4a148c;">${t.team_number}</td>
-            <td>${t.nickname || "無名稱"}</td>
-            <td>${t.state_prov||"無地區"}</td>
-            <td>${t.city||"無城市"}</td>
-        </tr>
-    `).join('');
+    container.innerHTML = teams.map(t => `
+    <div class="team-card">
+        <div class="card-header">
+            <span class="team-number"># ${t.team_number}</span>
+            <span class="team-state">${t.state_prov}</span>
+            <span class="team-city">${t.city}</span>
+            
+        </div>
+        <div class="team-name">${t.nickname || "無名稱"}</div>
+    </div>
+`   ).join('');
 }
 
 // 網頁載入後立即執行
