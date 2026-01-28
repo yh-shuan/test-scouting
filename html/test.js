@@ -75,7 +75,7 @@ async function fetchAndFillLocation(teamNumber) {
         const doc = parser.parseFromString(data.contents, "text/html");
         
         // 關鍵修正：改拿標籤內的「文字」
-        const element = doc.getElementById('team-location');
+        const element = doc.getElementById('team-name');
         const addressText = element ? element.innerText.trim() : "未提供地址";
 
         const targetDiv = document.getElementById(targetId);
