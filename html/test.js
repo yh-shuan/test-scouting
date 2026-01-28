@@ -56,7 +56,7 @@ function renderCards(teamsList) {
             <div class="card-button">
                 <div class="team-city">${t.city || ""}</div>
                 <div class="team-state">${t.state_prov || ""}</div>
-                <div class="team-location">${t.address|| "N/A"}</div>
+                <div class="team-location">${t.school_name| "N/A"}</div>
                 
 
                 
