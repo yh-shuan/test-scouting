@@ -38,21 +38,32 @@ function renderCards(teamsList) {
     const container = document.getElementById('team-container');
     
     // Map (映射): 掃描清單，一對一轉換成 HTML
-    container.innerHTML = teamsList.map(t => `
+    container.innerHTML = teamsList.map(t => {
+
+        const tbaUrl = `https://www.thebluealliance.com/team/${t.team_number}`;
+        
+        return`
+
         <div class="team-card">
             <div class="card-top">
-                <span class="team-number"># ${t.team_number}</span>
+                <div class="team-number"># ${t.team_number}</div>
                 <div class="team-name">${t.nickname || "無名稱"}</div>
                 
             </div>
             <div class="card-button">
-                <span class="team-state">${t.state_prov || ""}</span>
-                <span class="team-city">${t.city || ""}</span>
+                <div class="team-city">${t.city || ""}</div>
+                <div class="team-state">${t.state_prov || ""}</div>
+
+
+
+
+                <div class="team-location">${tbaUrl.team-location || ""}</div>
                 
             </div>
             
         </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 // Event Listener (事件監聽器): 像是一個警衛，盯著輸入框有沒有人打字
