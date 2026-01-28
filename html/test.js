@@ -40,13 +40,17 @@ function renderCards(teamsList) {
     // Map (映射): 掃描清單，一對一轉換成 HTML
     container.innerHTML = teamsList.map(t => `
         <div class="team-card">
-            <div class="card-header">
+            <div class="card-top">
                 <span class="team-number"># ${t.team_number}</span>
                 <div class="team-name">${t.nickname || "無名稱"}</div>
                 
             </div>
-            <span class="team-state">${t.state_prov || ""}</span>
-            <span class="team-city">${t.city || ""}</span>
+            <div class="card-button">
+                <span class="team-state">${t.state_prov || ""}</span>
+                <span class="team-city">${t.city || ""}</span>
+                
+            </div>
+            
         </div>
     `).join('');
 }

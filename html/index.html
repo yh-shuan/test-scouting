@@ -34,7 +34,7 @@
             background-color: #fefefe;
             border: 3px solid #000000;
             border-radius: 15px;
-            min-height: 120px;
+            min-height: 250px;
             
             box-sizing: border-box; 
             margin: 10px 0;
@@ -42,7 +42,7 @@
             overflow: hidden;
 
 
-            }.card-header {
+            }.card-top {
                 background-color:cyan;
                 display: flex;
                 align-items: center;    /* 讓內容水平居中 */
@@ -64,10 +64,19 @@
                 
             }
 
-            .team-state{
+            .card-button {
+                background-color:rgb(255, 255, 255);
+                display: flex;
+                align-items: center;    /* 讓內容水平居中 */
+                justify-content: center; /* 關鍵：左右撐開 */
+                width: 100%;
+                gap: 25px;
+                word-wrap: break-word;
+                
+            }.team-state{
                 font-size: 28px;
                 text-align: left;
-                width: 50%;
+                background-color:darkslategrey;
                 word-wrap: break-word;
 
 
@@ -75,7 +84,7 @@
             .team-city{
                 font-size: 28px;
                 text-align: right;
-                width: 50%;
+                background-color:darkslategrey;
                 word-wrap: break-word;
 
 
