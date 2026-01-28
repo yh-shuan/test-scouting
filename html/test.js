@@ -26,7 +26,7 @@ async function autoFetchTeams() {
         teams.sort((a, b) => a.team_number - b.team_number);
         
         console.log(`抓取成功！共 ${teams.length} 支隊伍`);
-        renderTable(teams); 
+        renderCards(teams); 
 
     } catch (e) {
         console.error("全自動抓取失敗，原因:", e);
