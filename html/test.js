@@ -48,7 +48,8 @@ function renderCards(teamsList) {
                 <div class="team-name">${t.nickname}</div>
             </div>
             <div class="card-button">
-                <div class="team-city">${t.city}</div>
+                <div class="team-city">${t.city || ""}</div>
+                <div class="team-state">${t.state_prov || ""}</div>
                 <div id="loc-${t.team_number}" class="team-location">讀取中...</div>
             </div>
         </div>
@@ -77,7 +78,7 @@ async function find(Web) {
         const doc = parser.parseFromString(data.contents, "text/html");
         
         // 抓取目標 ID 的文字
-        const element = doc.getElementById("team-location");
+        const element = doc.getElementById("team-name");
         return element ? element.innerText.trim() : "無地址";
     } catch (error) {
         return "讀取失敗";
