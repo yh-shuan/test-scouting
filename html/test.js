@@ -34,80 +34,38 @@ async function autoFetchTeams() {
     }
 }
 
-async function getHrefFromUrl(targetUrl) {
-    // 1. 抓取網頁的原始碼 (HTML 字串)
-    const response = await fetch(targetUrl);
-    const htmlString = await response.text();
-
-    // 2. 使用 DOMParser 將字串轉成可以被「索引」的 DOM 物件
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(htmlString, "text/html");
-
-    // 3. 根據 ID 尋找標籤並拿走 href
-    const element = doc.getElementById('team-location');
-    
-    if (element) {
-        return element.getAttribute('href'); // 這裡就拿到你要的網址純文字了
-    } else {
-        return "找不到該 ID";
-    }
-}
 
 
 
 function renderCards(teamsList) {
     const container = document.getElementById('team-container');
     
+    // Map (映射): 掃描清單，一對一轉換成 HTML
     container.innerHTML = teamsList.map(t => {
+
         const tbaUrl = `https://www.thebluealliance.com/team/${t.team_number}/2026`;
         
-        // 注意這裡：我們給 location 一個唯一的 ID，並先顯示 "Loading..."
-        return `
+        return`
+
         <div class="team-card">
             <div class="card-top">
                 <div class="team-number"># ${t.team_number}</div>
                 <div class="team-name">${t.nickname || "無名稱"}</div>
+                
             </div>
             <div class="card-button">
                 <div class="team-city">${t.city || ""}</div>
                 <div class="team-state">${t.state_prov || ""}</div>
-                <div class="team-location" id="loc-${t.team_number}">Loading...</div>
+                <div class="team-location">${t.School|| "N/A"}</div>
+                
+
+                
+                
             </div>
+            
         </div>
         `;
     }).join('');
-
-    // 【關鍵點】房子蓋好了，現在立刻去補抓資料
-    teamsList.forEach(t => {
-        fillLocation(t.team_number);
-    });
-}
-
-async function fillLocation(teamNumber) {
-    try {
-        const tbaUrl = `https://www.thebluealliance.com/team/${teamNumber}/2026`;
-        
-        // 1. 抓取 (記得處理跨網域 CORS 問題，建議加上 Proxy)
-        const proxy = "https://api.allorigins.win/get?url=";
-        const response = await fetch(proxy + encodeURIComponent(tbaUrl));
-        const data = await response.json(); // AllOrigins 會把結果包在 .contents
-        
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(data.contents, "text/html");
-
-        // 2. 索引
-        const element = doc.getElementById('team-location');
-        const href = element ? element.getAttribute('href') : "No Location Found";
-
-        // 3. 填入房子
-        const targetDiv = document.getElementById(`loc-${teamNumber}`);
-        if (targetDiv) {
-            targetDiv.innerText = href;
-            // 如果你有寫自動縮放字體的函式 fitText(targetDiv)，也在這裡呼叫
-        }
-    } catch (e) {
-        console.error(`隊伍 ${teamNumber} 抓取失敗`, e);
-    }
 }
 
 // Event Listener (事件監聽器): 像是一個警衛，盯著輸入框有沒有人打字
