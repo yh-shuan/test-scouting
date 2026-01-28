@@ -40,26 +40,32 @@ async function autoFetchTeams() {
 function renderCards(teamsList) {
     const container = document.getElementById('team-container');
     
+    // Map (映射): 掃描清單，一對一轉換成 HTML
     container.innerHTML = teamsList.map(t => {
-        return `
+
+        const tbaUrl = `https://www.thebluealliance.com/team/${t.team_number}/2026`;
+        
+        return`
+
         <div class="team-card">
             <div class="card-top">
                 <div class="team-number"># ${t.team_number}</div>
                 <div class="team-name">${t.nickname || "無名稱"}</div>
+                
             </div>
             <div class="card-button">
                 <div class="team-city">${t.city || ""}</div>
                 <div class="team-state">${t.state_prov || ""}</div>
-                <div class="team-location" id="loc-${t.team_number}">抓取中...</div>
+                <div class="team-location">${tbaUrl}</div>
+                
+
+                
+                
             </div>
+            
         </div>
         `;
     }).join('');
-
-    // 房子蓋好後，立刻啟動「填充任務」
-    teamsList.forEach(t => {
-        fetchAndFillLocation(t.team_number);
-    });
 }
 
 // Event Listener (事件監聽器): 像是一個警衛，盯著輸入框有沒有人打字
