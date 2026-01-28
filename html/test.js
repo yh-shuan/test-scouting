@@ -75,13 +75,13 @@ async function fetchAndFillLocation(teamNumber) {
         const doc = parser.parseFromString(data.contents, "text/html");
         
         // 索引出 Google Maps 網址
-        const element = doc.getElementById('team-location');
-        const mapUrl = element ? element.getAttribute('href') : "無位置資訊";
+        const element = doc.getElementById('team-name');
+        
 
         // 執行覆蓋！
         const targetDiv = document.getElementById(targetId);
         if (targetDiv) {
-            targetDiv.innerText = mapUrl;
+            targetDiv.innerText = element;
             
             // 這裡可以順便呼叫你之前想要的「自動縮放字體」
             // adjustFontSize(targetDiv); 
