@@ -43,7 +43,6 @@ function renderCards(teamsList) {
     
     if (!container) return;
 
-    // 更新統計數據
     if (statsElem) statsElem.innerText = `找到 ${teamsList.length} 支隊伍`;
 
     if (teamsList.length === 0) {
@@ -51,7 +50,6 @@ function renderCards(teamsList) {
         return;
     }
 
-    // Step 1: 渲染卡片框架
     container.innerHTML = teamsList.map(t => `
         <div class="team-card">
             <div class="card-top">
@@ -62,27 +60,34 @@ function renderCards(teamsList) {
                 <div class="team-city">📍 ${t.city || ""}</div>
                 <div class="team-state">${t.state_prov || ""}</div>
                 <div id="loc-${t.team_number}" class="team-location">
-                    ${t.school_name || "查詢詳細資訊中..."}
+                    查詢詳細資訊中...
                 </div>
             </div>
         </div>
     `).join('');
 
-    // Step 2: 針對沒有校名的隊伍進行深度補抓
     teamsList.forEach(async (t) => {
-        if (!t.school_name) {
-            try {
-                const res = await fetch(`https://www.thebluealliance.com/api/v3/team/frc${t.team_number}`, {
-                    headers: { "X-TBA-Auth-Key": API_KEY, "Accept": "application/json" }
-                });
-                const detail = await res.json();
-                const target = document.getElementById(`loc-${t.team_number}`);
-                if (target) {
-                    target.innerText = detail.school_name || detail.address || "無詳細地址資訊";
+        try {
+            const res = await fetch(`https://www.thebluealliance.com/api/v3/team/frc${t.team_number}`, {
+                headers: { "X-TBA-Auth-Key": API_KEY, "Accept": "application/json" }
+            });
+            const detail = await res.json();
+            const target = document.getElementById(`loc-${t.team_number}`);
+            
+            if (target) {
+                // 優先取學校名稱，沒有就取地址
+                const schoolName = detail.school_name || detail.address || "無詳細地址資訊";
+                
+                if (schoolName !== "無詳細地址資訊") {
+                    // 【關鍵修正】：將文字包裝成 Google 搜尋網址
+                    const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(schoolName)}`;
+                    target.innerHTML = `<a href="${googleSearchUrl}" target="_blank" style="color: #007bff; text-decoration: none;">🔍 ${schoolName}</a>`;
+                } else {
+                    target.innerText = schoolName;
                 }
-            } catch (err) {
-                console.warn(`隊伍 ${t.team_number} 詳細資料補抓失敗`);
             }
+        } catch (err) {
+            console.warn(`隊伍 ${t.team_number} 詳細資料補抓失敗`);
         }
     });
 }
