@@ -74,7 +74,7 @@ function renderCards(teamsList) {
             <div class="card-button">
                 <div class="team-city">${t.city || ""}</div>
                 <div class="team-state">${t.state_prov || ""}</div>
-                <div class="team-location">${t.autoFetchTeams || ""}</div>
+                <div class="team-location">${t.container || ""}</div>
             
 
 
