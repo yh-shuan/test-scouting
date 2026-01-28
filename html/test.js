@@ -39,7 +39,7 @@ function renderCards(teamsList) {
     
     // Map (映射): 掃描清單，一對一轉換成 HTML
     // 你的 render 函數裡面要這樣寫：
-    container.innerHTML = teams.map(t => `
+    container.innerHTML = teamsList(t => `
         <div class="team-card">
             <div class="card-top">
                 <div class="team-number"># ${t.team_number}</div>
