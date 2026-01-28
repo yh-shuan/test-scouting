@@ -40,73 +40,33 @@ async function autoFetchTeams() {
 function renderCards(teamsList) {
     const container = document.getElementById('team-container');
     
+    // Map (映射): 掃描清單，一對一轉換成 HTML
     container.innerHTML = teamsList.map(t => {
-        return `
+
+        const tbaUrl = `https://www.thebluealliance.com/team/${t.team_number}/2026`;
+        
+        return`
+
         <div class="team-card">
             <div class="card-top">
                 <div class="team-number"># ${t.team_number}</div>
                 <div class="team-name">${t.nickname || "無名稱"}</div>
+                
             </div>
             <div class="card-button">
                 <div class="team-city">${t.city || ""}</div>
                 <div class="team-state">${t.state_prov || ""}</div>
-                <div class="team-location" id="loc-${t.team_number}">抓取中...</div>
+                <div class="team-location">${tbaUrl}</div>
+                
+
+                
+                
             </div>
+            
         </div>
         `;
     }).join('');
-
-    // 房子蓋好後，立刻啟動「填充任務」
-    teamsList.forEach(t => {
-        fetchAndFillLocation(t.team_number);
-    });
 }
-
-async function fetchAndFillLocation(teamNumber) {
-    const targetId = `loc-${teamNumber}`;
-    const targetDiv = document.getElementById(targetId);
-    
-    // 1. 這是你的目標網址
-    const tbaUrl = `https://www.thebluealliance.com/team/${teamNumber}/2026`;
-    
-    // 2. 【核心修正】加上這個跳板網址，這能解決你所有的連線錯誤
-    const proxy = "https://api.allorigins.win/get?url="; 
-
-    try {
-        // 透過跳板去抓
-        const response = await fetch(proxy + encodeURIComponent(tbaUrl));
-        
-        if (!response.ok) throw new Error("網路請求失敗");
-
-        const data = await response.json(); // AllOrigins 會回傳一個 JSON
-        
-        // 3. 從 JSON 裡的 .contents 拿到 HTML 字串
-        const htmlString = data.contents; 
-        
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(htmlString, "text/html");
-        
-        // 4. 索引地址文字
-        const element = doc.getElementById('team-name');
-        
-        if (element) {
-            const address = element.innerText.trim();
-            targetDiv.innerText = address; // 覆蓋「抓取中...」
-            
-            // 5. 填入成功後，立刻執行字體縮放
-            adjustFontSize(targetDiv); 
-        } else {
-            targetDiv.innerText = "查無地址";
-        }
-
-    } catch (e) {
-        console.error(`隊伍 ${teamNumber} 失敗:`, e);
-        targetDiv.innerText = "連線失敗"; // 這就是你現在看到的畫面
-    }
-}
-
-
-
 
 // Event Listener (事件監聽器): 像是一個警衛，盯著輸入框有沒有人打字
 document.getElementById('search-bar').addEventListener('input', (e) => {
