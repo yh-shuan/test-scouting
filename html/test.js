@@ -1,8 +1,9 @@
-// 你的合法 API KEY
+// 1. 全域變數定義
+let allTeams = []; 
 const API_KEY = "tGy3U4VfP85N98m17nqzN8XCof0zafvCckCLbgWgmy95bGE0Aw97b4lV7UocJvxl"; 
 
+// 2. 初始抓取隊伍清單
 async function autoFetchTeams() {
-    // 【修正點】必須使用 api/v3 且路徑結尾要是 /teams
     const event_key = "2026nysu";
     const url = `https://www.thebluealliance.com/api/v3/event/${event_key}/teams`;
     
@@ -16,36 +17,34 @@ async function autoFetchTeams() {
             }
         });
 
-        if (!response.ok) {
-            throw new Error(`HTTP 錯誤！狀態碼: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`HTTP 錯誤！狀態碼: ${response.status}`);
 
-        const teams = await response.json();
+        allTeams = await response.json();
         
-        // 自動排序：按隊號從小到大
-        teams.sort((a, b) => a.team_number - b.team_number);
+        // 按隊號排序
+        allTeams.sort((a, b) => a.team_number - b.team_number);
         
-        console.log(`抓取成功！共 ${teams.length} 支隊伍`);
-        renderCards(teams); 
+        console.log(`抓取成功！共 ${allTeams.length} 支隊伍`);
+        renderCards(allTeams); 
 
     } catch (e) {
-        console.error("全自動抓取失敗，原因:", e);
-        document.getElementById('table-body').innerHTML = `<tr><td colspan="4" style="color:red">抓取失敗: ${e.message}</td></tr>`;
+        console.error("抓取失敗:", e);
+        const container = document.getElementById('team-container');
+        if (container) container.innerHTML = `<p style="color:red">抓取失敗: ${e.message}</p>`;
     }
 }
 
-
-
-
+// 3. 渲染卡片框架
 function renderCards(teamsList) {
     const container = document.getElementById('team-container');
-    
-    // Step 1: 先畫出所有卡片（房子）
+    if (!container) return;
+
+    // 先畫出空的格子（包含原本的三個子物件）
     container.innerHTML = teamsList.map(t => `
         <div class="team-card">
             <div class="card-top">
                 <div class="team-number"># ${t.team_number}</div>
-                <div class="team-name">${t.nickname}</div>
+                <div class="team-name">${t.nickname || "無名稱"}</div>
             </div>
             <div class="card-button">
                 <div class="team-city">${t.city || ""}</div>
@@ -55,55 +54,53 @@ function renderCards(teamsList) {
         </div>
     `).join('');
 
-    // Step 2: 依循網址抓字串，抓到後覆蓋掉「讀取中...」
-    teamsList.forEach(async (t) => {
-        const tbaUrl = `https://www.thebluealliance.com/team/${t.team_number}/2026`;
-        const addressString = await find(tbaUrl); // 呼叫上面的 find 拿字串
-        
-        const target = document.getElementById(`loc-${t.team_number}`);
-        if (target) {
-            target.innerText = addressString; // 單純塞入字串
-        }
+    // 4. 依循網址抓取子物件文字 (加上延遲避免被 Proxy 封鎖)
+    teamsList.forEach((t, index) => {
+        setTimeout(async () => {
+            const tbaUrl = `https://www.thebluealliance.com/team/${t.team_number}/2026`;
+            const resultString = await find(tbaUrl); 
+            
+            const target = document.getElementById(`loc-${t.team_number}`);
+            if (target) {
+                target.innerText = resultString; 
+            }
+        }, index * 200); // 每 0.2 秒發出一個請求，保證穩定度
     });
 }
 
+// 5. 依循網址抓取特定的子物件 (team-location)
 async function find(Web) {
     const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(Web)}`;
     try {
         const response = await fetch(proxyUrl);
-        const data = await response.json(); // 這裡是關鍵：先拿到代理回傳的 JSON
+        if (!response.ok) return "連線超時";
+
+        const data = await response.json();
         
-        // 解析字串變成 DOM，這樣你才能用 getElementById
+        // 使用 DOMParser 解析 HTML 字串
         const parser = new DOMParser();
         const doc = parser.parseFromString(data.contents, "text/html");
         
-        // 抓取目標 ID 的文字
-        const element = doc.getElementById("team-name");
-        return element ? element.innerText.trim() : "無地址";
+        // 抓取你在圖中指定的子物件 ID (team-location)
+        const element = doc.getElementById("team-location");
+        
+        // 只回傳純文字字串
+        return element ? element.innerText.trim() : "無地址資訊";
     } catch (error) {
         return "讀取失敗";
     }
 }
 
-
-
-
-
-
-
-
-// Event Listener (事件監聽器): 像是一個警衛，盯著輸入框有沒有人打字
+// 6. 搜尋功能監聽
 document.getElementById('search-bar').addEventListener('input', (e) => {
-    // Value (值): 使用者目前打進去的文字
-    const searchText = e.target.value;
+    const searchText = e.target.value.toLowerCase();
     
-    // Filter (過濾): 像是篩子，只留下符合條件的隊伍
-    const filteredTeams = allTeams.filter(team => {
-        // 檢查隊號是否「包含」使用者輸入的數字
-        return team.team_number.toString().includes(searchText);
-    });
+    // 從全域變數 allTeams 進行過濾
+    const filteredTeams = allTeams.filter(team => 
+        team.team_number.toString().includes(searchText) || 
+        (team.nickname && team.nickname.toLowerCase().includes(searchText))
+    );
     
-    // 把篩選後的結果重新畫出來
     renderCards(filteredTeams);
 });
 
