@@ -45,17 +45,9 @@
 
             .team-number {
                 font-size: 32px;
-                font-weight: bold;
-                background: #0084ff; /* 背景色 */
-                color: white;
-                display: flex;           /* 讓隊號本身也變成 flex 容器 */
-                align-items: center;    /* 讓內容水平居中 */
-                justify-content: center;/* 讓內容垂直居中 */
-                
-                
-                padding: 2px 8px;
-                border-radius: 5px;
-                min-width: 100px;
+                text-align: center; /* 讓大大的隊名在卡片中間 */
+                width: 100%;
+                word-wrap: break-word; /* 防止隊名太長衝出框框 */
             }
 
             .team-name {
