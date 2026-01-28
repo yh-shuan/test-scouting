@@ -38,15 +38,18 @@ function renderCards(teamsList) {
     const container = document.getElementById('team-container');
     
     // Map (映射): 掃描清單，一對一轉換成 HTML
-    container.innerHTML = teamsList.map(t => `
+    // 你的 render 函數裡面要這樣寫：
+    container.innerHTML = teams.map(t => `
         <div class="team-card">
-            <div class="card-header">
-                <span class="team-number"># ${t.team_number}</span>
-                <div class="team-name">${t.nickname || "無名稱"}</div>
-                
+            <div class="card-top">
+                <div class="team-number"># ${t.team_number}</div>
+                <div class="team-name">${t.nickname}</div>
             </div>
-            <span class="team-state">${t.state_prov || ""}</span>
-            <span class="team-city">${t.city || ""}</span>
+
+            <div class="card-bottom">
+                <div class="team-state">${t.state_prov}</div>
+                <div class="team-city">${t.city}</div>
+            </div>
         </div>
     `).join('');
 }

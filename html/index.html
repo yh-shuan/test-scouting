@@ -24,75 +24,37 @@
                 padding: 1px;
                 border: 3px solid #000000;
             }.team-card {
-                display: flex;
-                -ms-text-size-adjust: auto;
-                
-                background-color: #00d0ff;
-                border: 3px solid #000000;
-                border-radius: 15px;
-                min-height: 250px;      /* 設定最小高度，讓框框看起來更紮實 */
-                margin: 10px 0;         /* 也可以在這裡設定上下間距 */
+            display: flex;
+            flex-direction: column; /* 讓內容垂直排隊 */
+            
+            background-color: #00d0ff;
+            border: 3px solid #000000;
+            border-radius: 15px;
+            min-height: 250px;
+            padding: 20px;          /* 給內圈留點空間，字才不會貼邊 */
+            box-sizing: border-box; /* 確保 padding 不會撐大框框 */
+        }
 
-            }.card-header {
-                display: flex;
-                align-items: center;    /* 讓內容水平居中 */
-                justify-content: center; /* 關鍵：左右撐開 */
-                width: 100%;
-                margin-bottom: 15px;
-            }
+        /* 這裡是上半部：號碼和名稱 */
+        .card-top {
+            display: flex;
+            flex-direction: column;
+            align-items: center;    /* 統一水平置中 */
+            gap: 10px;              /* 號碼跟名字中間的固定間距 */
+        }
 
-            .team-number {
-                display: flex;
-                justify-content: center; /* 水平置中 */
-                align-items: initial;     /* 垂直置中 */
-                
+        /* 這裡是下半部：地點資訊 */
+        .card-bottom {
+            margin-top: auto;       /* 【關鍵】這行會把這區塊自動「彈」到最下面 */
+            display: flex;
+            justify-content: space-between; /* 讓 State 靠左、City 靠右 */
+            width: 100%;
+        }
 
-                font-size: 32px;
-                
-                color: white;
-                
-                
-
-            }
-
-            .team-name {
-                display: flex;
-                justify-content: center; /* 水平置中 */
-                align-items: initial;     /* 垂直置中 */
-                
-
-                font-size: 32px;
-                
-                color: white;
-                
-            }
-
-            .team-state{
-                display: flex;
-                justify-content: left; /* 水平置中 */
-                align-items: inherit;     /* 垂直置中 */
-                
-                font-size: 32px;
-                
-                color: white;
-                
-
-
-            }
-            .team-city{
-                display: flex;
-                justify-content: right; /* 水平置中 */
-                align-items: inherit;     /* 垂直置中 */
-                
-
-                font-size: 32px;
-                
-                color: white;
-                
-
-
-            }
-
+        /* 以下是你的字體大小設定 */
+        .team-number { font-size: 32px; font-weight: bold; color: white; }
+        .team-name   { font-size: 28px; color: white; }
+        .team-state, .team-city { font-size: 24px; color: white; }
 
 
 
