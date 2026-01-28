@@ -37,11 +37,12 @@ async function autoFetchTeams() {
 
 
 
-function renderCards(teamsList) {
+async function renderCards(teamsList) {
     const container = document.getElementById('team-container');
     
     container.innerHTML = teamsList.map(t => {
         const tbaUrl = `https://www.thebluealliance.com/team/${t.team_number}/2026`;
+        const teamloc = find(tbaUrl)
         
         return `
         <div class="team-card">
@@ -53,13 +54,43 @@ function renderCards(teamsList) {
                 <div class="team-city">${t.city || ""}</div>
                 <div class="team-state">${t.state_prov || ""}</div>
                 <div class="team-location">
-                    <a href="${tbaUrl}" target="_blank" style="color: inherit; text-decoration: none;">${tbaUrl}</a>
+                    ${teamloc}
                 </div>
             </div>
         </div>
         `;
     }).join('');
 }
+
+async function find(Web){
+    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(Web)}`;
+    try {
+        const response = await fetch(proxyUrl);
+        const doc = response.getElementById("team-name");
+        const ans = doc.innerHTML;
+
+
+        return ans;
+
+
+    }catch(error) {
+        console.error("依循網址失敗:", error);
+        return null;
+    }
+
+
+
+    
+
+}
+
+
+
+
+
+
+
+
 // Event Listener (事件監聽器): 像是一個警衛，盯著輸入框有沒有人打字
 document.getElementById('search-bar').addEventListener('input', (e) => {
     // Value (值): 使用者目前打進去的文字
