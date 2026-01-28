@@ -106,6 +106,48 @@
                 transition: font-size 0.2s; /* 縮放時平滑一點 */
                 cursor: pointer;
                 
+            }/* 搜尋區塊 */
+            .search-container {
+                margin: 20px auto;
+                max-width: 600px;
+                text-align: center;
+            }
+
+            #search-bar {
+                width: 100%;
+                padding: 12px 20px;
+                font-size: 18px;
+                border: 2px solid #ddd;
+                border-radius: 25px; /* 圓角看起來更像查詢畫面 */
+                outline: none;
+                transition: 0.3s;
+            }
+
+            #search-bar:focus {
+                border-color: #007bff;
+                box-shadow: 0 0 8px rgba(0,123,255,0.2);
+            }
+
+            #search-stats {
+                margin-top: 10px;
+                color: #666;
+                font-size: 14px;
+            }
+
+            /* 卡片排版 */
+            .team-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 20px;
+                padding: 20px;
+            }
+
+            .no-result {
+                grid-column: 1 / -1;
+                text-align: center;
+                padding: 50px;
+                font-size: 1.2rem;
+                color: #999;
             }
 
 
