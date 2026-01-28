@@ -42,10 +42,11 @@ function renderCards(teamsList) {
         <div class="team-card">
             <div class="card-header">
                 <span class="team-number"># ${t.team_number}</span>
-                <span class="team-state">${t.state_prov || ""}</span>
-                <span class="team-city">${t.city || ""}</span>
+                <div class="team-name">${t.nickname || "無名稱"}</div>
+                
             </div>
-            <div class="team-name">${t.nickname || "無名稱"}</div>
+            <span class="team-state">${t.state_prov || ""}</span>
+            <span class="team-city">${t.city || ""}</span>
         </div>
     `).join('');
 }
