@@ -76,12 +76,12 @@ async function fetchAndFillLocation(teamNumber) {
         
         // 索引出 Google Maps 網址
         const element = doc.getElementById('team-name');
-        
+        const mapUrl = element ? element.getAttribute('text') : "無位置資訊";
 
         // 執行覆蓋！
         const targetDiv = document.getElementById(targetId);
         if (targetDiv) {
-            targetDiv.innerText = element;
+            targetDiv.innerText = mapUrl;
             
             // 這裡可以順便呼叫你之前想要的「自動縮放字體」
             // adjustFontSize(targetDiv); 
