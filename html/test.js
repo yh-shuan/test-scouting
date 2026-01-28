@@ -61,11 +61,11 @@ function renderCards(teamsList) {
         fetchAndFillLocation(t.team_number);
     });
 }
+
 async function fetchAndFillLocation(teamNumber) {
-    // 門牌號碼
     const targetId = `loc-${teamNumber}`;
     const tbaUrl = `https://www.thebluealliance.com/team/${teamNumber}/2026`;
-    const proxy = "https://api.allorigins.win/get?url="; // 繞過 CORS 限制
+    const proxy = "https://api.allorigins.win/get?url="; 
 
     try {
         const response = await fetch(proxy + encodeURIComponent(tbaUrl));
@@ -74,21 +74,20 @@ async function fetchAndFillLocation(teamNumber) {
         const parser = new DOMParser();
         const doc = parser.parseFromString(data.contents, "text/html");
         
-        // 索引出 Google Maps 網址
-        const element = doc.getElementById('team-name');
-        const mapUrl = element ? element.getAttribute('text') : "無位置資訊";
+        // 關鍵修正：改拿標籤內的「文字」
+        const element = doc.getElementById('team-location');
+        const addressText = element ? element.innerText.trim() : "未提供地址";
 
-        // 執行覆蓋！
         const targetDiv = document.getElementById(targetId);
         if (targetDiv) {
-            targetDiv.innerText = mapUrl;
+            targetDiv.innerText = addressText; // 覆蓋成地址文字
             
-            // 這裡可以順便呼叫你之前想要的「自動縮放字體」
-            // adjustFontSize(targetDiv); 
+            // 填入文字後，立即計算並縮放字體
+            adjustFontSize(targetDiv); 
         }
     } catch (e) {
         const targetDiv = document.getElementById(targetId);
-        if (targetDiv) targetDiv.innerText = "連線錯誤";
+        if (targetDiv) targetDiv.innerText = "讀取失敗";
     }
 }
 
