@@ -30,7 +30,7 @@ async function autoFetchTeams() {
 
     } catch (e) {
         console.error("全自動抓取失敗，原因:", e);
-        document.getElementById('table-body').innerHTML = `<tr><td colspan="3" style="color:red">抓取失敗: ${e.message}</td></tr>`;
+        document.getElementById('table-body').innerHTML = `<tr><td colspan="4" style="color:red">抓取失敗: ${e.message}</td></tr>`;
     }
 }
 
@@ -39,7 +39,7 @@ function renderTable(teams) {
     
     // 如果沒有資料
     if (teams.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="2">目前該賽事尚無參賽隊伍資料</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="4">目前該賽事尚無參賽隊伍資料</td></tr>';
         return;
     }
 
@@ -48,7 +48,8 @@ function renderTable(teams) {
         <tr>
             <td style="font-weight:bold; color:#4a148c;">${t.team_number}</td>
             <td>${t.nickname || "無名稱"}</td>
-            <td>${t.state_prov}</td>
+            <td>${t.state_prov||"無地區"}</td>
+            <td>${t.city||"無城市"}</td>
         </tr>
     `).join('');
 }
