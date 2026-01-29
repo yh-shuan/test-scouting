@@ -21,19 +21,20 @@
                 cursor: pointer;
                 box-shadow: 0 4px 10px rgba(0,0,0,0.3);
                 z-index: 9999;
-                transition: all 0.3s ease;
+                transition: all 0.5s ease;
             }
 
             /* 列表模式下的 Hover */
-            .floating-btn:hover {
+            .floating-btn:hover { 
                 transform: scale(1.1) rotate(90deg);
-                background-color: rgb(50, 50, 255); /* 這裡定義 Hover 色 */
+                background-color: rgb(100, 100, 255); /* 這裡定義 Hover 色 */
             }
 
             /* --- 新增：計分模式狀態 (當按鈕有 .active 這個 class 時) --- */
             .floating-btn.active {
                 background-color: red !important; /* 強制變紅 */
             }
+            
 
             .floating-btn.active:hover {
                 background-color: darkred !important; /* 計分模式下的 Hover */
@@ -231,7 +232,7 @@
             <h1>FRC Team 7589</h1>
             <img src="data:image/jpeg;base64,..."> 
             <hr>
-            <a href="https://docs.google.com/document/..." target="_blank">計畫大綱</a>
+            <a href="https://docs.google.com/document/d/1m3uGXgeHph5W3YOJ9wsWGZw6gerBW8RUGR1TkuoBHNk/edit?tab=t.0" target="_blank">計畫大綱</a>
             <hr>    
         <div id="main-page">
             
