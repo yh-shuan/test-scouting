@@ -21,19 +21,20 @@
                 cursor: pointer;
                 box-shadow: 0 4px 10px rgba(0,0,0,0.3);
                 z-index: 9999;
-                transition: all 0.3s ease;
+                transition: all 0.5s ease;
             }
 
             /* 列表模式下的 Hover */
-            .floating-btn:hover {
+            .floating-btn:hover { 
                 transform: scale(1.1) rotate(90deg);
-                background-color: rgb(50, 50, 255); /* 這裡定義 Hover 色 */
+                background-color: rgb(100, 100, 255); /* 這裡定義 Hover 色 */
             }
 
             /* --- 新增：計分模式狀態 (當按鈕有 .active 這個 class 時) --- */
             .floating-btn.active {
                 background-color: red !important; /* 強制變紅 */
             }
+            
 
             .floating-btn.active:hover {
                 background-color: darkred !important; /* 計分模式下的 Hover */
