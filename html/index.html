@@ -65,7 +65,7 @@
 
             .team-card {
                 /* --- 寬度與置中 --- */
-                width: 90%;           /* 手機版佔 90% */
+                width: 75%;           /* 手機版佔 90% */
                 
                 margin: 30px auto;    /* 上下 30px，左右 auto 是置中的靈魂 */
 
@@ -181,29 +181,35 @@
             }/* 搜尋區塊 */
             .search-container {
                 margin: 20px auto;
-                max-width: 600px;
+                
+                
                 text-align: center;
+                
             }
 
             #search-bar {
-                width: 100%;
+                
                 padding: 12px 20px;
                 font-size: 18px;
                 border: 2px solid #ddd;
                 border-radius: 25px; /* 圓角看起來更像查詢畫面 */
                 outline: none;
                 transition: 0.3s;
+                text-align: center;
+                width:  87.5%;
             }
 
             #search-bar:focus {
                 border-color: #007bff;
                 box-shadow: 0 0 8px rgba(0,123,255,0.2);
+                text-align: center;
             }
 
             #search-stats {
                 margin-top: 10px;
                 color: #666;
                 font-size: 14px;
+                text-align: center;
             }
 
             /* 卡片排版 */
@@ -237,7 +243,7 @@
         <div id="main-page">
             
             
-            <div class="search-section">
+            <div class="search-container" >
                 <input type="text" id="search-bar" placeholder=" 輸入隊號或隊名進行查詢...">
                 <div id="search-stats">正在連接 TBA 伺服器...</div>
             </div>
