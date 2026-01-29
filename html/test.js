@@ -63,7 +63,7 @@ function renderCards(teamsList) {
                     <div class="team-state">${t.state_prov || ""}</div>
                     <div id="loc-${t.team_number}" class="team-location" 
                          onclick="window.open('https://www.google.com/search?q=FRC+Team+${t.team_number}', '_blank')">
-                        查詢詳細資訊中...
+                        never gonnon give you up...
                     </div>
                 </div>
             </div>
