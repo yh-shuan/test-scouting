@@ -114,5 +114,27 @@ if (searchBar) {
     });
 }
 
+function togglePage() {
+    const mainPage = document.getElementById('main-page');
+    const scorePage = document.getElementById('score-page');
+    const btn = document.getElementById('toggle-btn');
+
+    if (!mainPage || !scorePage || !btn) return;
+
+    if (scorePage.style.display === 'none') {
+        // --- 進入計分模式 ---
+        mainPage.style.display = 'none';    
+        scorePage.style.display = 'block';   
+        btn.innerText = '×';                
+        btn.classList.add('active'); // 加上 active，CSS 就會把它變紅
+    } else {
+        // --- 回到列表模式 ---
+        mainPage.style.display = 'block';   
+        scorePage.style.display = 'none';    
+        btn.innerText = '+';                
+        btn.classList.remove('active'); // 移除 active，它就變回 CSS 原本的紫色 + Hover 效果
+    }
+}
+
 // 網頁載入後啟動
 window.onload = autoFetchTeams;
