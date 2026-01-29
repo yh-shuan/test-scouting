@@ -50,22 +50,27 @@ function renderCards(teamsList) {
         return;
     }
 
+    // 第一步：渲染時，直接把 onclick 寫在 div 上。網址維持搜尋隊號，保證搜尋結果不動。
     container.innerHTML = teamsList.map(t => `
-        <div class="team-card">
-            <div class="card-top">
-                <div class="team-number"># ${t.team_number}</div>
-                <div class="team-name">${t.nickname || "無名稱"}</div>
-            </div>
-            <div class="card-button">
-                <div class="team-city">📍 ${t.city || ""}</div>
-                <div class="team-state">${t.state_prov || ""}</div>
-                <div id="loc-${t.team_number}" class="team-location">
-                    查詢詳細資訊中...
+        <div class="t">
+            <div class="team-card">
+                <div class="card-top">
+                    <div class="team-number"># ${t.team_number}</div>
+                    <div class="team-name">${t.nickname || "無名稱"}</div>
+                </div>
+                <div class="card-button">
+                    <div class="team-city">${t.city || ""}</div>
+                    <div class="team-state">${t.state_prov || ""}</div>
+                    <div id="loc-${t.team_number}" class="team-location" 
+                         onclick="window.open('https://www.google.com/search?q=FRC+Team+${t.team_number}', '_blank')">
+                        查詢詳細資訊中...
+                    </div>
                 </div>
             </div>
         </div>
     `).join('');
 
+    // 第二步：補抓詳細資訊。這裡只換文字（innerText），絕不亂動你的 <a> 標籤或結構。
     teamsList.forEach(async (t) => {
         try {
             const res = await fetch(`https://www.thebluealliance.com/api/v3/team/frc${t.team_number}`, {
@@ -75,15 +80,16 @@ function renderCards(teamsList) {
             const target = document.getElementById(`loc-${t.team_number}`);
             
             if (target) {
-                // 優先取學校名稱，沒有就取地址
                 const schoolName = detail.school_name || detail.address || "無詳細地址資訊";
                 
+                // 這裡改回 innerText，保證不會有超連結底線或顏色跑掉，也不動到搜尋邏輯
+                target.innerText = schoolName;
+
+                // 如果有學校名稱，就把點擊的搜尋目標換成學校，但依然是點背景 div
                 if (schoolName !== "無詳細地址資訊") {
-                    // 【關鍵修正】：將文字包裝成 Google 搜尋網址
-                    const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(schoolName)}`;
-                    target.innerHTML = `<a href="${googleSearchUrl}" target="_blank" style="color: #007bff; text-decoration: none;">🔍 ${schoolName}</a>`;
-                } else {
-                    target.innerText = schoolName;
+                    target.onclick = () => {
+                        window.open(`https://www.google.com/search?q=${encodeURIComponent(schoolName)}`, '_blank');
+                    };
                 }
             }
         } catch (err) {

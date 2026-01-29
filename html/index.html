@@ -18,88 +18,124 @@
             table{
                 size: 1px;
                 -ms-text-size-adjust: auto;
-                background-color: #bf88f4;
+                background-color: rgb(0, 255, 255);
                 border-color: #000000;
                 border-style: solid;
                 padding: 1px;
                 border: 3px solid #000000;
-            }.team-card {
-            display: flex;
-            flex-direction: column; 
-            align-items: center;    
-            
-            /* 1. 把 center 改掉，讓東西「預設」從頂部開始，獲得活動空間 */
-            justify-content: flex-start; 
+                
 
-            background-color: #fefefe;
-            border: 3px solid #000000;
-            border-radius: 15px;
-            min-height: 250px;
-            
-            box-sizing: border-box; 
-            margin: 10px 0;
-            position: relative;     /* 如果想玩更高級的絕對定位，這行先留著 */
-            overflow: hidden;
+            }/* 修改後的 CSS */
 
+            .team-card {
+                /* --- 寬度與置中 --- */
+                width: 90%;           /* 手機版佔 90% */
+                
+                margin: 30px auto;    /* 上下 30px，左右 auto 是置中的靈魂 */
 
-            }.card-top {
-                background-color:cyan;
                 display: flex;
-                align-items: center;    /* 讓內容水平居中 */
-                justify-content: center; /* 關鍵：左右撐開 */
+                flex-direction: column; 
+                align-items: center;    
+                justify-content: flex-start; 
+                background-color: rgb(125, 125, 255);
+                border: 3px solid #000000;
+                border-radius: 30px;
+                height: auto;               
+                min-height: 375px;
+                padding: 0; 
+                overflow: hidden;
+
+                /* --- 平滑動畫與陰影 --- */
+                transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            }
+
+            /* 修正後的 Hover：把縮放跟位移寫在一起 */
+            .team-card:hover {
+                /* 同時向上浮動並稍微放大 */
+                transform: translateY(-10px) scale(1.02); 
+                box-shadow: 0 20px 35px rgba(0,0,0,0.3); 
+                background-color: rgb(135, 135, 255);
+                z-index: 10;
+            }
+
+            .card-top {
+                background-color: blue;
+                display: flex;
+                align-items: center;    
+                justify-content: center; 
                 width: 100%;
+                padding: 10px 0; /* 增加一點內距讓標題有厚度 */
                 gap: 10px;
                 word-wrap: break-word;
+                flex-shrink: 0; /* 確保標題區塊不會被縮小 */
             }
+
+            .card-button {
+                display: flex;
+                flex: 1;            /* 吃掉標題以外的所有剩餘高度 */
+                width: 100%;
+                align-items: stretch; /* 關鍵：讓子物件背景垂直拉伸填滿 */
+                justify-content: center;
+                gap: 15px; 
+                padding: 15px;      /* 這決定了青色背景與卡片最外框的距離 */
+                box-sizing: border-box;
+            }
+
+            .card-button > * {
+                flex: 1; 
+                background-color: rgb(0, 200, 200);
+                border-radius: 10px;
+                border: 2px solid #000;
+                margin: 5px;
+                
+                display: flex;
+                align-items: center;    
+                justify-content: center; 
+                
+                font-size: 24px;
+                padding: 10px;
+                box-sizing: border-box;
+                overflow: hidden;
+
+                /* --- 新增動態效果 --- */
+                transition: transform 0.2s ease, background-color 0.2s ease; /* 讓縮放平滑 */
+                cursor: pointer; /* 滑鼠移上去變小手，暗示可以點擊 */
+            }
+
+            /* 滑鼠移上去時變大 1.05 倍 */
+            .card-button > *:hover {
+                transform: scale(1.05); 
+                background-color: rgb(0, 230, 230); /* 稍微變亮一點，視覺反饋更強 */
+                z-index: 1; /* 確保放大的時候不會被旁邊的盒子遮住 */
+            }
+
+            /* 點擊時的小縮放反饋（可選） */
+            .card-button > *:active {
+                transform: scale(0.95);
+            }
+
+
 
             .team-number {
                 font-size: 64px;
-                color: white;
+                color: black;
             
             
             }
 
             .team-name {
                 font-size: 64px;
-                color:blue;
+                color:black;
                 
             }
 
-            .card-button {
-                background-color: rgb(255, 255, 255);
-                display: flex;
-                align-items: center;
-                justify-content: center; /* 整體置中 */
-                width: 100%;
-                /* 控制子物件之間的「最小距離」 */
-                gap: 15px; 
-                padding: 10px; /* 跟 card 邊界保持距離 */
-                box-sizing: border-box;
             
-            }
-            .card-button > * {
-                flex: 1; 
-                background-color: rgba(0, 255, 255, 0.5);
-                border-radius: 10px;
-                padding: 10px;
-                margin: 5px;
-                font-size: 32px;
-                
-                /* 關鍵：固定高度，並讓內容置中 */
-                height: 120px;       /* 你可以根據需求調整這個高度 */
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                
-                /* 關鍵：隱藏爆出去的部分，並強制換行/斷字 */
-                overflow: hidden;
-                
-                box-sizing: border-box;
-            }
+            
 
             /* 針對 location 網址文字的特殊處理 */
             .team-location {
-                font-size: 12px;    /* 初始設定為最大 */
+                font-size: 24px;    /* 初始設定為最大 */
                 line-height: 1;
                 width: 100%;
                 text-align: center;
