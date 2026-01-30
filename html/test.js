@@ -4,7 +4,7 @@ let allScoresRaw = []; // 改為儲存雲端抓下來的原始資料陣列 (Flat
 const API_KEY = "tGy3U4VfP85N98m17nqzN8XCof0zafvCckCLbgWgmy95bGE0Aw97b4lV7UocJvxl"; 
 
 // --- ⚠️ 重要：請填入 Apps Script 部署後的 Web App URL (結尾通常是 /exec) ---
-const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbzsmMC2UWIqc4rI34ECs1ABCy3NJGAGY-mqiP6UG9rTUmG3MuK0Bfochxhu3egaKGY-/exec"; 
+const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbxiTwm1-0jepj6lIRSpshG0HUja8MnmigzYh0hM2uqAro6QXzttP3zVHnX75PCBVtf1/exec"; 
 
 // --- 新增：從雲端同步數據 ---
 async function syncFromCloud() {
@@ -207,7 +207,9 @@ async function saveAndExit() {
         autoFuel: getVal('auto-fuel') || 0,
         autoClimb: parseInt(document.getElementById('auto-climb').value),
         teleFuel: getVal('tele-fuel') || 0,
-        teleClimb: parseInt(document.getElementById('tele-climb').value)
+        teleClimb: parseInt(document.getElementById('tele-climb').value),
+        reporting: document.getElementById('reporting').value,
+
     };
     
     // 1. 本地先加進去 (讓使用者覺得很快)
@@ -320,6 +322,7 @@ function resetScoring() {
     if(tf) tf.tagName === "INPUT" ? tf.value = "0" : tf.innerText = "0";
     if(document.getElementById('auto-climb')) document.getElementById('auto-climb').value = "0";
     if(document.getElementById('tele-climb')) document.getElementById('tele-climb').value = "0";
+    if(document.getElementById('reporting')) document.getElementById('reporting').value = "";
 }
 
 function confirmTeam() {

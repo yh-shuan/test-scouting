@@ -186,6 +186,7 @@
                 text-align: center;
                 
             }
+            
 
             #search-bar {
                 
@@ -368,6 +369,32 @@
                 cursor: pointer;
                 font-size: 12px;
             }
+            .report{
+                margin: 20px auto;
+                
+                
+                text-align: center;
+                
+            }#reporting {
+                
+                padding: 12px 20px;
+                font-size: 18px;
+                border: 2px solid #ddd;
+                border-radius: 25px; /* 圓角看起來更像查詢畫面 */
+                outline: none;
+                transition: 0.3s;
+                text-align: center;
+                width:  87.5%;
+            }
+
+            #reporting:focus {
+                border-color: #007bff;
+                box-shadow: 0 0 8px rgba(0,123,255,0.2);
+                text-align: center;
+            }
+
+
+            
 
         </style>
     </head>
@@ -448,6 +475,11 @@
                         </select>
                     </div>
                 </div>
+                <div class="report">
+                    <input type="text" id="reporting" placeholder="備註:...">
+
+                </div>
+
                 
                 <button onclick="saveAndExit()" style="display:block; margin: 30px auto; padding: 20px 40px; background: #2ecc71; color: white; border: none; border-radius: 50px; font-size: 20px; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.2); cursor:pointer;">💾 儲存數據並結束</button>
             </div>
