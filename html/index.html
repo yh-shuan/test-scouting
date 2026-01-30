@@ -310,19 +310,75 @@
                 background: white;
             }
 
-
-
-
+            /* --- ⚠️ 新增：詳細資料頁面 (Modal/Overlay) CSS --- */
+            #detail-overlay {
+                display: none; /* 預設隱藏 */
+                position: fixed;
+                top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0, 0, 0, 0.7);
+                z-index: 10000;
+                justify-content: center;
+                align-items: center;
+            }
+            .detail-box {
+                width: 90%;
+                max-width: 600px;
+                max-height: 80%;
+                background: white;
+                border-radius: 20px;
+                padding: 20px;
+                overflow-y: auto;
+                position: relative;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            }
+            .detail-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+                border-bottom: 2px solid #eee;
+                padding-bottom: 10px;
+            }
+            .close-btn {
+                background: #ccc;
+                border: none;
+                padding: 5px 15px;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 16px;
+                font-weight: bold;
+            }
+            .record-item {
+                background: #f9f9f9;
+                border: 1px solid #ddd;
+                border-radius: 10px;
+                padding: 15px;
+                margin-bottom: 10px;
+                position: relative;
+            }
+            .delete-btn-small {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                background: #e74c3c;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                padding: 5px 10px;
+                cursor: pointer;
+                font-size: 12px;
+            }
 
         </style>
     </head>
     <body>
+
         <p>7589scout</p>
             <h1>FRC Team 7589</h1>
-            <img src="data:image/jpeg;base64,..."> 
             <hr>
             <a href="https://docs.google.com/document/d/1m3uGXgeHph5W3YOJ9wsWGZw6gerBW8RUGR1TkuoBHNk/edit?tab=t.0" target="_blank">計畫大綱</a>
             <hr>    
+            
         <div id="main-page">
             
             
@@ -400,6 +456,17 @@
         
 
         <div class="floating-btn" id="toggle-btn" onclick="togglePage()">+</div>
+
+        <div id="detail-overlay">
+            <div class="detail-box">
+                <div class="detail-header">
+                    <h3 id="detail-title">隊伍資料</h3>
+                    <button class="close-btn" onclick="closeDetail()">關閉</button>
+                </div>
+                <div id="detail-list">
+                    </div>
+            </div>
+        </div>
 
         <script src="test.js"></script>
     </body>
