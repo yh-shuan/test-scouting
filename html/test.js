@@ -121,7 +121,9 @@ function fetchAddresses(teamsList) {
                       }
                 };
             }
-        } catch (err) {}
+        } catch (err) {
+            console.warn(`隊伍 ${t.team_number} 詳細資料補抓失敗`);
+        }
     });
 }
 
