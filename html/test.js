@@ -4,7 +4,7 @@ let allScoresRaw = []; // 改為儲存雲端抓下來的原始資料陣列 (Flat
 const API_KEY = "tGy3U4VfP85N98m17nqzN8XCof0zafvCckCLbgWgmy95bGE0Aw97b4lV7UocJvxl"; 
 
 // --- ⚠️ 重要：請填入 Apps Script 部署後的 Web App URL (結尾通常是 /exec) ---
-const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbxiTwm1-0jepj6lIRSpshG0HUja8MnmigzYh0hM2uqAro6QXzttP3zVHnX75PCBVtf1/exec"; 
+const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbzClsxLtVIzFKVGMpsEadTZdwwlkwCqZYw_CDg3DFcXdu9_PNsX4j8HSUTWuqMeAS7f/exec"; 
 
 // --- 新增：從雲端同步數據 ---
 async function syncFromCloud() {
