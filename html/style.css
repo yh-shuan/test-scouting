@@ -72,7 +72,7 @@ table{
     justify-content: flex-start; 
     background-color: #7d7dff;
     border: 3px solid #000000;
-    border-radius: 30px;
+    border-radius: 10px 50px 50px;
     height: auto;               
     min-height: 375px;
     min-width: none;
