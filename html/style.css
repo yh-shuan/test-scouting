@@ -1,0 +1,389 @@
+/* 預設狀態（列表模式） */
+.floating-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    background-color: rgb(100, 100, 200); /* 這裡定義原色 */
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    z-index: 9999;
+    transition: all 0.5s ease;
+}
+
+/* 列表模式下的 Hover */
+.floating-btn:hover { 
+    transform: scale(1.1) rotate(90deg);
+    background-color: rgb(100, 100, 255); /* 這裡定義 Hover 色 */
+}
+
+/* --- 新增：計分模式狀態 (當按鈕有 .active 這個 class 時) --- */
+.floating-btn.active {
+    background-color: red !important; /* 強制變紅 */
+}
+
+
+.floating-btn.active:hover {
+    background-color: darkred !important; /* 計分模式下的 Hover */
+    transform: scale(1.1) rotate(0deg);    /* 叉叉不用旋轉 */
+}
+body{
+    background-color: #ffffff;
+}
+p{
+    color: #7fffd4;
+    font-size: 64px;
+    text-align: center;
+}
+h1{
+    color: #e89374;
+}
+table{
+    size: 1px;
+    -ms-text-size-adjust: auto;
+    background-color: rgb(0, 255, 255);
+    border-color: #000000;
+    border-style: solid;
+    padding: 1px;
+    border: 3px solid #000000;
+    
+
+}/* 修改後的 CSS */
+
+.team-card {
+    /* --- 寬度與置中 --- */
+    width: 75%;           /* 手機版佔 90% */
+    
+    margin: 30px auto;    /* 上下 30px，左右 auto 是置中的靈魂 */
+
+    display: flex;
+    flex-direction: column; 
+    align-items: center;    
+    justify-content: flex-start; 
+    background-color: rgb(125, 125, 255);
+    border: 3px solid #000000;
+    border-radius: 30px;
+    height: auto;               
+    min-height: 375px;
+    padding: 0; 
+    overflow: hidden;
+
+    /* --- 平滑動畫與陰影 --- */
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* 修正後的 Hover：把縮放跟位移寫在一起 */
+.team-card:hover {
+    /* 同時向上浮動並稍微放大 */
+    transform: translateY(-10px) scale(1.02); 
+    box-shadow: 0 20px 35px rgba(0,0,0,0.3); 
+    background-color: rgb(135, 135, 255);
+    z-index: 10;
+}
+
+.card-top {
+    background-color: blue;
+    display: flex;
+    align-items: center;    
+    justify-content: center; 
+    width: 100%;
+    padding: 10px 0; /* 增加一點內距讓標題有厚度 */
+    gap: 10px;
+    word-wrap: break-word;
+    flex-shrink: 0; /* 確保標題區塊不會被縮小 */
+}
+
+.card-button {
+    display: flex;
+    flex: 1;            /* 吃掉標題以外的所有剩餘高度 */
+    width: 100%;
+    align-items: stretch; /* 關鍵：讓子物件背景垂直拉伸填滿 */
+    justify-content: center;
+    gap: 15px; 
+    padding: 15px;      /* 這決定了青色背景與卡片最外框的距離 */
+    box-sizing: border-box;
+}
+
+.card-button > * {
+    flex: 1; 
+    background-color: rgb(0, 200, 200);
+    border-radius: 10px;
+    border: 2px solid #000;
+    margin: 5px;
+    
+    display: flex;
+    align-items: center;    
+    justify-content: center; 
+    
+    font-size: 24px;
+    padding: 10px;
+    box-sizing: border-box;
+    overflow: hidden;
+
+    /* --- 新增動態效果 --- */
+    transition: transform 0.2s ease, background-color 0.2s ease; /* 讓縮放平滑 */
+    cursor: pointer; /* 滑鼠移上去變小手，暗示可以點擊 */
+}
+
+/* 滑鼠移上去時變大 1.05 倍 */
+.card-button > *:hover {
+    transform: scale(1.05); 
+    background-color: rgb(0, 230, 230); /* 稍微變亮一點，視覺反饋更強 */
+    z-index: 1; /* 確保放大的時候不會被旁邊的盒子遮住 */
+}
+
+/* 點擊時的小縮放反饋（可選） */
+.card-button > *:active {
+    transform: scale(0.95);
+}
+
+
+
+.team-number {
+    font-size: 64px;
+    color: black;
+
+
+}
+
+.team-name {
+    font-size: 64px;
+    color:black;
+    
+}
+
+
+
+
+/* 針對 location 網址文字的特殊處理 */
+.team-location {
+    font-size: 24px;    /* 初始設定為最大 */
+    line-height: 1;
+    width: 100%;
+    text-align: center;
+    transition: font-size 0.2s; /* 縮放時平滑一點 */
+    cursor: pointer;
+    
+}/* 搜尋區塊 */
+.search-container {
+    margin: 20px auto;
+    
+    
+    text-align: center;
+    
+}
+
+
+#search-bar {
+    
+    padding: 12px 20px;
+    font-size: 18px;
+    border: 2px solid #ddd;
+    border-radius: 25px; /* 圓角看起來更像查詢畫面 */
+    outline: none;
+    transition: 0.3s;
+    text-align: center;
+    width:  87.5%;
+}
+
+#search-bar:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 8px rgba(0,123,255,0.2);
+    text-align: center;
+}
+
+#search-stats {
+    margin-top: 10px;
+    color: #666;
+    font-size: 14px;
+    text-align: center;
+}
+
+/* 卡片排版 */
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.no-result {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 50px;
+    font-size: 1.2rem;
+    color: #999;
+}
+/* 計分頁面大區塊通用樣式 */
+.score-section {
+    width: 85%;
+    margin: 20px auto; /* 水平置中 */
+    padding: 30px;
+    border: 3px solid #000;
+    border-radius: 20px;
+    text-align: center;
+}
+
+/* AUTO 區塊顏色（淺藍） */
+.auto-zone {
+    background-color: rgb(125, 125, 255);
+}
+
+/* TELEOP 區塊顏色（淺橘） */
+.tele-zone {
+    background-color: rgb(125, 125, 255);
+}
+
+/* 標題文字樣式 */
+.score-section h3 {
+    font-size: 32px;
+    margin-top: 0;
+    color: #333;
+}/* 計分器容器 */
+.counter-container, .select-container {
+    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.counter-container label, .select-container label {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* 控制列 */
+.counter-controls {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+/* 加減按鈕 */
+.cnt-btn {
+    width: 60px;
+    height: 60px;
+    font-size: 30px;
+    font-weight: bold;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: transform 0.1s active;
+}
+
+.minus { background-color: #ff7675; color: white; } /* 紅色減號 */
+.plus { background-color: #55efc4; color: white; }  /* 綠色加號 */
+
+.cnt-btn:active { transform: scale(0.9); }
+
+/* 數字顯示 */
+.score-num {
+    font-size: 40px;
+    font-weight: bold;
+    min-width: 60px;
+    text-align: center;
+    color: #2d3436;
+}
+
+/* 下拉選單優化 */
+.score-input {
+    width: 80%;
+    padding: 12px;
+    font-size: 18px;
+    border-radius: 10px;
+    border: 2px solid #333;
+    background: white;
+}
+
+/* --- ⚠️ 新增：詳細資料頁面 (Modal/Overlay) CSS --- */
+#detail-overlay {
+    display: none; /* 預設隱藏 */
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+}
+.detail-box {
+    width: 90%;
+    max-width: 600px;
+    max-height: 80%;
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+.detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+}
+.close-btn {
+    background: #ccc;
+    border: none;
+    padding: 5px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+}
+.record-item {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 10px;
+    position: relative;
+}
+.delete-btn-small {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 12px;
+}
+.report{
+    margin: 20px auto;
+    
+    
+    text-align: center;
+    
+}#reporting {
+    
+    padding: 12px 20px;
+    font-size: 18px;
+    border: 2px solid #ddd;
+    border-radius: 25px; /* 圓角看起來更像查詢畫面 */
+    outline: none;
+    transition: 0.3s;
+    text-align: center;
+    width:  87.5%;
+}
+
+#reporting:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 8px rgba(0,123,255,0.2);
+    text-align: center;
+}
+
