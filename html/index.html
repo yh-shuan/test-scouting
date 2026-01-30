@@ -6,9 +6,9 @@
         <link rel="stylesheet" href="style.css"></link>
     </head>
     <body>
-        <p>7589scout</p>
-        <h1>FRC Team 7589</h1>
-        <hr>
+        <h1>7589scout</h1>
+        <p>FRC Team 7589</p>
+        <br>
         <a href="file:///C:/Users/cheny/Downloads/test-scouting-main/test-scouting/html/index2.html" target="_blank">URL</a>
         <hr>    
             
@@ -28,7 +28,7 @@
         <div id="score-page" style="display: none; padding: 20px;">
             <h2 style="text-align: center; color: black;">Scoring Mode</h2>
 
-            <div id="team-select-zone" class="score-section" style="background-color: rgb(125, 125, 255);">
+            <div id="team-select-zone" class="score-section" style="background-color: #7d7dff;">
                 <h3>第一步：請選擇隊伍</h3>
                 <select id="team-dropdown" style="width: 80%; padding: 10px; font-size: 18px;">
                     <option value="">-- 請選擇隊伍 --</option>
@@ -80,7 +80,6 @@
                 </div>
                 <div class="report">
                     <input type="text" id="reporting" placeholder="備註:...">
-
                 </div>
                 
                 <button onclick="saveAndExit()" style="display:block; margin: 30px auto; padding: 20px 40px; background: #2ecc71; color: white; border: none; border-radius: 50px; font-size: 20px; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.2); cursor:pointer;">💾 儲存數據並結束</button>
@@ -96,8 +95,7 @@
                     <h3 id="detail-title">隊伍資料</h3>
                     <button class="close-btn" onclick="closeDetail()">關閉</button>
                 </div>
-                <div id="detail-list">
-                    </div>
+                <div id="detail-list"></div>
             </div>
         </div>
 

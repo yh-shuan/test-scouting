@@ -1,3 +1,28 @@
+body{
+    background-color: #ffffff;
+}
+h1{
+    color: #7fffd4;
+    font-size: 64px;
+    text-align: center;
+    text-shadow:  2px 2px 4px #33333333;
+}
+p{
+    color: #e89374;
+    font-size: 24px;
+    text-align: left;
+}
+table{
+    size: 1px;
+    -ms-text-size-adjust: auto;
+    background-color: rgb(0, 255, 255);
+    border-color: #000000;
+    border-style: solid;
+    padding: 1px;
+    border: 3px solid #000000;
+    border-radius: 30px;
+}/* 修改後的 CSS */
+
 /* 預設狀態（列表模式） */
 .floating-btn {
     position: fixed;
@@ -34,32 +59,10 @@
     background-color: darkred !important; /* 計分模式下的 Hover */
     transform: scale(1.1) rotate(0deg);    /* 叉叉不用旋轉 */
 }
-body{
-    background-color: #ffffff;
-}
-p{
-    color: #7fffd4;
-    font-size: 64px;
-    text-align: center;
-}
-h1{
-    color: #e89374;
-}
-table{
-    size: 1px;
-    -ms-text-size-adjust: auto;
-    background-color: rgb(0, 255, 255);
-    border-color: #000000;
-    border-style: solid;
-    padding: 1px;
-    border: 3px solid #000000;
-    
-
-}/* 修改後的 CSS */
 
 .team-card {
     /* --- 寬度與置中 --- */
-    width: 75%;           /* 手機版佔 90% */
+    width: 80%;           /* 手機版佔 90% */
     
     margin: 30px auto;    /* 上下 30px，左右 auto 是置中的靈魂 */
 
@@ -67,17 +70,18 @@ table{
     flex-direction: column; 
     align-items: center;    
     justify-content: flex-start; 
-    background-color: rgb(125, 125, 255);
+    background-color: #7d7dff;
     border: 3px solid #000000;
     border-radius: 30px;
     height: auto;               
     min-height: 375px;
+    min-width: none;
     padding: 0; 
     overflow: hidden;
 
     /* --- 平滑動畫與陰影 --- */
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 5px 4px rgba(0,0,0,0.1);
 }
 
 /* 修正後的 Hover：把縮放跟位移寫在一起 */
@@ -85,18 +89,18 @@ table{
     /* 同時向上浮動並稍微放大 */
     transform: translateY(-10px) scale(1.02); 
     box-shadow: 0 20px 35px rgba(0,0,0,0.3); 
-    background-color: rgb(135, 135, 255);
+    background-color: #7970fe;
     z-index: 10;
 }
 
 .card-top {
-    background-color: blue;
+    background-color: #92b2f7;
     display: flex;
     align-items: center;    
     justify-content: center; 
     width: 100%;
-    padding: 10px 0; /* 增加一點內距讓標題有厚度 */
-    gap: 10px;
+    padding: 20px 10px; /* 增加一點內距讓標題有厚度 */
+    gap: 20px;
     word-wrap: break-word;
     flex-shrink: 0; /* 確保標題區塊不會被縮小 */
 }
@@ -114,7 +118,7 @@ table{
 
 .card-button > * {
     flex: 1; 
-    background-color: rgb(0, 200, 200);
+    background-color: #00c8c8;
     border-radius: 10px;
     border: 2px solid #000;
     margin: 5px;
@@ -145,23 +149,18 @@ table{
     transform: scale(0.95);
 }
 
-
-
 .team-number {
-    font-size: 64px;
-    color: black;
-
-
+    font-size: 50px;
+    color: #bb22aa;
+    text-shadow: 2px 2px 4px #33333333;
 }
 
 .team-name {
-    font-size: 64px;
-    color:black;
-    
+    font-size: 50px;
+    color:#000000;
+    font-style: italic;
+    text-shadow: 2px 2px 5px #11111133;
 }
-
-
-
 
 /* 針對 location 網址文字的特殊處理 */
 .team-location {
@@ -196,13 +195,13 @@ table{
 
 #search-bar:focus {
     border-color: #007bff;
-    box-shadow: 0 0 8px rgba(0,123,255,0.2);
+    box-shadow: 0 0 8px #007bff33;
     text-align: center;
 }
 
 #search-stats {
     margin-top: 10px;
-    color: #666;
+    color: #666666;
     font-size: 14px;
     text-align: center;
 }
@@ -386,4 +385,9 @@ table{
     box-shadow: 0 0 8px rgba(0,123,255,0.2);
     text-align: center;
 }
-
+#report-stats {
+    margin-top: 10px;
+    color: #666;
+    font-size: 14px;
+    text-align: center;
+}

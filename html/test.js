@@ -144,8 +144,7 @@ function showDetail(teamNumber) {
             const div = document.createElement('div');
             div.className = "record-item";
             // 簡單計算該筆總分
-            const total = (parseInt(r.autoFuel)||0) + (parseInt(r.teleFuel)||0) + 
-                          getClimbScore(r.autoClimb, true) + getClimbScore(r.teleClimb, false);
+            const total = (parseInt(r.autoFuel)||0) + (parseInt(r.teleFuel)||0) + getClimbScore(r.autoClimb, true) + getClimbScore(r.teleClimb, false);
             
             div.innerHTML = `
                 <strong>紀錄 #${idx + 1}</strong> <span style="color:#888; font-size:12px;">(ID: ${r.id})</span><br>
