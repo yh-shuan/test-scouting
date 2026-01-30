@@ -227,6 +227,89 @@
                 font-size: 1.2rem;
                 color: #999;
             }
+            /* 計分頁面大區塊通用樣式 */
+            .score-section {
+                width: 85%;
+                margin: 20px auto; /* 水平置中 */
+                padding: 30px;
+                border: 3px solid #000;
+                border-radius: 20px;
+                text-align: center;
+            }
+
+            /* AUTO 區塊顏色（淺藍） */
+            .auto-zone {
+                background-color: rgb(125, 125, 255);
+            }
+
+            /* TELEOP 區塊顏色（淺橘） */
+            .tele-zone {
+                background-color: rgb(125, 125, 255);
+            }
+
+            /* 標題文字樣式 */
+            .score-section h3 {
+                font-size: 32px;
+                margin-top: 0;
+                color: #333;
+            }/* 計分器容器 */
+            .counter-container, .select-container {
+                margin: 20px 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .counter-container label, .select-container label {
+                font-size: 20px;
+                font-weight: bold;
+                color: #333;
+            }
+
+            /* 控制列 */
+            .counter-controls {
+                display: flex;
+                align-items: center;
+                gap: 20px;
+            }
+
+            /* 加減按鈕 */
+            .cnt-btn {
+                width: 60px;
+                height: 60px;
+                font-size: 30px;
+                font-weight: bold;
+                border: none;
+                border-radius: 15px;
+                cursor: pointer;
+                transition: transform 0.1s active;
+            }
+
+            .minus { background-color: #ff7675; color: white; } /* 紅色減號 */
+            .plus { background-color: #55efc4; color: white; }  /* 綠色加號 */
+
+            .cnt-btn:active { transform: scale(0.9); }
+
+            /* 數字顯示 */
+            .score-num {
+                font-size: 40px;
+                font-weight: bold;
+                min-width: 60px;
+                text-align: center;
+                color: #2d3436;
+            }
+
+            /* 下拉選單優化 */
+            .score-input {
+                width: 80%;
+                padding: 12px;
+                font-size: 18px;
+                border-radius: 10px;
+                border: 2px solid #333;
+                background: white;
+            }
+
 
 
 
@@ -250,9 +333,71 @@
 
             <div id="team-container"></div>
             <p style="font-size: 20px;">全自動讀取數據中...</p>
-        </div> <div id="score-page" style="display: none;">
-            ...
+
+
         </div>
+
+
+
+        <div id="score-page" style="display: none; padding: 20px;">
+            <h2 style="text-align: center; color: black;">Scoring Mode</h2>
+
+            <div id="team-select-zone" class="score-section" style="background-color: rgb(125, 125, 255);">
+                <h3>第一步：請選擇隊伍</h3>
+                <select id="team-dropdown" style="width: 80%; padding: 10px; font-size: 18px;">
+                    <option value="">-- 請選擇隊伍 --</option>
+                </select>
+                <button onclick="confirmTeam()" style="margin-top: 15px; padding: 10px 20px; cursor:pointer;">確認並開始計分</button>
+            </div>
+
+            <div id="actual-scoring-content" style="display: none;">
+                <div class="score-section auto-zone">
+                    <h3>AUTO (自動)</h3>
+                    <div class="counter-container">
+                        <label>燃料進球：</label>
+                        <div class="counter-controls">
+                            <button class="cnt-btn minus" onclick="changeVal('auto-fuel', -1)">-</button>
+                            <span id="auto-fuel" class="score-num">0</span>
+                            <button class="cnt-btn plus" onclick="changeVal('auto-fuel', 1)">+</button>
+                        </div>
+                    </div>
+                    <div class="select-container">
+                        <label>吊掛等級：</label>
+                        <select id="auto-climb" class="score-input">
+                            <option value="0">None (未吊掛)</option>
+                            <option value="1">Level 1</option>
+                            <option value="2">Level 2</option>
+                            <option value="3">Level 3</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="score-section tele-zone">
+                    <h3>TELEOP (人動)</h3>
+                    <div class="counter-container">
+                        <label>燃料進球：</label>
+                        <div class="counter-controls">
+                            <button class="cnt-btn minus" onclick="changeVal('tele-fuel', -1)">-</button>
+                            <span id="tele-fuel" class="score-num">0</span>
+                            <button class="cnt-btn plus" onclick="changeVal('tele-fuel', 1)">+</button>
+                        </div>
+                    </div>
+                    <div class="select-container">
+                        <label>吊掛等級：</label>
+                        <select id="tele-climb" class="score-input">
+                            <option value="0">None (未吊掛)</option>
+                            <option value="1">Level 1</option>
+                            <option value="2">Level 2</option>
+                            <option value="3">Level 3</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button onclick="saveAndExit()" style="display:block; margin: 30px auto; padding: 20px 40px; background: #2ecc71; color: white; border: none; border-radius: 50px; font-size: 20px; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.2); cursor:pointer;">💾 儲存數據並結束</button>
+            </div>
+        </div>
+
+        
 
         <div class="floating-btn" id="toggle-btn" onclick="togglePage()">+</div>
 

@@ -39,19 +39,13 @@ async function autoFetchTeams() {
 
 function renderCards(teamsList) {
     const container = document.getElementById('team-container');
-    const statsElem = document.getElementById('search-stats');
-    
     if (!container) return;
 
-    if (statsElem) statsElem.innerText = `找到 ${teamsList.length} 支隊伍`;
+    container.innerHTML = teamsList.map(t => {
+        // 呼叫計算平均分的函式
+        const avgScore = calculateAverage(t.team_number);
 
-    if (teamsList.length === 0) {
-        container.innerHTML = `<div style="padding:20px; color:gray;">沒有符合條件的隊伍</div>`;
-        return;
-    }
-
-    // 第一步：渲染時，直接把 onclick 寫在 div 上。網址維持搜尋隊號，保證搜尋結果不動。
-    container.innerHTML = teamsList.map(t => `
+        return `
         <div class="t">
             <div class="team-card">
                 <div class="card-top">
@@ -59,18 +53,27 @@ function renderCards(teamsList) {
                     <div class="team-name">${t.nickname || "無名稱"}</div>
                 </div>
                 <div class="card-button">
-                    <div class="team-city">${t.city || ""}</div>
+                    <div class="team-avg-score" style="background-color: #f1c40f; font-weight: bold;">
+                        AVG: ${avgScore}
+                    </div>
                     <div class="team-state">${t.state_prov || ""}</div>
+                    <div class="team-city">${t.city || ""}</div>
+                    
+                    
+                    
+                    
+
                     <div id="loc-${t.team_number}" class="team-location" 
                          onclick="window.open('https://www.google.com/search?q=FRC+Team+${t.team_number}', '_blank')">
-                        never gonnon give you up...
+                        載入中...
                     </div>
                 </div>
+                <button onclick="quickSelectTeam('${t.team_number}')" style="width:100%; padding:10px; background:#eee; border:none; cursor:pointer;">+ 快速計分</button>
             </div>
         </div>
-    `).join('');
+        `;
+    }).join('');
 
-    // 第二步：補抓詳細資訊。這裡只換文字（innerText），絕不亂動你的 <a> 標籤或結構。
     teamsList.forEach(async (t) => {
         try {
             const res = await fetch(`https://www.thebluealliance.com/api/v3/team/frc${t.team_number}`, {
@@ -97,7 +100,6 @@ function renderCards(teamsList) {
         }
     });
 }
-
 // 搜尋條事件監聽器
 const searchBar = document.getElementById('search-bar');
 if (searchBar) {
@@ -114,27 +116,155 @@ if (searchBar) {
     });
 }
 
+// 新增一個變數來儲存目前選中的隊伍號碼
+let currentScoringTeam = "";
+
 function togglePage() {
     const mainPage = document.getElementById('main-page');
     const scorePage = document.getElementById('score-page');
     const btn = document.getElementById('toggle-btn');
-
-    if (!mainPage || !scorePage || !btn) return;
+    const dropdown = document.getElementById('team-dropdown');
 
     if (scorePage.style.display === 'none') {
-        // --- 進入計分模式 ---
-        mainPage.style.display = 'none';    
-        scorePage.style.display = 'block';   
-        btn.innerText = '×';                
-        btn.classList.add('active'); // 加上 active，CSS 就會把它變紅
+        // --- 進入計分頁面 ---
+        mainPage.style.display = 'none';
+        scorePage.style.display = 'block';
+        btn.innerText = '×';
+        btn.classList.add('active');
+
+        // 初始化狀態：顯示選單，隱藏計分內容
+        document.getElementById('team-select-zone').style.display = 'block';
+        document.getElementById('actual-scoring-content').style.display = 'none';
+        
+        // 重置數字為 0
+        resetScoring();
+
+        // 動態生成下拉選單內容
+        dropdown.innerHTML = '<option value="">-- 請選擇隊伍 --</option>';
+        allTeams.forEach(t => {
+            const opt = document.createElement('option');
+            opt.value = t.team_number;
+            opt.innerText = `#${t.team_number} - ${t.nickname || "無名稱"}`;
+            dropdown.appendChild(opt);
+        });
     } else {
-        // --- 回到列表模式 ---
-        mainPage.style.display = 'block';   
-        scorePage.style.display = 'none';    
-        btn.innerText = '+';                
-        btn.classList.remove('active'); // 移除 active，它就變回 CSS 原本的紫色 + Hover 效果
+        // --- 退出計分頁面 ---
+        mainPage.style.display = 'block';
+        scorePage.style.display = 'none';
+        btn.innerText = '+';
+        btn.classList.remove('active');
     }
 }
+
+// 修正 resetScoring (確保 ID 對應 HTML)
+function resetScoring() {
+    if(document.getElementById('auto-fuel')) document.getElementById('auto-fuel').innerText = "0";
+    if(document.getElementById('tele-fuel')) document.getElementById('tele-fuel').innerText = "0";
+    if(document.getElementById('auto-climb')) document.getElementById('auto-climb').value = "0";
+    if(document.getElementById('tele-climb')) document.getElementById('tele-climb').value = "0";
+}
+// 當使用者按下「確認並開始計分」時
+function confirmTeam() {
+    const dropdown = document.getElementById('team-dropdown');
+    const selectedTeam = dropdown.value;
+
+    if (!selectedTeam) {
+        alert("請先選擇一個隊伍！");
+        return;
+    }
+
+    currentScoringTeam = selectedTeam;
+    
+    // 更新標題
+    document.querySelector('#score-page h2').innerText = `正在為 #${currentScoringTeam} 計分`;
+
+    // 隱藏選單區，顯示計分區
+    document.getElementById('team-select-zone').style.display = 'none';
+    document.getElementById('actual-scoring-content').style.display = 'block';
+}
+
+// 1. 新增一個全域變數來存儲所有隊伍的紀錄
+let allScores = {}; // 格式範例: { "7589": [{autoFuel: 5, autoClimb: 1, ...}, {...}] }
+
+// 2. 修改 saveAndExit 函式，讓它真的把數據存起來
+function saveAndExit() {
+    const data = {
+        autoFuel: parseInt(document.getElementById('auto-fuel').innerText),
+        autoClimb: parseInt(document.getElementById('auto-climb').value),
+        teleFuel: parseInt(document.getElementById('tele-fuel').innerText),
+        teleClimb: parseInt(document.getElementById('tele-climb').value)
+    };
+    
+    // 如果該隊伍還沒有紀錄，先建立陣列
+    if (!allScores[currentScoringTeam]) {
+        allScores[currentScoringTeam] = [];
+    }
+    
+    // 存入紀錄
+    allScores[currentScoringTeam].push(data);
+    
+    console.log(`隊伍 #${currentScoringTeam} 已儲存`, allScores[currentScoringTeam]);
+    alert(`隊伍 #${currentScoringTeam} 第 ${allScores[currentScoringTeam].length} 筆紀錄成功！`);
+    
+    // 儲存後重新渲染主頁面，這樣平均分數才會更新
+    renderCards(allTeams); 
+    togglePage(); 
+}
+
+// 3. 新增一個計算平均分的輔助函式
+function calculateAverage(teamNumber) {
+    const records = allScores[teamNumber];
+    if (!records || records.length === 0) return "N/A";
+
+    let totalScore = 0;
+    records.forEach(r => {
+        // 燃料：1分/球
+        totalScore += r.autoFuel * 1;
+        totalScore += r.teleFuel * 1;
+        
+        // AUTO 吊掛：LV1=15, LV2=20, LV3=30 (假設你沒提到的LV2/3維持原訂)
+        if (r.autoClimb === 1) totalScore += 15;
+        else if (r.autoClimb === 2) totalScore += 20;
+        else if (r.autoClimb === 3) totalScore += 30;
+
+        // TELE 吊掛：LV1=10, LV2=20, LV3=30
+        if (r.teleClimb === 1) totalScore += 10;
+        else if (r.teleClimb === 2) totalScore += 20;
+        else if (r.teleClimb === 3) totalScore += 30;
+    });
+
+    return (totalScore / records.length).toFixed(1); // 取小數點後一位
+}
+
+function quickSelectTeam(num) {
+    const btn = document.getElementById('toggle-btn');
+    // 如果目前不在計分頁，就幫使用者點開它
+    if (document.getElementById('score-page').style.display === 'none') {
+        // 這裡我們不呼叫 togglePage，因為卡片已經知道號碼了，不需要彈窗
+        currentScoringTeam = num;
+        document.getElementById('main-page').style.display = 'none';
+        document.getElementById('score-page').style.display = 'block';
+        document.getElementById('score-page').querySelector('h2').innerText = `正在為 #${num} 計分`;
+        btn.innerText = '×';
+        btn.classList.add('active');
+    }
+}
+
+
+// 通用的數字加減函式
+function changeVal(id, delta) {
+    const elem = document.getElementById(id);
+    let current = parseInt(elem.innerText);
+    current += delta;
+    
+    // 防止變成負數
+    if (current < 0) current = 0;
+    
+    elem.innerText = current;
+}
+
+
+
 
 // 網頁載入後啟動
 window.onload = autoFetchTeams;
