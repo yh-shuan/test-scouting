@@ -30,7 +30,7 @@ table{
     right: 30px;
     width: 60px;
     height: 60px;
-    background-color: rgb(100, 100, 200); /* 這裡定義原色 */
+    background-color: #6464c8; /* 這裡定義原色 */
     color: white;
     border-radius: 50%;
     display: flex;
@@ -46,7 +46,7 @@ table{
 /* 列表模式下的 Hover */
 .floating-btn:hover { 
     transform: scale(1.1) rotate(90deg);
-    background-color: rgb(100, 100, 255); /* 這裡定義 Hover 色 */
+    background-color: #6464ff; /* 這裡定義 Hover 色 */
 }
 
 /* --- 新增：計分模式狀態 (當按鈕有 .active 這個 class 時) --- */
@@ -56,7 +56,7 @@ table{
 
 
 .floating-btn.active:hover {
-    background-color: darkred !important; /* 計分模式下的 Hover */
+    background-color: #8b1111 !important; /* 計分模式下的 Hover */
     transform: scale(1.1) rotate(0deg);    /* 叉叉不用旋轉 */
 }
 
@@ -159,7 +159,7 @@ table{
     font-size: 50px;
     color:#000000;
     font-style: italic;
-    text-shadow: 2px 2px 5px #11111133;
+    text-shadow: 2px 2px 5px #11111166;
 }
 
 /* 針對 location 網址文字的特殊處理 */
@@ -174,15 +174,11 @@ table{
 }/* 搜尋區塊 */
 .search-container {
     margin: 20px auto;
-    
-    
     text-align: center;
-    
 }
 
 
 #search-bar {
-    
     padding: 12px 20px;
     font-size: 18px;
     border: 2px solid #ddd;
@@ -334,7 +330,7 @@ table{
     padding-bottom: 10px;
 }
 .close-btn {
-    background: #ccc;
+    background: #cccccc;
     border: none;
     padding: 5px 15px;
     border-radius: 5px;
