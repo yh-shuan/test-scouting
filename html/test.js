@@ -88,7 +88,7 @@ function renderCards(teamsList) {
                     <div class="team-city">${t.city || ""}</div>
 
                     <div id="loc-${t.team_number}" class="team-location">
-                        載入中...
+                        never gonnon give you up...
                     </div>
                 </div>
                 <button onclick="event.stopPropagation(); quickSelectTeam('${t.team_number}')" 
