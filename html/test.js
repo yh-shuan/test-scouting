@@ -4,7 +4,7 @@ let allScoresRaw = []; // 改為儲存雲端抓下來的原始資料陣列 (Flat
 const API_KEY = "tGy3U4VfP85N98m17nqzN8XCof0zafvCckCLbgWgmy95bGE0Aw97b4lV7UocJvxl"; 
 
 // --- ⚠️ 重要：請填入 Apps Script 部署後的 Web App URL (結尾通常是 /exec) ---
-const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbx9OjEIDLLhm1RhnCqismngZL_cZ5BNngV7vGXO2YdFF2xCJwtKndJj-0UCFIhzhriB/exec"; 
+const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbyE6Sp6r8VZle5PITtIvZmtb2uI2k6py501ptmb-PUr7lhrA5W13SHdgonvRD-5m7BH/exec"; 
 
 // --- 新增：從雲端同步數據 ---
 async function syncFromCloud() {
@@ -226,6 +226,7 @@ async function saveAndExit() {
         autoClimb: parseInt(document.getElementById('auto-climb').value),
         teleFuel: getVal('tele-fuel') || 0,
         teleClimb: parseInt(document.getElementById('tele-climb').value),
+        tranFuel: getVal('transport-fuel') || 0,
         reporting: document.getElementById('reporting').value,
 
     };
@@ -337,7 +338,7 @@ function togglePage() {
         // --- 狀態重置：每次打開都從「選擇隊伍」開始 ---
         document.getElementById('team-select-zone').style.display = 'block';
         document.getElementById('mode-selec-zone').style.display = 'none';
-        document.getElementById('static-zone').style.display = 'none';
+        document.getElementById('static-section').style.display = 'none';
         document.getElementById('actual-scoring-content').style.display = 'none';
         
         // 重置數據與選單
@@ -359,7 +360,7 @@ function togglePage() {
         
         // 隱藏所有子區塊，以防萬一
         document.getElementById('mode-selec-zone').style.display = 'none';
-        document.getElementById('static-zone').style.display = 'none';
+        document.getElementById('static-section').style.display = 'none';
         document.getElementById('actual-scoring-content').style.display = 'none';
         h2Title.style.display='none'
         
@@ -369,8 +370,15 @@ function togglePage() {
 function resetScoring() {
     const af = document.getElementById('auto-fuel');
     const tf = document.getElementById('tele-fuel');
+    const trf = document.getElementById('transport-fuel');
+    
     if(af) af.tagName === "INPUT" ? af.value = "0" : af.innerText = "0";
     if(tf) tf.tagName === "INPUT" ? tf.value = "0" : tf.innerText = "0";
+    if(trf) trf.tagName === "INPUT" ? trf.value = "0" : trf.innerText = "0";
+
+
+
+
     if(document.getElementById('auto-climb')) document.getElementById('auto-climb').value = "0";
     if(document.getElementById('tele-climb')) document.getElementById('tele-climb').value = "0";
     if(document.getElementById('reporting')) document.getElementById('reporting').value = "";
@@ -426,7 +434,7 @@ let selectedMatchMode = "";
 
 function whatmode() {
     const mainPage = document.getElementById('main-page');
-    const staticzone=document.getElementById('static-zone');
+    const staticzone=document.getElementById('static-section');
     const modezone=document.getElementById('mode-selec-zone')
     const dropdown = document.getElementById('mode-selec');
     const scorePage = document.getElementById('score-page');
@@ -447,10 +455,10 @@ function whatmode() {
     modezone.style.display='none';
 
     if (selectedMatchMode === 'static') {
-        document.getElementById('static-zone').style.display = 'block';
+        document.getElementById('static-section').style.display = 'block';
         document.getElementById('actual-scoring-content').style.display = 'none';
     } else if (selectedMatchMode === 'dynamic') {
-        document.getElementById('static-zone').style.display = 'none';
+        document.getElementById('static-section').style.display = 'none';
         document.getElementById('actual-scoring-content').style.display = 'block';
     }
 

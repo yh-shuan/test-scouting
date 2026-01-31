@@ -226,6 +226,11 @@ table{
     border-radius: 20px;
     text-align: center;
 }
+.score-section h3 {
+    font-size: 32px;
+    margin-top: 0;
+    color: #333;
+}
 
 /* AUTO 區塊顏色（淺藍） */
 .auto-zone {
@@ -236,13 +241,12 @@ table{
 .tele-zone {
     background-color: rgb(125, 125, 255);
 }
+.transport-zone {
+    background-color: rgb(125, 125, 255);
+}
 
 /* 標題文字樣式 */
-.score-section h3 {
-    font-size: 32px;
-    margin-top: 0;
-    color: #333;
-}/* 計分器容器 */
+/* 計分器容器 */
 .counter-container, .select-container {
     margin: 20px 0;
     display: flex;
@@ -299,6 +303,64 @@ table{
     border: 2px solid #333;
     background: white;
 }
+
+.static-section {
+    width: 85%;
+    margin: 20px auto; /* 水平置中 */
+    padding: 30px;
+    border: 3px solid #000;
+    border-radius: 20px;
+    text-align: center;
+}
+.static-section h3 {
+    font-size: 32px;
+    margin-top: 0;
+    color: #333;
+}
+
+.static-zone {
+    background-color: rgb(125, 125, 255);
+}
+
+
+.checkbox, .checkbox {
+    margin: 20px 0;
+    display: flex;
+    flex-direction: row;  /* 改為水平排列 */
+    justify-content: center; /* 讓整組水平置中 */
+    align-items: center;     /* 讓框框跟文字對齊中線 */
+    gap: 50px;
+}
+
+.checkbox label, .checkbox label {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    
+}
+
+.checking {
+    
+    width: 60px;
+    height: 60px;
+    font-size: 30px;
+    font-weight: bold;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    
+    background-color: #ffffff;
+}
+
+
+
+
+
+
+
+
+
+
 
 /* --- ⚠️ 新增：詳細資料頁面 (Modal/Overlay) CSS --- */
 #detail-overlay {
@@ -387,3 +449,6 @@ table{
     font-size: 14px;
     text-align: center;
 }
+
+
+

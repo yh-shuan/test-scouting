@@ -65,7 +65,67 @@
 
 
             
-            <div id="static-zone" style="display: none ; padding:20px;">
+            <div id="static-section" style="display: none ; padding:20px;">
+                <div class="static-section static-zone">
+                    <h3>static (靜態)</h3>
+                    <div class="select-container">
+                        <label>吊掛等級：</label>
+                        <select id="static-climb" class="score-input">
+                            <option value="0">None (沒有吊掛)</option>
+                            <option value="1">Level 1</option>
+                            <option value="2">Level 2</option>
+                            <option value="3">Level 3</option>
+                        </select>
+
+
+                    </div>
+                    <div class="select-container">
+                        <label>吊掛位置：</label>
+                        <select id="climb-position" class="score-input">
+                            <option value="0">None (沒有吊掛)</option>
+                            <option value="左">左</option>
+                            <option value="中">中</option>
+                            <option value="右">右</option>
+                        </select>
+
+
+                    </div>
+
+                    <div class="counter-container">
+                        <label>儲存球數：</label>
+                        <div class="counter-controls">
+                            <button class="cnt-btn minus" onclick="changeVal('static-fuel', -1)">-</button>
+                            <span id="static-fuel" class="score-num">0</span>
+                            <button class="cnt-btn plus" onclick="changeVal('static-fuel', 1)">+</button>
+                        </div>
+                    </div>
+
+                    <div class="checkbox">
+                        <label>
+                            
+                            
+                            
+                            
+                        <input type="checkbox" id="Run_and_shoot" class="checking">
+                            
+                        </input>
+                        
+                        能不能走射
+
+                        </label>
+
+                        
+                            
+                
+                        
+
+
+                    </div>
+
+
+
+                </div>
+
             
 
             </div>
@@ -75,7 +135,7 @@
                 <div class="score-section auto-zone">
                     <h3>AUTO (自動)</h3>
                     <div class="counter-container">
-                        <label>燃料進球：</label>
+                        <label>進球：</label>
                         <div class="counter-controls">
                             <button class="cnt-btn minus" onclick="changeVal('auto-fuel', -1)">-</button>
                             <span id="auto-fuel" class="score-num">0</span>
@@ -96,7 +156,7 @@
                 <div class="score-section tele-zone">
                     <h3>TELEOP (人動)</h3>
                     <div class="counter-container">
-                        <label>燃料進球：</label>
+                        <label>進球：</label>
                         <div class="counter-controls">
                             <button class="cnt-btn minus" onclick="changeVal('tele-fuel', -1)">-</button>
                             <span id="tele-fuel" class="score-num">0</span>
@@ -113,6 +173,25 @@
                         </select>
                     </div>
                 </div>
+
+                <div class="score-section transport-zone">
+                    <h3>TRANSPORT (傳球)</h3>
+                    <div class="counter-container">
+                        <label>傳球</label>
+                        <div class="counter-controls">
+                            <button class="cnt-btn minus" onclick="changeVal('transport-fuel', -1)">-</button>
+                            <span id="transport-fuel" class="score-num">0</span>
+                            <button class="cnt-btn plus" onclick="changeVal('transport-fuel', 1)">+</button>
+                        </div>
+                    </div>
+                    
+                </div>
+
+
+
+
+
+
                 <div class="report">
                     <input type="text" id="reporting" placeholder="備註:...">
                 </div>
