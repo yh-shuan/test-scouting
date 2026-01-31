@@ -4,7 +4,7 @@ let allScoresRaw = []; // 改為儲存雲端抓下來的原始資料陣列 (Flat
 const API_KEY = "tGy3U4VfP85N98m17nqzN8XCof0zafvCckCLbgWgmy95bGE0Aw97b4lV7UocJvxl"; 
 
 // --- ⚠️ 重要：請填入 Apps Script 部署後的 Web App URL (結尾通常是 /exec) ---
-const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbzClsxLtVIzFKVGMpsEadTZdwwlkwCqZYw_CDg3DFcXdu9_PNsX4j8HSUTWuqMeAS7f/exec"; 
+const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbx9OjEIDLLhm1RhnCqismngZL_cZ5BNngV7vGXO2YdFF2xCJwtKndJj-0UCFIhzhriB/exec"; 
 
 // --- 新增：從雲端同步數據 ---
 async function syncFromCloud() {
@@ -91,7 +91,15 @@ function renderCards(teamsList) {
                         載入中...
                     </div>
                 </div>
-                <button onclick="event.stopPropagation(); quickSelectTeam('${t.team_number}')" style="width:100%; padding:10px; background:#eee; border:none; border-top: 1px solid #ccc; cursor:pointer; font-weight: bold;">+ 快速計分</button>
+                <button onclick="event.stopPropagation(); quickSelectTeam('${t.team_number}')" 
+                style="width:100%; 
+                padding:10px; 
+                background:#eee; 
+                border:none; 
+                border-top: 1px solid #ccc; 
+                cursor:pointer; 
+                font-weight: bold;">+ 快速計分
+                </button>
             </div>
         </div>
         `;
@@ -293,13 +301,20 @@ function togglePage() {
     const btn = document.getElementById('toggle-btn');
     const dropdown = document.getElementById('team-dropdown');
 
+    // 如果目前是關閉狀態，準備打開
     if (scorePage.style.display === 'none') {
         mainPage.style.display = 'none';
         scorePage.style.display = 'block';
         btn.innerText = '×';
         btn.classList.add('active');
+
+        // --- 狀態重置：每次打開都從「選擇隊伍」開始 ---
         document.getElementById('team-select-zone').style.display = 'block';
+        document.getElementById('mode-selec-zone').style.display = 'none';
+        document.getElementById('static-zone').style.display = 'none';
         document.getElementById('actual-scoring-content').style.display = 'none';
+        
+        // 重置數據與選單
         resetScoring();
         dropdown.innerHTML = '<option value="">-- 請選擇隊伍 --</option>';
         allTeams.forEach(t => {
@@ -308,11 +323,18 @@ function togglePage() {
             opt.innerText = `#${t.team_number} - ${t.nickname || "無名稱"}`;
             dropdown.appendChild(opt);
         });
+
     } else {
+        // 如果目前是開啟狀態，準備關閉 (回到主頁)
         mainPage.style.display = 'block';
         scorePage.style.display = 'none';
         btn.innerText = '+';
         btn.classList.remove('active');
+        
+        // 隱藏所有子區塊，以防萬一
+        document.getElementById('mode-selec-zone').style.display = 'none';
+        document.getElementById('static-zone').style.display = 'none';
+        document.getElementById('actual-scoring-content').style.display = 'none';
     }
 }
 
@@ -334,9 +356,10 @@ function confirmTeam() {
         return;
     }
     currentScoringTeam = selectedTeam;
-    document.querySelector('#score-page h2').innerText = `正在為 #${currentScoringTeam} 計分`;
+    
     document.getElementById('team-select-zone').style.display = 'none';
-    document.getElementById('actual-scoring-content').style.display = 'block';
+    document.getElementById('mode-selec-zone').style.display = 'block';  // 顯示模式選擇 (用 flex 以便置中)
+
 }
 
 function quickSelectTeam(num) {
@@ -347,10 +370,11 @@ function quickSelectTeam(num) {
         document.getElementById('score-page').style.display = 'block';
         document.getElementById('score-page').querySelector('h2').innerText = `正在為 #${num} 計分`;
         document.getElementById('team-select-zone').style.display = 'none';
-        document.getElementById('actual-scoring-content').style.display = 'block';
+        document.getElementById('mode-selec-zone').style.display = 'block';
         btn.innerText = '×';
         btn.classList.add('active');
         resetScoring();
+        
     }
 }
 
@@ -367,6 +391,54 @@ function changeVal(id, delta) {
         elem.innerText = current;
     }
 }
+
+// 宣告一個變數來存模式
+let selectedMatchMode = "";
+
+function whatmode() {
+    const mainPage = document.getElementById('main-page');
+    const staticzone=document.getElementById('static-zone');
+    const modezone=document.getElementById('mode-selec-zone')
+    const dropdown = document.getElementById('mode-selec');
+    const scorePage = document.getElementById('score-page');
+    
+    const btn = document.getElementById('toggle-btn');
+
+
+    
+
+
+    const val = dropdown.value;
+
+    
+
+    selectedMatchMode = val;
+    console.log("當前模式:", selectedMatchMode);
+
+    modezone.style.display='none';
+
+    if (selectedMatchMode === 'static') {
+        document.getElementById('static-zone').style.display = 'block';
+        document.getElementById('actual-scoring-content').style.display = 'none';
+    } else if (selectedMatchMode === 'dynamic') {
+        document.getElementById('static-zone').style.display = 'none';
+        document.getElementById('actual-scoring-content').style.display = 'block';
+    }
+
+
+
+    
+
+    
+
+    
+
+    // 存入變數
+    
+
+    
+}
+
 
 // 移除 clearAllData (因為已經改為雲端，且支援單筆刪除，不需要全清功能)
 
