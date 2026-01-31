@@ -143,6 +143,15 @@ function showDetail(teamNumber) {
     
     // 從 allScoresRaw 過濾出該隊伍的紀錄
     const records = allScoresRaw.filter(r => r.teamNumber == teamNumber);
+
+    const statsElem = document.getElementById('search-stats');
+    if (statsElem) {
+        statsElem.innerText = `同步完成 (共 ${allScoresRaw.length} 筆)`;
+        // 選擇性：加個紅色閃爍代表刪除成功
+        statsElem.style.color = "#e74c3c"; 
+        setTimeout(() => { statsElem.style.color = ""; }, 1500);
+    }
+
     
     title.innerText = `隊伍 #${teamNumber} (${records.length} 筆資料)`;
     list.innerHTML = ""; // 清空舊內容
@@ -234,7 +243,22 @@ async function saveAndExit() {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data)
         });
-        alert(`隊伍 #${currentScoringTeam} 儲存成功！`);
+        
+
+        const statsElem = document.getElementById('search-stats');
+        if (statsElem) {
+            // 因為剛才 allScoresRaw.push(data) 已經讓陣列加 1 了
+            statsElem.innerText = `同步完成 (共 ${allScoresRaw.length} 筆)`;
+        }
+        // --- 修正結束 ---
+
+        // 重置標題並回到主頁
+        const h2Title = document.querySelector('#score-page h2');
+        if (h2Title) h2Title.innerText = "Scoring Mode";
+
+        renderCards(allTeams); 
+       
+
     } catch (e) {
         console.error("雲端同步失敗", e);
         alert(`雲端同步失敗，請檢查網路。`);
@@ -242,6 +266,7 @@ async function saveAndExit() {
     
     renderCards(allTeams); 
     togglePage(); 
+    
 }
 
 // --- 修改：平均分計算 (從 allScoresRaw 陣列過濾) ---
