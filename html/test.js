@@ -300,6 +300,7 @@ function togglePage() {
     const scorePage = document.getElementById('score-page');
     const btn = document.getElementById('toggle-btn');
     const dropdown = document.getElementById('team-dropdown');
+    const h2Title = document.querySelector('#score-page h2');
 
     // 如果目前是關閉狀態，準備打開
     if (scorePage.style.display === 'none') {
@@ -335,6 +336,8 @@ function togglePage() {
         document.getElementById('mode-selec-zone').style.display = 'none';
         document.getElementById('static-zone').style.display = 'none';
         document.getElementById('actual-scoring-content').style.display = 'none';
+        h2Title.style.display='none'
+        
     }
 }
 
@@ -364,6 +367,7 @@ function confirmTeam() {
 
 function quickSelectTeam(num) {
     const btn = document.getElementById('toggle-btn');
+    
     if (document.getElementById('score-page').style.display === 'none') {
         currentScoringTeam = num;
         document.getElementById('main-page').style.display = 'none';
