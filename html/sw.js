@@ -2,10 +2,9 @@ const CACHE_NAME = 'scouting-v1';
 const ASSETS = [
   './',
   './index.html',
-  './css/app.css',
-  './js/app.js',
-  './mainfest.json',
-  // 記得加入你下載下來的離線版庫檔案 (如 moment.js)
+  './style.css',  // 改成你實際的檔名
+  './app.js',     // 改成你實際的檔名
+  './mainfest.json' // 雖然建議改小寫，但先對齊你目前的檔名
 ];
 
 // 安裝並快取檔案
