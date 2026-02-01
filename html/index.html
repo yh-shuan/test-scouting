@@ -220,5 +220,16 @@
         </div>
 
         <script src="test.js"></script>
+        <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js')
+                .then(reg => console.log('PWA 已就緒!', reg))
+                .catch(err => console.log('PWA 註冊失敗', err));
+            });
+        }
+        </script>
+
+
     </body>
 </html>
