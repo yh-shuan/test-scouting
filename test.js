@@ -388,16 +388,21 @@ function resetScoring() {
         if (el) el.style.setProperty('display', 'none', 'important'); 
     });
     
-    // 3. 重置下拉選單
+    // 3. 重置下拉選單與標題狀態
     const modeDropdown = document.getElementById('mode-selec');
     if(modeDropdown) modeDropdown.selectedIndex = 0;
 
-    
+    // --- 新增：重置計分頁標題，防止殘留上次計分的隊號 ---
+    const h2Title = document.querySelector('#score-page h2');
+    if (h2Title) {
+        h2Title.innerText = "";
+        h2Title.style.display = 'none';
+    }
 }
 
 
 function confirmTeam() {
-    h2Title.style.display ='none';
+    
     const dropdown = document.getElementById('team-dropdown');
     const selectedTeam = dropdown.value;
     
