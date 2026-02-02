@@ -368,38 +368,38 @@ function togglePage() {
         btn.classList.remove('active');
     }
 }
+
 function resetScoring() {
-    // 1. 數值歸零
+    // 1. 數值與輸入框歸零
     const af = document.getElementById('auto-fuel');
     const tf = document.getElementById('tele-fuel');
     const trf = document.getElementById('transport-fuel');
-    if(af) af.tagName === "INPUT" ? af.value = "0" : af.innerText = "0";
-    if(tf) tf.tagName === "INPUT" ? tf.value = "0" : tf.innerText = "0";
-    if(trf) trf.tagName === "INPUT" ? trf.value = "0" : trf.innerText = "0";
+    if(af) (af.tagName === "INPUT" ? af.value = "0" : af.innerText = "0");
+    if(tf) (tf.tagName === "INPUT" ? tf.value = "0" : tf.innerText = "0");
+    if(trf) (trf.tagName === "INPUT" ? trf.value = "0" : trf.innerText = "0");
 
     if(document.getElementById('auto-climb')) document.getElementById('auto-climb').value = "0";
     if(document.getElementById('tele-climb')) document.getElementById('tele-climb').value = "0";
     if(document.getElementById('reporting')) document.getElementById('reporting').value = "";
 
-    // 2. 強制隱藏計分頁內的所有子區域 (大掃除)
+    // 2. 強制隱藏所有子區域
     const zones = ['team-select-zone', 'mode-selec-zone', 'static-section', 'actual-scoring-content'];
     zones.forEach(id => {
         const el = document.getElementById(id);
         if (el) el.style.setProperty('display', 'none', 'important'); 
     });
     
-    // 3. 重置下拉選單與標題狀態
+    // 3. 重置下拉選單
     const modeDropdown = document.getElementById('mode-selec');
     if(modeDropdown) modeDropdown.selectedIndex = 0;
 
-    // --- 新增：重置計分頁標題，防止殘留上次計分的隊號 ---
+    // 4. 【重點】徹底抹除標題，不留任何痕跡
     const h2Title = document.querySelector('#score-page h2');
     if (h2Title) {
-        h2Title.innerText = "";
+        h2Title.innerText = ""; 
         h2Title.style.display = 'none';
     }
 }
-
 
 function confirmTeam() {
     
