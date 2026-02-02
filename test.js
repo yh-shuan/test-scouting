@@ -397,6 +397,7 @@ function resetScoring() {
 
 
 function confirmTeam() {
+    h2Title.style.display ='none';
     const dropdown = document.getElementById('team-dropdown');
     const selectedTeam = dropdown.value;
     
