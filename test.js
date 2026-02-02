@@ -376,11 +376,10 @@ function togglePage() {
 }
 
 function resetScoring() {
-    // 1. 數值歸零邏輯
+    // 1. 數值歸零
     const af = document.getElementById('auto-fuel');
     const tf = document.getElementById('tele-fuel');
     const trf = document.getElementById('transport-fuel');
-    
     if(af) af.tagName === "INPUT" ? af.value = "0" : af.innerText = "0";
     if(tf) tf.tagName === "INPUT" ? tf.value = "0" : tf.innerText = "0";
     if(trf) trf.tagName === "INPUT" ? trf.value = "0" : trf.innerText = "0";
@@ -389,23 +388,20 @@ function resetScoring() {
     if(document.getElementById('tele-climb')) document.getElementById('tele-climb').value = "0";
     if(document.getElementById('reporting')) document.getElementById('reporting').value = "";
 
-    // 2. --- 新增：畫面狀態重置 ---
-    // 讓計分頁回到最初「選模式」的樣子，隱藏掉上次打開的計分區
-    const modeSelectZone = document.getElementById('mode-selec-zone');
-    const staticSection = document.getElementById('static-section');
-    const actualContent = document.getElementById('actual-scoring-content');
-    const modeDropdown = document.getElementById('mode-selec');
-
-    if(modeSelectZone) modeSelectZone.style.display = 'none';
-    if(staticSection) staticSection.style.display = 'none';
-    if(actualContent) actualContent.style.display = 'none';
+    // 2. 強制隱藏計分頁內的所有子區域 (大掃除)
+    const zones = ['team-select-zone', 'mode-selec-zone', 'static-section', 'actual-scoring-content'];
+    zones.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.setProperty('display', 'none', 'important'); 
+    });
     
-    // 把「選擇模式」的下拉選單恢復成第一選項 (請選擇模式)
+    // 3. 重置下拉選單
+    const modeDropdown = document.getElementById('mode-selec');
     if(modeDropdown) modeDropdown.selectedIndex = 0;
 
-    // 重置全域變數
     selectedMatchMode = ""; 
 }
+
 
 function confirmTeam() {
     const dropdown = document.getElementById('team-dropdown');
@@ -424,35 +420,33 @@ function confirmTeam() {
 function quickSelectTeam(num) {
     const btn = document.getElementById('toggle-btn');
     const scorePage = document.getElementById('score-page');
+    const mainPage = document.getElementById('main-page');
     
-    if (scorePage.style.display === 'none') {
-        currentScoringTeam = num;
-        
-        // 1. 切換主頁面顯示
-        document.getElementById('main-page').style.display = 'none';
-        scorePage.style.display = 'block';
-        
-        // 2. 更新標題
-        const h2Title = scorePage.querySelector('h2');
-        if (h2Title) {
-            h2Title.innerText = `正在為 #${num} 計分`;
-            h2Title.style.display = 'block';
-        }
+    // 先執行徹底重置
+    resetScoring(); 
 
-        // 3. --- 強制重置所有子區域的顯示狀態 ---
-        document.getElementById('team-select-zone').style.display = 'none';    // 隱藏選隊
-        document.getElementById('mode-selec-zone').style.display = 'block';   // 顯示選模式
-        document.getElementById('static-section').style.display = 'none';      // 隱藏靜態
-        document.getElementById('actual-scoring-content').style.display = 'none'; // 隱藏動態
-        
-        // 4. 重置下拉選單與數值
-        const modeDropdown = document.getElementById('mode-selec');
-        if (modeDropdown) modeDropdown.selectedIndex = 0; // 回到 "-- 請選擇模式 --"
-        resetScoring();
+    currentScoringTeam = num;
 
-        btn.innerText = '×';
-        btn.classList.add('active');
+    // 切換大頁面
+    mainPage.style.display = 'none';
+    scorePage.style.display = 'block';
+
+    // 更新標題
+    const h2Title = scorePage.querySelector('h2');
+    if (h2Title) {
+        h2Title.innerText = `正在為 #${num} 計分`;
+        h2Title.style.display = 'block';
     }
+
+    // --- 關鍵：強迫開啟「選模式」區域 ---
+    const modeZone = document.getElementById('mode-selec-zone');
+    if (modeZone) {
+        // 使用 style.display 覆蓋掉剛剛 resetScoring 的 none
+        modeZone.style.setProperty('display', 'block', 'important'); 
+    }
+
+    btn.innerText = '×';
+    btn.classList.add('active');
 }
 
 function changeVal(id, delta) {
