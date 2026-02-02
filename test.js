@@ -98,24 +98,30 @@ function renderCards(teamsList) {
                     <div class="team-name">${t.nickname || "無名稱"}</div>
                 </div>
                 <div class="card-button">
-                    <div class="team-avg-score" style="background-color: #f1c40f; font-weight: bold; border-radius: 5px; padding: 5px; text-align: center;">
+                    <div class="team-avg-score">
                         AVG: ${avgScore}
                     </div>
-                    <div class="team-state">${t.state_prov || ""}</div>
-                    <div class="team-city">${t.city || ""}</div>
+                    <div class="team-state">
+                        <span class="material-icons">map</span>
+                        ${t.state_prov || "未知區域"}
+                    </div>
+                    <div class="team-city">
+                        <span class="material-icons">location_city</span>
+                        ${t.city || "未知城市"}
+                    </div>
 
                     <div id="loc-${t.team_number}" class="team-location">
+                        <span class="material-icons">school</span>
                         never gonnon give you up...
                     </div>
                 </div>
+
                 <button onclick="event.stopPropagation(); quickSelectTeam('${t.team_number}')" 
-                style="width:100%; 
-                padding:10px; 
-                background:#eee; 
-                border:none; 
-                border-top: 1px solid #ccc; 
-                cursor:pointer; 
-                font-weight: bold;">+ 快速計分
+                style="width:100%; padding:12px; background:#f0f0f0; border:none; border-top: 1px solid #ccc; 
+                cursor:pointer; font-weight: bold; display: flex; 
+                align-items: center; justify-content: center; gap: 8px;">
+                <span class="material-icons" style="font-size:20px; color:#333;">add_circle</span>
+                快速計分
                 </button>
             </div>
         </div>
@@ -138,7 +144,8 @@ function fetchAddresses(teamsList) {
             
             if (target) {
                 const schoolName = detail.school_name || detail.address || "無詳細地址資訊";
-                target.innerText = schoolName;
+                // 不要用 innerText，改用這個方式保留圖標
+                target.innerHTML = `<span class="material-icons">school</span>${schoolName}`;
                 target.onclick = (e) => {
                       e.stopPropagation(); // 防止冒泡
                       if (schoolName !== "無詳細地址資訊") {
