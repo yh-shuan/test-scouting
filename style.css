@@ -88,8 +88,8 @@ table{
 }
 .team-card:hover {
     /* 同時向上浮動並稍微放大 */
-    transform: translateY(-10px) scale(1.02); 
-    box-shadow: 0 20px 35px rgba(0,0,0,0.3); 
+    /*transform: translateY(-10px) scale(1.02); */
+    box-shadow: 0px 25px 35px rgba(0,0,0,0.3); 
     background-color: #7970fe;
     z-index: 10;
 }/* 修正後的 Hover：把縮放跟位移寫在一起 */
@@ -149,12 +149,14 @@ table{
     justify-content: center; 
     gap: 5px; /* 圖示與文字的間距 */
     padding: 50%;
+    height: 0; /* 讓 padding-top 決定高度 */
+    padding-top: 60%; /* 這樣可以保持比例 */
     border-radius: 12px;
-    font-size: 50px;
+    font-size: 40px; 
     font-weight: bold;
     color: #ffffff;
     text-align: center;
-    white-space: break-word; /* 強制不換行 */
+    white-space: break-word; /* 強制換行 */
     overflow: hidden; /* 隱藏超出部分 */
     text-overflow: ellipsis; /* 超出時顯示 ... */
 
@@ -162,13 +164,11 @@ table{
 
     /* --- 新增動態效果 --- */
     transition: all 0.2s ease; /* 讓縮放平滑 */
-    cursor: pointer; /* 滑鼠移上去變小手，暗示可以點擊 */
-
-    
+    cursor: pointer; /* 滑鼠移上去變小手，暗示可以點擊 */    
 }
 .card-button > *:hover {
     transform: scale(1.05); 
-    background-color: rgb(0, 230, 230); /* 稍微變亮一點，視覺反饋更強 */
+    filter: brightness(1.2); 
     z-index: 1; /* 確保放大的時候不會被旁邊的盒子遮住 */
 }/* 滑鼠移上去時變大 1.05 倍 */
 
@@ -178,8 +178,13 @@ table{
 }/* 點擊時的小縮放反饋（可選） */
 
 .card-button .material-icons {
-    font-size: 50px; /* 調整圖示大小 */
+    font-size: 40px; /* 調整圖示大小 */
 }/* 針對圖示大小的單獨設定 */
+@media (max-width: 300px) {
+    .card-button .material-icons {
+        font-size: 20px; /* 超小螢幕時圖示稍微縮小 */
+    }
+}
 
 .card-button > *:hover .material-icons {
     transform: translateY(-3px);
