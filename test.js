@@ -334,23 +334,22 @@ function togglePage() {
     const scorePage = document.getElementById('score-page');
     const btn = document.getElementById('toggle-btn');
     const dropdown = document.getElementById('team-dropdown');
-    const h2Title = document.querySelector('#score-page h2');
 
-    // 如果目前是關閉狀態，準備打開
-    if (scorePage.style.display === 'none') {
+    if (scorePage.style.display === 'none' || scorePage.style.display === '') {
+        // 1. 先重置所有狀態
+        resetScoring();
+
+        // 2. 切換大頁面
         mainPage.style.display = 'none';
         scorePage.style.display = 'block';
         btn.innerText = '×';
         btn.classList.add('active');
 
-        // --- 狀態重置：每次打開都從「選擇隊伍」開始 ---
-        document.getElementById('team-select-zone').style.display = 'block';
-        document.getElementById('mode-selec-zone').style.display = 'none';
-        document.getElementById('static-section').style.display = 'none';
-        document.getElementById('actual-scoring-content').style.display = 'none';
+        // 3. 【關鍵】強制顯示選隊伍區，隱藏其他區
+        document.getElementById('team-select-zone').style.setProperty('display', 'block', 'important');
+        document.getElementById('mode-selec-zone').style.setProperty('display', 'none', 'important');
         
-        // 重置數據與選單
-        resetScoring();
+        // 4. 填充下拉選單
         dropdown.innerHTML = '<option value="">-- 請選擇隊伍 --</option>';
         allTeams.forEach(t => {
             const opt = document.createElement('option');
@@ -358,23 +357,13 @@ function togglePage() {
             opt.innerText = `#${t.team_number} - ${t.nickname || "無名稱"}`;
             dropdown.appendChild(opt);
         });
-
     } else {
-        // 如果目前是開啟狀態，準備關閉 (回到主頁)
         mainPage.style.display = 'block';
         scorePage.style.display = 'none';
         btn.innerText = '+';
         btn.classList.remove('active');
-        
-        // 隱藏所有子區塊，以防萬一
-        document.getElementById('mode-selec-zone').style.display = 'none';
-        document.getElementById('static-section').style.display = 'none';
-        document.getElementById('actual-scoring-content').style.display = 'none';
-        h2Title.style.display='none'
-        
     }
 }
-
 function resetScoring() {
     // 1. 數值歸零
     const af = document.getElementById('auto-fuel');
@@ -406,47 +395,60 @@ function resetScoring() {
 function confirmTeam() {
     const dropdown = document.getElementById('team-dropdown');
     const selectedTeam = dropdown.value;
+    
     if (!selectedTeam) {
         alert("請先選擇一個隊伍！");
         return;
     }
+    
     currentScoringTeam = selectedTeam;
     
-    document.getElementById('team-select-zone').style.display = 'none';
-    document.getElementById('mode-selec-zone').style.display = 'block';  // 顯示模式選擇 (用 flex 以便置中)
+    // 1. 隱藏選隊伍區域
+    document.getElementById('team-select-zone').style.setProperty('display', 'none', 'important');
+    
+    // 2. 強制顯示選模式區域 (使用 important 破除 resetScoring 的限制)
+    const modeZone = document.getElementById('mode-selec-zone');
+    if (modeZone) {
+        modeZone.style.setProperty('display', 'block', 'important');
+    }
 
+    // 3. 同步更新標題
+    const h2Title = document.querySelector('#score-page h2');
+    if (h2Title) {
+        h2Title.innerText = `正在為 #${selectedTeam} 計分`;
+        h2Title.style.display = 'block';
+    }
 }
 
 function quickSelectTeam(num) {
     const btn = document.getElementById('toggle-btn');
     const scorePage = document.getElementById('score-page');
-    const mainPage = document.getElementById('main-page');
     
-    // 先執行徹底重置
-    resetScoring(); 
+    if (scorePage.style.display === 'none') {
+        // 1. 【關鍵】先執行大掃除，這會把所有區域設為 none
+        resetScoring(); 
 
-    currentScoringTeam = num;
+        // 2. 設定目前的隊伍
+        currentScoringTeam = num;
+        
+        // 3. 切換大頁面顯示
+        document.getElementById('main-page').style.display = 'none';
+        scorePage.style.display = 'block';
+        
+        // 4. 更新標題
+        const h2Title = scorePage.querySelector('h2');
+        if (h2Title) {
+            h2Title.innerText = `正在為 #${num} 計分`;
+            h2Title.style.display = 'block';
+        }
 
-    // 切換大頁面
-    mainPage.style.display = 'none';
-    scorePage.style.display = 'block';
+        // 5. 【關鍵】在 resetScoring 之後，單獨把模式選擇區叫出來
+        document.getElementById('team-select-zone').style.display = 'none';
+        document.getElementById('mode-selec-zone').style.setProperty('display', 'block', 'important');
 
-    // 更新標題
-    const h2Title = scorePage.querySelector('h2');
-    if (h2Title) {
-        h2Title.innerText = `正在為 #${num} 計分`;
-        h2Title.style.display = 'block';
+        btn.innerText = '×';
+        btn.classList.add('active');
     }
-
-    // --- 關鍵：強迫開啟「選模式」區域 ---
-    const modeZone = document.getElementById('mode-selec-zone');
-    if (modeZone) {
-        // 使用 style.display 覆蓋掉剛剛 resetScoring 的 none
-        modeZone.style.setProperty('display', 'block', 'important'); 
-    }
-
-    btn.innerText = '×';
-    btn.classList.add('active');
 }
 
 function changeVal(id, delta) {
@@ -467,47 +469,24 @@ function changeVal(id, delta) {
 let selectedMatchMode = "";
 
 function whatmode() {
-    const mainPage = document.getElementById('main-page');
-    const staticzone=document.getElementById('static-section');
-    const modezone=document.getElementById('mode-selec-zone')
     const dropdown = document.getElementById('mode-selec');
-    const scorePage = document.getElementById('score-page');
-    
-    const btn = document.getElementById('toggle-btn');
-
-
-    
-
-
     const val = dropdown.value;
-
-    
+    if (!val) return; // 如果選回預設選項則不動作
 
     selectedMatchMode = val;
     console.log("當前模式:", selectedMatchMode);
 
-    modezone.style.display='none';
+    // 1. 隱藏模式選擇區
+    document.getElementById('mode-selec-zone').style.setProperty('display', 'none', 'important');
 
+    // 2. 根據選擇顯示對應計分區
     if (selectedMatchMode === 'static') {
-        document.getElementById('static-section').style.display = 'block';
-        document.getElementById('actual-scoring-content').style.display = 'none';
+        document.getElementById('static-section').style.setProperty('display', 'block', 'important');
+        document.getElementById('actual-scoring-content').style.setProperty('display', 'none', 'important');
     } else if (selectedMatchMode === 'dynamic') {
-        document.getElementById('static-section').style.display = 'none';
-        document.getElementById('actual-scoring-content').style.display = 'block';
+        document.getElementById('static-section').style.setProperty('display', 'none', 'important');
+        document.getElementById('actual-scoring-content').style.setProperty('display', 'block', 'important');
     }
-
-
-
-    
-
-    
-
-    
-
-    // 存入變數
-    
-
-    
 }
 
 
