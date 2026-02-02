@@ -1,3 +1,20 @@
+// --- PWA Service Worker 註冊 ---
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        // 這裡的 'sw.js' 檔名必須和你根目錄下的檔案完全一致
+        navigator.serviceWorker.register('sw.js')
+            .then(registration => {
+                console.log('✅ PWA 註冊成功！範圍:', registration.scope);
+            })
+            .catch(err => {
+                console.log('❌ PWA 註冊失敗:', err);
+            });
+    });
+}
+// --- 註冊結束，以下接著你原本的程式碼 ---
+
+
+
 // 1. 宣告全域變數
 let allTeams = []; 
 let allScoresRaw = []; // 改為儲存雲端抓下來的原始資料陣列 (Flat Array)
