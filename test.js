@@ -120,6 +120,7 @@ function renderCards(teamsList) {
                 style="width:100%; padding:12px; background:#f0f0f0; border:none; border-top: 1px solid #ccc; 
                 cursor:pointer; font-weight: bold; display: flex; 
                 align-items: center; justify-content: center; gap: 8px;">
+                
                 <span class="material-icons" style="font-size:20px; color:#333;">add_circle</span>
                 快速計分
                 </button>

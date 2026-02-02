@@ -64,7 +64,7 @@ table{
     /* --- 寬度與置中 --- */
     width: 95%;           /* 手機版建議佔滿一點 */
     max-width: 1000px;     /* 電腦版不要太大 */
-    margin: 20px auto;    /* 上下 30px，左右 auto 是置中的靈魂 */
+    margin: 50px auto;    /* 上下 30px，左右 auto 是置中的靈魂 */
 
     display: flex;
     flex-direction: column; 
@@ -83,6 +83,8 @@ table{
     /* --- 平滑動畫與陰影 --- */
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     box-shadow: 0 5px 4px rgba(0,0,0,0.1);
+
+    
 }
 .team-card:hover {
     /* 同時向上浮動並稍微放大 */
@@ -106,10 +108,12 @@ table{
 .card-button {
     display: grid; /* 改用 Grid 佈局 */
     grid-template-columns: repeat(2, 1fr); /* 預設為一排兩個 */
-    gap: 10px; /* 按鈕之間的間距 */
+    gap: 25px; /* 按鈕之間的間距 */
     width: 100%;
-    padding: 15px;      /* 這決定了青色背景與卡片最外框的距離 */
+    padding: 25px;      /* 這決定了青色背景與卡片最外框的距離 */
     box-sizing: border-box;
+
+    align-items: stretch;
 }
 @media (min-width: 600px) {
     .card-button {
@@ -144,13 +148,13 @@ table{
     align-items: center;    
     justify-content: center; 
     gap: 5px; /* 圖示與文字的間距 */
-    padding: 10px 5px;
+    padding: 50%;
     border-radius: 12px;
-    font-size: 14px;
+    font-size: 50px;
     font-weight: bold;
     color: #ffffff;
     text-align: center;
-    white-space: nowrap; /* 強制不換行 */
+    white-space: break-word; /* 強制不換行 */
     overflow: hidden; /* 隱藏超出部分 */
     text-overflow: ellipsis; /* 超出時顯示 ... */
 
@@ -159,6 +163,8 @@ table{
     /* --- 新增動態效果 --- */
     transition: all 0.2s ease; /* 讓縮放平滑 */
     cursor: pointer; /* 滑鼠移上去變小手，暗示可以點擊 */
+
+    
 }
 .card-button > *:hover {
     transform: scale(1.05); 
@@ -172,7 +178,7 @@ table{
 }/* 點擊時的小縮放反饋（可選） */
 
 .card-button .material-icons {
-    font-size: 28px; /* 調整圖示大小 */
+    font-size: 50px; /* 調整圖示大小 */
 }/* 針對圖示大小的單獨設定 */
 
 .card-button > *:hover .material-icons {
