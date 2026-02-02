@@ -70,8 +70,9 @@ table{
     flex-direction: column; 
     align-items: center;    
     justify-content: flex-start; 
-    background-color: #7d7dff;
-    border: 3px solid rgb(243, 137, 209, 0.7);
+    background: linear-gradient(120deg, #c5d5fa, #c3dc99);
+    border: 3px solid;
+    border-color: transparent;
     border-radius: 10px 50px 50px;
     height: auto;               
     min-height: 375px;
@@ -94,7 +95,7 @@ table{
 }
 
 .card-top {
-    background-color: #92b2f7;
+    background: linear-gradient(-150deg, #c3dc99, #c5d5fa);
     display: flex;
     align-items: center;    
     justify-content: center; 
