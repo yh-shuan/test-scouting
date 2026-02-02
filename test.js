@@ -232,11 +232,10 @@ async function saveAndExit() {
         return el.tagName === "INPUT" ? parseInt(el.value) : parseInt(el.innerText);
     };
 
-    // 產生唯一 ID (時間戳 + 隨機數)
     const uniqueId = "Rec-" + Date.now() + "-" + Math.floor(Math.random() * 1000);
 
     const data = {
-        action: "SAVE", // 告訴後端這是儲存
+        action: "SAVE",
         id: uniqueId,
         teamNumber: currentScoringTeam,
         autoFuel: getVal('auto-fuel') || 0,
@@ -245,23 +244,23 @@ async function saveAndExit() {
         teleClimb: parseInt(document.getElementById('tele-climb').value),
         tranFuel: getVal('transport-fuel') || 0,
         reporting: document.getElementById('reporting').value,
-
     };
     
-    
-    // 1. 本地立即反應
+    // 1. 本地立即更新 UI
     allScoresRaw.push(data);
+    renderCards(allTeams); 
     
-    // 2. 呼叫我們剛寫好的 saveData (它會處理離線暫存)
+    // 2. 處理離線儲存與背景同步
     saveData(data); 
 
-    // 3. 直接跳轉回主頁 (不用等網路)
-    renderCards(allTeams); 
-    togglePage();
+    // 3. 強制關閉計分頁，回到首頁 (取代原本重複的 togglePage)
+    document.getElementById('main-page').style.display = 'block';
+    document.getElementById('score-page').style.display = 'none';
+    const btn = document.getElementById('toggle-btn');
+    btn.innerText = '+';
+    btn.classList.remove('active');
     
-    renderCards(allTeams); 
-    togglePage(); 
-    
+    window.scrollTo(0, 0); // 回到頂部看最新平均分
 }
 
 
@@ -539,4 +538,17 @@ function updateSyncStatusDisplay() {
 
 
 // 網頁載入後啟動
-window.onload = autoFetchTeams;
+window.onload = () => {
+    autoFetchTeams();
+
+    // 每 30 秒自動從雲端拉取一次最新分數
+    setInterval(() => {
+        if (navigator.onLine) syncFromCloud();
+    }, 30000);
+
+    // 每 60 秒檢查一次是否有漏傳的離線資料
+    setInterval(processQueue, 60000);
+};
+
+// 監聽網路恢復事件
+window.addEventListener('online', processQueue);
