@@ -264,6 +264,10 @@ async function saveAndExit() {
     btn.classList.remove('active');
     
     window.scrollTo(0, 0); 
+
+    // 在 saveAndExit 函數的最末端加上這句
+    selectedMatchMode = "";
+
 }
 
 
@@ -388,7 +392,7 @@ function resetScoring() {
     const modeDropdown = document.getElementById('mode-selec');
     if(modeDropdown) modeDropdown.selectedIndex = 0;
 
-    selectedMatchMode = ""; 
+    
 }
 
 
