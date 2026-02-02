@@ -229,63 +229,54 @@ async function deleteCloudData(id, teamNumber) {
 async function saveAndExit() {
     const getVal = (id) => {
         const el = document.getElementById(id);
+        // 增加防呆：找不到元素時回傳 0
+        if (!el) return 0; 
         return el.tagName === "INPUT" ? parseInt(el.value) : parseInt(el.innerText);
     };
 
-    // 產生唯一 ID (時間戳 + 隨機數)
     const uniqueId = "Rec-" + Date.now() + "-" + Math.floor(Math.random() * 1000);
 
     const data = {
-        action: "SAVE", // 告訴後端這是儲存
+        action: "SAVE",
         id: uniqueId,
         teamNumber: currentScoringTeam,
         autoFuel: getVal('auto-fuel') || 0,
-        autoClimb: parseInt(document.getElementById('auto-climb').value),
+        autoClimb: parseInt(document.getElementById('auto-climb').value) || 0,
         teleFuel: getVal('tele-fuel') || 0,
-        teleClimb: parseInt(document.getElementById('tele-climb').value),
+        teleClimb: parseInt(document.getElementById('tele-climb').value) || 0,
         tranFuel: getVal('transport-fuel') || 0,
-        reporting: document.getElementById('reporting').value,
-
+        reporting: document.getElementById('reporting').value || "",
     };
     
-    // 1. 本地先加進去 (讓使用者覺得很快)
     allScoresRaw.push(data);
-    
-    // 2. 儲存到雲端
-    try {
-        console.log("正在同步雲端...");
-        // 使用 no-cors 模式發送 POST
-        await fetch(GOOGLE_SHEET_URL, {
-            method: "POST",
-            mode: "no-cors", 
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data)
-        });
-        
-
-        const statsElem = document.getElementById('search-stats');
-        if (statsElem) {
-            // 因為剛才 allScoresRaw.push(data) 已經讓陣列加 1 了
-            statsElem.innerText = `同步完成 (共 ${allScoresRaw.length} 筆)`;
-        }
-        // --- 修正結束 ---
-
-        // 重置標題並回到主頁
-        const h2Title = document.querySelector('#score-page h2');
-        if (h2Title) h2Title.innerText = "Scoring Mode";
-
-        renderCards(allTeams); 
-       
-
-    } catch (e) {
-        console.error("雲端同步失敗", e);
-        alert(`雲端同步失敗，請檢查網路。`);
-    }
-    
     renderCards(allTeams); 
-    togglePage(); 
+    saveData(data); 
+
+    // --- 關鍵修正：徹底重置 UI 狀態 ---
+    document.getElementById('main-page').style.display = 'block';
+    document.getElementById('score-page').style.display = 'none';
     
+    // 重置所有輸入框數值
+    resetScoring(); 
+    
+    const btn = document.getElementById('toggle-btn');
+    btn.innerText = '+';
+    btn.classList.remove('active');
+    
+    window.scrollTo(0, 0); 
 }
+
+
+// 統一儲存入口：先存手機，再傳雲端
+function saveData(data) {
+    const pending = JSON.parse(localStorage.getItem('pendingRecords') || '[]');
+    pending.push(data);
+    localStorage.setItem('pendingRecords', JSON.stringify(pending));
+    
+    // 現在它就在同一個檔案裡，可以直接叫到了！
+    processQueue(); 
+}
+
 
 // --- 修改：平均分計算 (從 allScoresRaw 陣列過濾) ---
 function calculateAverage(teamNumber) {
@@ -385,6 +376,7 @@ function togglePage() {
 }
 
 function resetScoring() {
+    // 1. 數值歸零邏輯
     const af = document.getElementById('auto-fuel');
     const tf = document.getElementById('tele-fuel');
     const trf = document.getElementById('transport-fuel');
@@ -393,12 +385,26 @@ function resetScoring() {
     if(tf) tf.tagName === "INPUT" ? tf.value = "0" : tf.innerText = "0";
     if(trf) trf.tagName === "INPUT" ? trf.value = "0" : trf.innerText = "0";
 
-
-
-
     if(document.getElementById('auto-climb')) document.getElementById('auto-climb').value = "0";
     if(document.getElementById('tele-climb')) document.getElementById('tele-climb').value = "0";
     if(document.getElementById('reporting')) document.getElementById('reporting').value = "";
+
+    // 2. --- 新增：畫面狀態重置 ---
+    // 讓計分頁回到最初「選模式」的樣子，隱藏掉上次打開的計分區
+    const modeSelectZone = document.getElementById('mode-selec-zone');
+    const staticSection = document.getElementById('static-section');
+    const actualContent = document.getElementById('actual-scoring-content');
+    const modeDropdown = document.getElementById('mode-selec');
+
+    if(modeSelectZone) modeSelectZone.style.display = 'none';
+    if(staticSection) staticSection.style.display = 'none';
+    if(actualContent) actualContent.style.display = 'none';
+    
+    // 把「選擇模式」的下拉選單恢復成第一選項 (請選擇模式)
+    if(modeDropdown) modeDropdown.selectedIndex = 0;
+
+    // 重置全域變數
+    selectedMatchMode = ""; 
 }
 
 function confirmTeam() {
@@ -417,18 +423,35 @@ function confirmTeam() {
 
 function quickSelectTeam(num) {
     const btn = document.getElementById('toggle-btn');
+    const scorePage = document.getElementById('score-page');
     
-    if (document.getElementById('score-page').style.display === 'none') {
+    if (scorePage.style.display === 'none') {
         currentScoringTeam = num;
+        
+        // 1. 切換主頁面顯示
         document.getElementById('main-page').style.display = 'none';
-        document.getElementById('score-page').style.display = 'block';
-        document.getElementById('score-page').querySelector('h2').innerText = `正在為 #${num} 計分`;
-        document.getElementById('team-select-zone').style.display = 'none';
-        document.getElementById('mode-selec-zone').style.display = 'block';
+        scorePage.style.display = 'block';
+        
+        // 2. 更新標題
+        const h2Title = scorePage.querySelector('h2');
+        if (h2Title) {
+            h2Title.innerText = `正在為 #${num} 計分`;
+            h2Title.style.display = 'block';
+        }
+
+        // 3. --- 強制重置所有子區域的顯示狀態 ---
+        document.getElementById('team-select-zone').style.display = 'none';    // 隱藏選隊
+        document.getElementById('mode-selec-zone').style.display = 'block';   // 顯示選模式
+        document.getElementById('static-section').style.display = 'none';      // 隱藏靜態
+        document.getElementById('actual-scoring-content').style.display = 'none'; // 隱藏動態
+        
+        // 4. 重置下拉選單與數值
+        const modeDropdown = document.getElementById('mode-selec');
+        if (modeDropdown) modeDropdown.selectedIndex = 0; // 回到 "-- 請選擇模式 --"
+        resetScoring();
+
         btn.innerText = '×';
         btn.classList.add('active');
-        resetScoring();
-        
     }
 }
 
@@ -496,5 +519,71 @@ function whatmode() {
 
 // 移除 clearAllData (因為已經改為雲端，且支援單筆刪除，不需要全清功能)
 
+// --- 從 app.js 搬過來的核心同步邏輯 ---
+
+// 1. 處理上傳隊列
+async function processQueue() {
+    if (!navigator.onLine) {
+        updateSyncStatusDisplay();
+        return;
+    }
+
+    let pending = JSON.parse(localStorage.getItem('pendingRecords') || '[]');
+    if (pending.length === 0) {
+        updateSyncStatusDisplay();
+        return;
+    }
+
+    console.log(`偵測到網路，正在補傳 ${pending.length} 筆離線數據...`);
+
+    for (const record of [...pending]) {
+        try {
+            await fetch(GOOGLE_SHEET_URL, {
+                method: "POST",
+                mode: "no-cors",
+                body: JSON.stringify(record)
+            });
+
+            // 成功後移除該筆
+            pending = pending.filter(item => item.id !== record.id);
+            localStorage.setItem('pendingRecords', JSON.stringify(pending));
+        } catch (e) {
+            console.error("同步失敗，暫停隊列:", e);
+            break; 
+        }
+    }
+    updateSyncStatusDisplay();
+}
+
+// 2. 更新主頁狀態列
+function updateSyncStatusDisplay() {
+    const statsElem = document.getElementById('search-stats');
+    if (!statsElem) return;
+
+    const pendingCount = JSON.parse(localStorage.getItem('pendingRecords') || '[]').length;
+    
+    if (pendingCount > 0) {
+        statsElem.innerHTML = `同步中... <span style="color:#e67e22; font-weight:bold;">(⚠️ ${pendingCount} 筆待上傳)</span>`;
+    } else {
+        // 這裡維持你原本 syncFromCloud 顯示的格式
+        statsElem.innerText = `同步完成 (共 ${allScoresRaw.length} 筆)`;
+    }
+}
+
+
+
 // 網頁載入後啟動
-window.onload = autoFetchTeams;
+window.onload = () => {
+    autoFetchTeams();
+
+    // 每 30 秒自動從雲端拉取一次最新分數
+    setInterval(() => {
+        if (navigator.onLine) syncFromCloud();
+    }, 30000);
+
+    // 每 60 秒檢查一次是否有漏傳的離線資料
+    setInterval(processQueue, 60000);
+};
+
+// 監聽網路恢復事件
+window.addEventListener('online', processQueue);
