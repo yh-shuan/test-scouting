@@ -248,44 +248,33 @@ async function saveAndExit() {
 
     };
     
-    // 1. 本地先加進去 (讓使用者覺得很快)
+    
+    // 1. 本地立即反應
     allScoresRaw.push(data);
     
-    // 2. 儲存到雲端
-    try {
-        console.log("正在同步雲端...");
-        // 使用 no-cors 模式發送 POST
-        await fetch(GOOGLE_SHEET_URL, {
-            method: "POST",
-            mode: "no-cors", 
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data)
-        });
-        
+    // 2. 呼叫我們剛寫好的 saveData (它會處理離線暫存)
+    saveData(data); 
 
-        const statsElem = document.getElementById('search-stats');
-        if (statsElem) {
-            // 因為剛才 allScoresRaw.push(data) 已經讓陣列加 1 了
-            statsElem.innerText = `同步完成 (共 ${allScoresRaw.length} 筆)`;
-        }
-        // --- 修正結束 ---
-
-        // 重置標題並回到主頁
-        const h2Title = document.querySelector('#score-page h2');
-        if (h2Title) h2Title.innerText = "Scoring Mode";
-
-        renderCards(allTeams); 
-       
-
-    } catch (e) {
-        console.error("雲端同步失敗", e);
-        alert(`雲端同步失敗，請檢查網路。`);
-    }
+    // 3. 直接跳轉回主頁 (不用等網路)
+    renderCards(allTeams); 
+    togglePage();
     
     renderCards(allTeams); 
     togglePage(); 
     
 }
+
+
+// 統一儲存入口：先存手機，再傳雲端
+function saveData(data) {
+    const pending = JSON.parse(localStorage.getItem('pendingRecords') || '[]');
+    pending.push(data);
+    localStorage.setItem('pendingRecords', JSON.stringify(pending));
+    
+    // 現在它就在同一個檔案裡，可以直接叫到了！
+    processQueue(); 
+}
+
 
 // --- 修改：平均分計算 (從 allScoresRaw 陣列過濾) ---
 function calculateAverage(teamNumber) {
@@ -495,6 +484,59 @@ function whatmode() {
 
 
 // 移除 clearAllData (因為已經改為雲端，且支援單筆刪除，不需要全清功能)
+
+// --- 從 app.js 搬過來的核心同步邏輯 ---
+
+// 1. 處理上傳隊列
+async function processQueue() {
+    if (!navigator.onLine) {
+        updateSyncStatusDisplay();
+        return;
+    }
+
+    let pending = JSON.parse(localStorage.getItem('pendingRecords') || '[]');
+    if (pending.length === 0) {
+        updateSyncStatusDisplay();
+        return;
+    }
+
+    console.log(`偵測到網路，正在補傳 ${pending.length} 筆離線數據...`);
+
+    for (const record of [...pending]) {
+        try {
+            await fetch(GOOGLE_SHEET_URL, {
+                method: "POST",
+                mode: "no-cors",
+                body: JSON.stringify(record)
+            });
+
+            // 成功後移除該筆
+            pending = pending.filter(item => item.id !== record.id);
+            localStorage.setItem('pendingRecords', JSON.stringify(pending));
+        } catch (e) {
+            console.error("同步失敗，暫停隊列:", e);
+            break; 
+        }
+    }
+    updateSyncStatusDisplay();
+}
+
+// 2. 更新主頁狀態列
+function updateSyncStatusDisplay() {
+    const statsElem = document.getElementById('search-stats');
+    if (!statsElem) return;
+
+    const pendingCount = JSON.parse(localStorage.getItem('pendingRecords') || '[]').length;
+    
+    if (pendingCount > 0) {
+        statsElem.innerHTML = `同步中... <span style="color:#e67e22; font-weight:bold;">(⚠️ ${pendingCount} 筆待上傳)</span>`;
+    } else {
+        // 這裡維持你原本 syncFromCloud 顯示的格式
+        statsElem.innerText = `同步完成 (共 ${allScoresRaw.length} 筆)`;
+    }
+}
+
+
 
 // 網頁載入後啟動
 window.onload = autoFetchTeams;
