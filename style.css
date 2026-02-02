@@ -1,6 +1,11 @@
 body{
     background-color: #f8ddb4;
 }
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 h1{
     color: #7fffd4;
     font-size: 64px;
@@ -13,11 +18,8 @@ p{
     text-align: left;
 }
 table{
-    size: 1px;
     -ms-text-size-adjust: auto;
     background-color: rgb(0, 255, 255);
-    border-color: #000000;
-    border-style: solid;
     padding: 1px;
     border: 3px solid #000000;
     border-radius: 30px;
@@ -324,7 +326,7 @@ table{
 }
 
 
-.checkbox, .checkbox {
+.checkbox {
     margin: 20px 0;
     display: flex;
     flex-direction: row;  /* 改為水平排列 */
