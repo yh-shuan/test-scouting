@@ -229,6 +229,8 @@ async function deleteCloudData(id, teamNumber) {
 async function saveAndExit() {
     const getVal = (id) => {
         const el = document.getElementById(id);
+        // 增加防呆：找不到元素時回傳 0
+        if (!el) return 0; 
         return el.tagName === "INPUT" ? parseInt(el.value) : parseInt(el.innerText);
     };
 
@@ -239,28 +241,29 @@ async function saveAndExit() {
         id: uniqueId,
         teamNumber: currentScoringTeam,
         autoFuel: getVal('auto-fuel') || 0,
-        autoClimb: parseInt(document.getElementById('auto-climb').value),
+        autoClimb: parseInt(document.getElementById('auto-climb').value) || 0,
         teleFuel: getVal('tele-fuel') || 0,
-        teleClimb: parseInt(document.getElementById('tele-climb').value),
+        teleClimb: parseInt(document.getElementById('tele-climb').value) || 0,
         tranFuel: getVal('transport-fuel') || 0,
-        reporting: document.getElementById('reporting').value,
+        reporting: document.getElementById('reporting').value || "",
     };
     
-    // 1. 本地立即更新 UI
     allScoresRaw.push(data);
     renderCards(allTeams); 
-    
-    // 2. 處理離線儲存與背景同步
     saveData(data); 
 
-    // 3. 強制關閉計分頁，回到首頁 (取代原本重複的 togglePage)
+    // --- 關鍵修正：徹底重置 UI 狀態 ---
     document.getElementById('main-page').style.display = 'block';
     document.getElementById('score-page').style.display = 'none';
+    
+    // 重置所有輸入框數值
+    resetScoring(); 
+    
     const btn = document.getElementById('toggle-btn');
     btn.innerText = '+';
     btn.classList.remove('active');
     
-    window.scrollTo(0, 0); // 回到頂部看最新平均分
+    window.scrollTo(0, 0); 
 }
 
 
@@ -373,6 +376,7 @@ function togglePage() {
 }
 
 function resetScoring() {
+    // 1. 數值歸零邏輯
     const af = document.getElementById('auto-fuel');
     const tf = document.getElementById('tele-fuel');
     const trf = document.getElementById('transport-fuel');
@@ -381,12 +385,26 @@ function resetScoring() {
     if(tf) tf.tagName === "INPUT" ? tf.value = "0" : tf.innerText = "0";
     if(trf) trf.tagName === "INPUT" ? trf.value = "0" : trf.innerText = "0";
 
-
-
-
     if(document.getElementById('auto-climb')) document.getElementById('auto-climb').value = "0";
     if(document.getElementById('tele-climb')) document.getElementById('tele-climb').value = "0";
     if(document.getElementById('reporting')) document.getElementById('reporting').value = "";
+
+    // 2. --- 新增：畫面狀態重置 ---
+    // 讓計分頁回到最初「選模式」的樣子，隱藏掉上次打開的計分區
+    const modeSelectZone = document.getElementById('mode-selec-zone');
+    const staticSection = document.getElementById('static-section');
+    const actualContent = document.getElementById('actual-scoring-content');
+    const modeDropdown = document.getElementById('mode-selec');
+
+    if(modeSelectZone) modeSelectZone.style.display = 'none';
+    if(staticSection) staticSection.style.display = 'none';
+    if(actualContent) actualContent.style.display = 'none';
+    
+    // 把「選擇模式」的下拉選單恢復成第一選項 (請選擇模式)
+    if(modeDropdown) modeDropdown.selectedIndex = 0;
+
+    // 重置全域變數
+    selectedMatchMode = ""; 
 }
 
 function confirmTeam() {
@@ -405,18 +423,35 @@ function confirmTeam() {
 
 function quickSelectTeam(num) {
     const btn = document.getElementById('toggle-btn');
+    const scorePage = document.getElementById('score-page');
     
-    if (document.getElementById('score-page').style.display === 'none') {
+    if (scorePage.style.display === 'none') {
         currentScoringTeam = num;
+        
+        // 1. 切換主頁面顯示
         document.getElementById('main-page').style.display = 'none';
-        document.getElementById('score-page').style.display = 'block';
-        document.getElementById('score-page').querySelector('h2').innerText = `正在為 #${num} 計分`;
-        document.getElementById('team-select-zone').style.display = 'none';
-        document.getElementById('mode-selec-zone').style.display = 'block';
+        scorePage.style.display = 'block';
+        
+        // 2. 更新標題
+        const h2Title = scorePage.querySelector('h2');
+        if (h2Title) {
+            h2Title.innerText = `正在為 #${num} 計分`;
+            h2Title.style.display = 'block';
+        }
+
+        // 3. --- 強制重置所有子區域的顯示狀態 ---
+        document.getElementById('team-select-zone').style.display = 'none';    // 隱藏選隊
+        document.getElementById('mode-selec-zone').style.display = 'block';   // 顯示選模式
+        document.getElementById('static-section').style.display = 'none';      // 隱藏靜態
+        document.getElementById('actual-scoring-content').style.display = 'none'; // 隱藏動態
+        
+        // 4. 重置下拉選單與數值
+        const modeDropdown = document.getElementById('mode-selec');
+        if (modeDropdown) modeDropdown.selectedIndex = 0; // 回到 "-- 請選擇模式 --"
+        resetScoring();
+
         btn.innerText = '×';
         btn.classList.add('active');
-        resetScoring();
-        
     }
 }
 
