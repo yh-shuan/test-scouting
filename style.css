@@ -40,15 +40,15 @@ table{
     position: fixed;
     bottom: 40px; /* 稍微往上一點 */
     right: 30px;
-    width: 7.5vw;
-    height: 7.5vw;
+    width: 15vw;
+    height: 15vw;
     background-color: #6464c8; /* 這裡定義原色 */
     color: white;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 7.5vw;
+    font-size: 15vw;
     cursor: pointer;
     box-shadow: 0 4px 10px rgba(0,0,0,0.4);
     z-index: 9999;
