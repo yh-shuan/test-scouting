@@ -201,28 +201,45 @@ table{
 }/* 滑鼠移入時的效果 */
 
 .team-number {
+    font-size: 50px;
     color: #bb22aa;
     text-shadow: 2px 2px 4px #33333333;
 }
 
 .team-name {
+    font-size: 50px;
     color:#000000;
     font-style: italic;
     text-shadow: 2px 2px 5px #11111166;
 }
 .team-location {
     font-size: 16px !important; /* 強制統一大小 */
-    display: flex;
-    flex-direction: column;
+    display: flex !important;
+    flex-direction: column; /* 圖標在上，文字在下 */
     align-items: center;
-    gap: 5px;
-    line-height: 1.2;
+    justify-content: center;
+    height: 100%;
     width: 100%;
-    text-align: center;
-    transition: font-size 0.2s; /* 縮放時平滑一點 */
-    cursor: pointer;
-    
+    padding: 5px;
+    box-sizing: border-box;
 }/* 針對 location 網址文字的特殊處理 */
+
+.addr-text {
+    width: 100%;
+    display: -webkit-box;
+    -webkit-box-orient: vertical; /* 垂直排列 */
+    overflow: hidden;
+    white-space: normal; /* 允許換行 */
+    text-overflow: initial; /* 取消省略號 */   
+    text-align: center;
+    /* 輔助樣式 */      /* 避免超長英文單字撐開容器 */
+    line-height: 1.2;           /* 設定行高避免字體重疊 */
+}/* 地址文字的樣式 */
+
+.team-location .material-icons {
+    font-size: 20px; /* 小一點的圖示 */
+    margin-bottom: 2px;
+}/* 地址圖示的樣式 */
 
 .search-container {
     margin: 20px auto;

@@ -129,6 +129,16 @@ function renderCards(teamsList) {
         `;
     }).join('');
 
+    // --- 新增：渲染完畢後調整字體 ---
+    const nameLabels = container.querySelectorAll('.team-name');
+    nameLabels.forEach(label => {
+        // 設定寬度上限，否則 clientWidth 會被內容撐開
+        label.style.width = "100%";
+        label.style.overflow = "hidden";
+        label.style.whiteSpace = "nowrap";
+        autoShrinkText(label, 12); // 自動縮小字體，最小 12px
+    });
+
     // (保留原本的地址抓取邏輯，這裡省略不重複貼上，請保留你的 fetch detail 代碼)
     fetchAddresses(teamsList); 
 }
@@ -146,7 +156,12 @@ function fetchAddresses(teamsList) {
             if (target) {
                 const schoolName = detail.school_name || detail.address || "無詳細地址資訊";
                 // 不要用 innerText，改用這個方式保留圖標
-                target.innerHTML = `<span class="material-icons">school</span>${schoolName}`;
+                target.innerHTML = `<span class="material-icons">school</span><div class="addr-text">${schoolName}</div>`;
+
+                // 呼叫縮放功能
+                const textElem = target.querySelector('.addr-text');
+                if(textElem) autoShrinkText(textElem, 10);
+
                 target.onclick = (e) => {
                       e.stopPropagation(); // 防止冒泡
                       if (schoolName !== "無詳細地址資訊") {
