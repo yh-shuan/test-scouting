@@ -1,11 +1,14 @@
 body{
-    background-color: #d6cba5ee;
+    /* background-color: #eaea67ee;
     background-image: 
-    radial-gradient(#c8bd97cc 15%, transparent 15%), 
-    radial-gradient(#c7bc96aa 40%, transparent 40%);
+    radial-gradient(#ebcf67cc 10%, transparent 15%), 
+    radial-gradient(#ebcf67aa 35%, transparent 40%);
     background-attachment: fixed; 
-    background-size: 60px 60px;
-    background-position: 0 0 , 30px 30px;
+    background-size: 80px 80px;
+    background-position: 0 0 , 40px 40px; */
+    background: linear-gradient(120deg, #c5d5fa, #c3dc99); 
+    min-height: 100vh; 
+    background-attachment: fixed; 
 }
 * {
     box-sizing: border-box;
@@ -35,22 +38,32 @@ table{
 
 .floating-btn {
     position: fixed;
-    bottom: 30px;
+    bottom: 40px; /* 稍微往上一點 */
     right: 30px;
-    width: 60px;
-    height: 60px;
+    width: 80px;
+    height: 80px;
     background-color: #6464c8; /* 這裡定義原色 */
     color: white;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 36px;
+    font-size: 45px;
     cursor: pointer;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
     z-index: 9999;
-    transition: all 0.5s ease;
+    transition: all 0.3s ease;
+    touch-action: manipulation; /* 提升觸控裝置的反應速度 */
 }/* 預設狀態（列表模式） */
+@media (max-width: 400px) {
+    .floating-btn {
+        width: 70px;
+        height: 70px;
+        font-size: 40px;
+        bottom: 20px;
+        right: 20px;
+    }
+}/* 手機版調整大小與位置 */
 
 .floating-btn:hover { 
     transform: scale(1.1) rotate(90deg);
@@ -76,9 +89,9 @@ table{
     flex-direction: column; 
     align-items: center;    
     justify-content: flex-start; 
-    background: linear-gradient(150deg, #c5d5fa, #c3dc99);
-    border: 5px solid;
-    border-color: transparent;
+    background-image: linear-gradient(135deg, #5271C4 0%, #B19FFF 48%, #ECA1FE 100%);
+    /* border: 5px solid;
+    border-color: transparent; */
     border-radius: 10px 50px 50px;
     height: auto;               
     /*min-height: 375px;*/
@@ -101,7 +114,7 @@ table{
 }/* 修正後的 Hover：把縮放跟位移寫在一起 */
 
 .card-top {
-    background: linear-gradient(-150deg, #c3dc99, #c5d5fa);
+    background-image: linear-gradient(to top, #65379B 0%, #886AEA 15%, #7459C9 100%); 
     display: flex;
     align-items: center;    
     justify-content: center; 
@@ -115,7 +128,7 @@ table{
     display: grid; /* 改用 Grid 佈局 */
     grid-template-columns: repeat(2, 1fr); /* 預設為一排兩個 */
     gap: 25px; /* 按鈕之間的間距 */
-    width: 100%;
+    width: 100%; 
     padding: 25px;      /* 這決定了青色背景與卡片最外框的距離 */
     box-sizing: border-box;
 
@@ -195,6 +208,7 @@ table{
     }
 }
 
+.team-score-botton:hover, 
 .card-button > *:hover .material-icons {
     transform: translateY(-3px);
     filter: brightness(1.1); 
@@ -202,19 +216,22 @@ table{
 
 .team-number {
     font-size: 50px;
-    color: #bb22aa;
-    text-shadow: 2px 2px 4px #33333333;
+    color: #f5229dcc;
+    white-space: nowrap; /* 防止換行 */
+    text-align: top left;
+    text-shadow: 2px 2px 3px #33333377;
 }
 
 .team-name {
     font-size: 50px;
     color:#000000;
+    text-align: center;
     font-style: italic;
     text-shadow: 2px 2px 5px #11111166;
 }
 .team-location {
     font-size: 16px !important; /* 強制統一大小 */
-    display: flex !important;
+    /* display: flex !important; */
     flex-direction: column; /* 圖標在上，文字在下 */
     align-items: center;
     justify-content: center;
@@ -282,6 +299,19 @@ table{
     padding: 20px;
 }/* 卡片排版 */
 
+.team-score-botton {
+    background-image: linear-gradient(to top left, #d5d4d0 0%, #d5d4d0 1%, #eeeeec 31%, #efeeec 75%, #e9e9e7 100%);
+    width:100%; 
+    padding:12px; 
+    border:none; 
+    cursor:pointer; 
+    font-weight: bold; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    gap: 8px;
+}
+
 .no-result {
     grid-column: 1 / -1;
     text-align: center;
@@ -290,20 +320,33 @@ table{
     color: #999;
 }
 
-.score-section {
-    width: 85%;
-    margin: 20px auto; /* 水平置中 */
-    padding: 30px;
-    border: 3px solid #000;
-    border-radius: 20px;
+.score-section, .static-section {
+    width: 95%;
+    max-width: 600px;
+    margin: 30px auto; /* 水平置中 */
+    padding: 25px;
+    /* 使用主畫面卡片的經典漸層色 */
+    background: linear-gradient(135deg, #5271C4 0%, #B19FFF 48%, #ECA1FE 100%) !important; 
+
+    border: none;
+    border-radius: 10px 50px 50px;
+    color: white;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
     text-align: center;
-    background: linear-gradient(-150deg, #c3dc99, #c5d5fa);
 }/* 計分頁面大區塊通用樣式 */
 
-.score-section h3 {
-    font-size: 32px;
-    margin-top: 0;
-    color: #333;
+.score-section h3, .static-section h3 {
+    font-size: 28px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ffffff55;
+    padding-bottom: 10px;
+    color: #ffffff;
+}
+
+.counter-container label, .select-container label, .checkbox label {
+    color: #ffffff !important;
+    font-size: 22px;
 }
 
 .auto-zone {
@@ -341,18 +384,18 @@ table{
 }/* 控制列 */
 
 .cnt-btn {
-    width: 60px;
-    height: 60px;
-    font-size: 30px;
+    width: 70px;
+    height: 70px;
+    font-size: 35px;
     font-weight: bold;
-    border: none;
-    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 20px;
     cursor: pointer;
     transition: transform 0.1s active;
 }/* 加減按鈕 */
 
-.minus { background-color: #ff7675; color: white; } /* 紅色減號 */
-.plus { background-color: #55efc4; color: white; }  /* 綠色加號 */
+.minus { background-color: #ff7675cc; color: white; } /* 紅色減號 */
+.plus { background-color: #55efc4cc; color: white; }  /* 綠色加號 */
 
 .cnt-btn:active { 
     transform: scale(0.9); 
@@ -360,11 +403,12 @@ table{
 }
 
 .score-num {
-    font-size: 40px;
+    font-size: 50px;
     font-weight: bold;
     min-width: 60px;
     text-align: center;
     color: #2d3436;
+    text-shadow: 0 2px 4px #00000033;
 }/* 數字顯示 */
 
 .score-input {
@@ -375,20 +419,6 @@ table{
     border: 2px solid #333;
     background: white;
 }/* 下拉選單優化 */
-
-.static-section {
-    width: 85%;
-    margin: 20px auto; /* 水平置中 */
-    padding: 30px;
-    border: 3px solid #000;
-    border-radius: 20px;
-    text-align: center;
-}
-.static-section h3 {
-    font-size: 32px;
-    margin-top: 0;
-    color: #333;
-}
 
 .static-zone {
     background-color: rgb(125, 125, 255);
@@ -431,6 +461,7 @@ table{
     justify-content: center;
     align-items: center;
 }
+
 .detail-box {
     width: 90%;
     max-width: 600px;
@@ -468,7 +499,7 @@ table{
     position: relative;
 }
 .delete-btn-small {
-    position: absolute;
+    position: absolute; 
     top: 10px;
     right: 10px;
     background: #e74c3c;

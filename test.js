@@ -116,10 +116,7 @@ function renderCards(teamsList) {
                     </div>
                 </div>
 
-                <button onclick="event.stopPropagation(); quickSelectTeam('${t.team_number}')" 
-                style="width:100%; padding:12px; background:#f0f0f0; border:none; border-top: 1px solid #ccc; 
-                cursor:pointer; font-weight: bold; display: flex; 
-                align-items: center; justify-content: center; gap: 8px;">
+                <button onclick="event.stopPropagation(); quickSelectTeam('${t.team_number}')" class="team-score-botton">
                 
                 <span class="material-icons" style="font-size:20px; color:#333;">add_circle</span>
                 快速計分
