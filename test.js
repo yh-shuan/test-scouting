@@ -578,3 +578,18 @@ window.onload = () => {
 
 // 監聽網路恢復事件
 window.addEventListener('online', processQueue);
+
+/**
+ * 自動縮放字體大小
+ * @param {HTMLElement} el - 要檢查的 DOM 元素
+ * @param {number} minSize - 最小字體限制 (px)
+ */
+function autoShrinkText(el, minSize = 10) {
+    let currentSize = parseInt(window.getComputedStyle(el).fontSize);
+
+    // 當內容寬度大於容器寬度，且字體還大於最小值時
+    while (el.scrollWidth > el.clientWidth && currentSize > minSize) {
+        currentSize -= 1;
+        el.style.fontSize = currentSize + 'px';
+    }
+}

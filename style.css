@@ -1,5 +1,11 @@
 body{
-    background-color: #f8ddb4;
+    background-color: #d6cba5ee;
+    background-image: 
+    radial-gradient(#c8bd97cc 15%, transparent 15%), 
+    radial-gradient(#c7bc96aa 40%, transparent 40%);
+    background-attachment: fixed; 
+    background-size: 60px 60px;
+    background-position: 0 0 , 30px 30px;
 }
 * {
     box-sizing: border-box;
@@ -184,6 +190,9 @@ table{
     .card-button .material-icons {
         font-size: 20px; /* 超小螢幕時圖示稍微縮小 */
     }
+    .card-button > * {
+        font-size: 30px; /* 超小螢幕時文字稍微縮小 */
+    }
 }
 
 .card-button > *:hover .material-icons {
@@ -192,19 +201,17 @@ table{
 }/* 滑鼠移入時的效果 */
 
 .team-number {
-    font-size: 50px;
     color: #bb22aa;
     text-shadow: 2px 2px 4px #33333333;
 }
 
 .team-name {
-    font-size: 50px;
     color:#000000;
     font-style: italic;
     text-shadow: 2px 2px 5px #11111166;
 }
 .team-location {
-    font-size: 14px !important; /* 強制統一大小 */
+    font-size: 16px !important; /* 強制統一大小 */
     display: flex;
     flex-direction: column;
     align-items: center;
