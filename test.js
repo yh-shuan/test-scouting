@@ -21,7 +21,7 @@ let allScoresRaw = []; // 改為儲存雲端抓下來的原始資料陣列 (Flat
 const API_KEY = "tGy3U4VfP85N98m17nqzN8XCof0zafvCckCLbgWgmy95bGE0Aw97b4lV7UocJvxl"; 
 
 // --- ⚠️ 重要：請填入 Apps Script 部署後的 Web App URL (結尾通常是 /exec) ---
-const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbyE6Sp6r8VZle5PITtIvZmtb2uI2k6py501ptmb-PUr7lhrA5W13SHdgonvRD-5m7BH/exec"; 
+const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbwIB__uzBLosDqoODfFWNUtB2QRH_1zDXSshHwdbdMU9KDTW2gwwa4LBnLV0IJxn2Io/exec"; 
 
 // --- 新增：從雲端同步數據 ---
 async function syncFromCloud() {
@@ -249,7 +249,7 @@ async function deleteCloudData(id, teamNumber) {
 }
 
 // --- 修改：儲存並上傳 ---
-async function saveAndExit() {
+async function saveAndExit(type) {
     const getVal = (id) => {
         const el = document.getElementById(id);
         // 增加防呆：找不到元素時回傳 0
@@ -259,19 +259,32 @@ async function saveAndExit() {
 
     const uniqueId = "Rec-" + Date.now() + "-" + Math.floor(Math.random() * 1000);
 
-    const data = {
+
+    let data = {
         action: "SAVE",
+        
+        target: type,
         id: uniqueId,
         teamNumber: currentScoringTeam,
-        autoFuel: getVal('auto-fuel') || 0,
-        autoClimb: parseInt(document.getElementById('auto-climb').value) || 0,
-        teleFuel: getVal('tele-fuel') || 0,
-        teleClimb: parseInt(document.getElementById('tele-climb').value) || 0,
-        tranFuel: getVal('transport-fuel') || 0,
-        reporting: document.getElementById('reporting').value || "",
-    };
+        };
+    if(type==='movement'){
+        data.autoFuel= getVal('auto-fuel') || 0;
+        data.autoClimb= parseInt(document.getElementById('auto-climb').value) || 0;
+        data.teleFuel= getVal('tele-fuel') || 0;
+        data.teleClimb= parseInt(document.getElementById('tele-climb').value) || 0;
+        data.tranFuel= getVal('transport-fuel') || 0;
+        data.reporting= document.getElementById('reporting').value || "";
+
+        
+
+    }else if(type==='static'){
+        data.staticclimb= parseInt(document.getElementById('static-climb').value)||0;
+        data.climbposition=document.getElementById('climb-position').value||"";
+        data.staticfuel=getVal('static-fuel') || 0;
+        data.Runandshoot=document.getElementById('Run_and_shoot').checked ? "Yes" : "No";
+        data.staticreporting= document.getElementById('static-reporting').value || "";
+    }
     
-    allScoresRaw.push(data);
     renderCards(allTeams); 
     saveData(data); 
 
@@ -393,10 +406,11 @@ function togglePage() {
 }
 
 function resetScoring() {
-    // 1. 數值與輸入框歸零
+    // --- 1. 動態計分欄位重置 ---
     const af = document.getElementById('auto-fuel');
     const tf = document.getElementById('tele-fuel');
     const trf = document.getElementById('transport-fuel');
+    
     if(af) (af.tagName === "INPUT" ? af.value = "0" : af.innerText = "0");
     if(tf) (tf.tagName === "INPUT" ? tf.value = "0" : tf.innerText = "0");
     if(trf) (trf.tagName === "INPUT" ? trf.value = "0" : trf.innerText = "0");
@@ -405,18 +419,40 @@ function resetScoring() {
     if(document.getElementById('tele-climb')) document.getElementById('tele-climb').value = "0";
     if(document.getElementById('reporting')) document.getElementById('reporting').value = "";
 
-    // 2. 強制隱藏所有子區域
+    // --- 2. 靜態計分欄位重置 (新增這部分) ---
+    // 重置靜態 Climb 下拉選單
+    const sc = document.getElementById('static-climb');
+    if(sc) sc.value = "0";
+
+    // 重置 Climb Position 下拉選單
+    const cp = document.getElementById('climb-position');
+    if(cp) cp.value = ""; // 假設預設是空值或 None
+
+    // 重置靜態 Fuel 數值 (如果是透過 changeVal 控制的 innerText)
+    const sf = document.getElementById('static-fuel');
+    if(sf) (sf.tagName === "INPUT" ? sf.value = "0" : sf.innerText = "0");
+
+    // 重置 Run and Shoot 核取方塊
+    const rs = document.getElementById('Run_and_shoot');
+    if(rs) rs.checked = false;
+
+    // 重置靜態備註
+    const sr = document.getElementById('static-reporting');
+    if(sr) sr.value = "";
+
+    // --- 3. UI 顯示狀態重置 ---
+    // 強制隱藏所有子區域
     const zones = ['team-select-zone', 'mode-selec-zone', 'static-section', 'actual-scoring-content'];
     zones.forEach(id => {
         const el = document.getElementById(id);
         if (el) el.style.setProperty('display', 'none', 'important'); 
     });
     
-    // 3. 重置下拉選單
+    // 重置模式選擇下拉選單
     const modeDropdown = document.getElementById('mode-selec');
     if(modeDropdown) modeDropdown.selectedIndex = 0;
 
-    // 4. 【重點】徹底抹除標題，不留任何痕跡
+    // 抹除計分頁面標題
     const h2Title = document.querySelector('#score-page h2');
     if (h2Title) {
         h2Title.innerText = ""; 
