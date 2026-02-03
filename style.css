@@ -76,7 +76,7 @@ table{
     flex-direction: column; 
     align-items: center;    
     justify-content: flex-start; 
-    background: linear-gradient(120deg, #c5d5fa, #c3dc99);
+    background: linear-gradient(150deg, #c5d5fa, #c3dc99);
     border: 5px solid;
     border-color: transparent;
     border-radius: 10px 50px 50px;
@@ -156,7 +156,7 @@ table{
     gap: 5px; /* 圖示與文字的間距 */
     padding: 50%;
     height: 0; /* 讓 padding-top 決定高度 */
-    padding-top: 60%; /* 這樣可以保持比例 */
+    padding-top: 50%; /* 這樣可以保持比例 */
     border-radius: 12px;
     font-size: 40px; 
     font-weight: bold;
