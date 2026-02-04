@@ -20,8 +20,17 @@ let allTeams = [];
 let allScoresRaw = []; // 改為儲存雲端抓下來的原始資料陣列 (Flat Array)
 const API_KEY = "tGy3U4VfP85N98m17nqzN8XCof0zafvCckCLbgWgmy95bGE0Aw97b4lV7UocJvxl"; 
 
+
+
+let AllTeamsList=[];
+
 // --- ⚠️ 重要：請填入 Apps Script 部署後的 Web App URL (結尾通常是 /exec) ---
 const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbwIB__uzBLosDqoODfFWNUtB2QRH_1zDXSshHwdbdMU9KDTW2gwwa4LBnLV0IJxn2Io/exec"; 
+
+
+
+let currentRankMode = 'team';
+
 
 // --- 新增：從雲端同步數據 ---
 async function syncFromCloud() {
@@ -37,7 +46,9 @@ async function syncFromCloud() {
         if (statsElem) statsElem.innerText = `同步完成 (共 ${allScoresRaw.length} 筆)`;
         
         // 數據回來後，重新渲染卡片以更新平均分
-        renderCards(allTeams); 
+        resetproperty();
+        Rankingteam(currentRankMode);
+        
 
     } catch (e) {
         console.error("雲端同步失敗:", e);
@@ -68,12 +79,16 @@ async function autoFetchTeams() {
         allTeams.sort((a, b) => a.team_number - b.team_number);
         
         console.log("TBA 數據抓取成功:", allTeams.length, "支隊伍");
-        
-        // 先渲染一次卡片 (此時還沒有分數)
-        renderCards(allTeams); 
-        
-        // --- 關鍵修改：TBA 抓完後，立刻抓雲端分數 ---
+        // --- 關鍵修改：TBA 抓完後，立刻抓雲端分數 --
         await syncFromCloud();
+        
+        
+        resetproperty();
+        Rankingteam(currentRankMode);
+        
+        
+        
+       
 
     } catch (e) {
         console.error("抓取失敗:", e);
@@ -82,24 +97,32 @@ async function autoFetchTeams() {
     }
 }
 
-function renderCards(teamsList) {
+function renderCards(tupleList) {
     const container = document.getElementById('team-container');
     if (!container) return;
 
-    container.innerHTML = teamsList.map(t => {
-        // 呼叫計算平均分的函式 (現在是即時計算)
-        const avgScore = calculateAverage(t.team_number);
+    // tupleList 結構: [[6036, 15.5], [1678, 20.0], ...]
+    container.innerHTML = tupleList.map(tuple => {
+        const teamNum = tuple[0];
+        const scoreVal = tuple[1];
+        
+        // 顯示用的分數字串
+        const displayScore = scoreVal === -1 ? "N/A" : scoreVal.toFixed(1);
+
+        // 去原始資料找詳細資訊 (Nickname, Location)
+        // 這裡用 find，雖然效率 O(n)，但在 100 隊規模下毫秒級完成，沒問題
+        const t = allTeams.find(obj => obj.team_number === teamNum) || {};
 
         return `
         <div class="t">
-            <div class="team-card" onclick="showDetail('${t.team_number}')">
+            <div class="team-card" onclick="showDetail('${teamNum}')">
                 <div class="card-top">
-                    <div class="team-number"># ${t.team_number}</div>
+                    <div class="team-number"># ${teamNum}</div>
                     <div class="team-name">${t.nickname || "無名稱"}</div>
                 </div>
                 <div class="card-button">
                     <div class="team-avg-score">
-                        AVG: ${avgScore}
+                        AVG: ${displayScore}
                     </div>
                     <div class="team-state">
                         <span class="material-icons">map</span>
@@ -110,14 +133,13 @@ function renderCards(teamsList) {
                         ${t.city || "未知城市"}
                     </div>
 
-                    <div id="loc-${t.team_number}" class="team-location">
+                    <div id="loc-${teamNum}" class="team-location">
                         <span class="material-icons">school</span>
                         never gonnon give you up...
                     </div>
                 </div>
 
-                <button onclick="event.stopPropagation(); quickSelectTeam('${t.team_number}')" class="team-score-botton">
-                
+                <button onclick="event.stopPropagation(); quickSelectTeam('${teamNum}')" class="team-score-botton">
                 <span class="material-icons" style="font-size:20px; color:#333;">add_circle</span>
                 快速計分
                 </button>
@@ -126,19 +148,22 @@ function renderCards(teamsList) {
         `;
     }).join('');
 
-    // --- 新增：渲染完畢後調整字體 ---
+    // 字體調整
     const nameLabels = container.querySelectorAll('.team-name');
     nameLabels.forEach(label => {
-        // 設定寬度上限，否則 clientWidth 會被內容撐開
         label.style.width = "100%";
         label.style.overflow = "hidden";
         label.style.whiteSpace = "nowrap";
-        autoShrinkText(label, 12); // 自動縮小字體，最小 12px
+        autoShrinkText(label, 12); 
     });
 
-    // (保留原本的地址抓取邏輯，這裡省略不重複貼上，請保留你的 fetch detail 代碼)
-    fetchAddresses(teamsList); 
+    // 地址抓取也改傳 tupleList
+    fetchAddresses(tupleList.map(t => ({ team_number: t[0] })));
 }
+
+
+
+
 
 // 輔助函式：為了版面整潔把 fetch address 抽出來 (實際上你可以直接用你原本的寫法)
 function fetchAddresses(teamsList) {
@@ -229,7 +254,9 @@ async function deleteCloudData(id, teamNumber) {
     
     // 2. 重新渲染詳細頁面與主頁平均分
     showDetail(teamNumber);
-    renderCards(allTeams);
+    resetproperty();
+    Rankingteam(currentRankMode);
+    
 
     // 3. 發送請求給 Google Apps Script
     try {
@@ -244,6 +271,59 @@ async function deleteCloudData(id, teamNumber) {
         // 如果失敗，理論上應該要把資料加回來，但這裡簡化處理
     }
 }
+
+
+function resetproperty(){
+
+if (!allTeams || allTeams.length === 0) return;
+
+    AllTeamsList = allTeams.map(t => {
+        const avg = calculateAverage(t.team_number);
+        // 防呆：如果是 N/A 就給 -1，確保這隊排在最後；轉成浮點數以便排序
+        const score = avg === "N/A" ? -1 : parseFloat(avg);
+        
+        return [
+            t.team_number, // Index 0: 隊號
+            score          // Index 1: 平均分
+        ];
+    });
+
+}
+
+function Rankingteam(rankproperty) {
+    // 如果有傳入參數，更新全域模式；沒傳參數(自動更新時)就用舊的
+    if (rankproperty) {
+        currentRankMode = rankproperty;
+    }
+
+    let rankwhat = 0;
+    switch (currentRankMode) { // 改用全域變數判斷
+        case 'team': rankwhat = 0; break;
+        case 'avg': rankwhat = 1; break;
+        default: rankwhat = 0;
+    }
+
+    AllTeamsList.sort((a, b) => {
+        // 模式 A：純隊號 (index 0) -> 由小到大
+        if (rankwhat === 0) {
+            return a[0] - b[0]; 
+        }
+        
+        // 模式 B：戰力 (index 1) -> 由大到小
+        if (b[rankwhat] !== a[rankwhat]) {
+            return b[rankwhat] - a[rankwhat];
+        }
+        
+        // 保底：戰力一樣時，隊號由小到大
+        return a[0] - b[0];
+    });
+
+    // --- 關鍵：直接渲染排好的 Tuple ---
+    renderCards(AllTeamsList);
+}
+
+
+
 
 // --- 修改：儲存並上傳 ---
 async function saveAndExit(type) {
@@ -282,7 +362,8 @@ async function saveAndExit(type) {
         data.staticreporting= document.getElementById('static-reporting').value || "";
     }
     
-    renderCards(allTeams); 
+    resetproperty();
+    Rankingteam(currentRankMode);
     saveData(data); 
 
     // --- 關鍵修正：徹底重置 UI 狀態 ---
@@ -356,11 +437,21 @@ const searchBar = document.getElementById('search-bar');
 if (searchBar) {
     searchBar.addEventListener('input', (e) => {
         const searchText = e.target.value.toLowerCase().trim();
-        const filteredTeams = allTeams.filter(team => {
-            return team.team_number.toString().includes(searchText) || 
-                   (team.nickname && team.nickname.toLowerCase().includes(searchText));
+        
+        // 1. 先過濾出符合條件的原始隊伍物件
+        const filtered = allTeams.filter(team => 
+            team.team_number.toString().includes(searchText) || 
+            (team.nickname && team.nickname.toLowerCase().includes(searchText))
+        );
+
+        // 2. 將過濾後的結果轉成 renderCards 需要的 tuple 格式
+        const filteredTuples = filtered.map(t => {
+            const avg = calculateAverage(t.team_number);
+            return [t.team_number, avg === "N/A" ? -1 : parseFloat(avg)];
         });
-        renderCards(filteredTeams);
+
+        // 3. 渲染過濾後的 tuple
+        renderCards(filteredTuples);
     });
 }
 
