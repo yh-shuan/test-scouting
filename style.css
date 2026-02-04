@@ -57,12 +57,16 @@ table{
 }/* 預設狀態（列表模式） */
 @media (max-width: 600px) {
     .floating-btn {
-        width: 2.5vw;
-        height: 2.5vw;
+        width: 5vw;
+        height: 5vw;
         font-size: 5vw;
-        bottom: 2.5vw;
-        right: 2.5vw;
+        bottom: 5vw;
+        right: 5vw;
     }
+
+
+
+
 }/* 手機版調整大小與位置 */
 
 .floating-btn:hover { 
