@@ -59,9 +59,9 @@ table{
     .floating-btn {
         width: 10vh !important;
         height: 10vh !important;
-        font-size: 5vh !important;
-        bottom: 2.5vh !important;
-        right: 2.5vh !important;
+        font-size: 10vh !important;
+        bottom: 2.5vw !important;
+        right: 2.5vw !important;
     }
 
 
