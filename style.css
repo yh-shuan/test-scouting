@@ -55,13 +55,13 @@ table{
     transition: all 0.3s ease;
     touch-action: manipulation; /* 提升觸控裝置的反應速度 */
 }/* 預設狀態（列表模式） */
-@media (max-width: 300px) {
+@media screen  and(max-aspect-ratio:12/9) {
     .floating-btn {
-        width: 25vw;
-        height: 25vw;
-        font-size: 25vw;
-        bottom: 25vw;
-        right: 25vw;
+        width: 5vw;
+        height: 5vw;
+        font-size: 5vw;
+        bottom: 5vw;
+        right: 5vw;
     }
 
 
