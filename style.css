@@ -21,6 +21,10 @@ h1{
     text-align: center;
     text-shadow:  2px 2px 4px #33333333;
 }
+h2{
+    text-align: center; 
+    color: black;
+}
 p{
     color: #e89374;
     font-size: 24px;
@@ -316,6 +320,15 @@ table{
     gap: 8px;
 }
 
+#team-dropdown {
+    width: 80%;
+    padding: 12px;
+    font-size: 18px;
+    border-radius: 10px;
+    border: 2px solid #333;
+    background: white;
+}/* 下拉選單優化 */
+
 .no-result {
     grid-column: 1 / -1;
     text-align: center;
@@ -346,6 +359,12 @@ table{
     border-bottom: 1px solid #ffffff55;
     padding-bottom: 10px;
     color: #ffffff;
+}
+
+.score-section button {
+    margin-top: 15px; 
+    padding: 10px 20px; 
+    cursor: pointer; 
 }
 
 .counter-container label, .select-container label, .checkbox label {
@@ -423,6 +442,11 @@ table{
     border: 2px solid #333;
     background: white;
 }/* 下拉選單優化 */
+
+#score-page{
+    display: none; 
+    padding: 20px; 
+}
 
 .static-zone {
     background-color: rgb(125, 125, 255);
@@ -526,5 +550,74 @@ table{
     text-align: center;
 }
 
+.mode-select{
+    display: block; 
+    margin: 0 auto; 
+    width : 80%; 
+    padding : 20px; 
+    font-size : 18px; 
+    text-align: center;
+}
 
+.mode-select-zone{
+    display: none; 
+    padding: 20px; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center;
+}
+.mode-select-zone h2{
+    text-align: center; 
+    color: black;
+    width: 100%; 
+    font-size: 7.5vw;
+    max-width: 60px;
+}
 
+#mode-select-btn{
+    display: block; 
+    margin: 0 auto; 
+    width : 80%; 
+    padding: 15px 20px; 
+    cursor:pointer; 
+    font-weight: bold;
+}
+
+#main-page h3{
+    color: #333333ee;
+}
+#main-page select{
+    display: block;
+    width: 40%; 
+    font-size : 18px; 
+    text-align: center;
+}/* 下拉選單優化 */
+
+#static-section {
+    display: none;
+    padding: 20px;
+}
+
+.save-btn{
+    display:block;
+    margin: 30px auto; 
+    padding: 20px 40px;
+    background: #2ecc71; 
+    color: white; 
+    border: none; 
+    border-radius: 50px; 
+    font-size: 20px; 
+    font-weight: bold; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
+    cursor:pointer;
+}
+#static-section button:hover {
+    filter: brightness(1.1);
+}
+#static-section button:active {
+    transform: scale(0.95);
+}
+
+#actual-scoring-content {
+    display: none;
+}
