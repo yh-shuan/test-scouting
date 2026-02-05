@@ -107,7 +107,7 @@ async function autoFetchTeams() {
     } catch (e) {
         console.error("抓取失敗:", e);
         const container = document.getElementById('team-container');
-        if (container) container.innerHTML = `<div style="color:red; padding:20px;">數據載入失敗，請確認 API KEY 是否正確。</div>`;
+        if (container) container.innerHTML = `<div id="catch-err">數據載入失敗，請確認 API KEY 是否正確。</div>`;
     }
 }
 
@@ -154,7 +154,7 @@ function renderCards(tupleList) {
                 </div>
 
                 <button onclick="event.stopPropagation(); quickSelectTeam('${teamNum}')" class="team-score-botton">
-                <span class="material-icons" style="font-size:20px; color:#333;">add_circle</span>
+                <span class="material-icons">add_circle</span>
                 快速計分
                 </button>
             </div>
@@ -230,7 +230,7 @@ function showDetail(teamNumber) {
         sDiv.className = "record-item";
         sDiv.style.borderLeft = "4px solid #3498db"; // 藍邊區分
         sDiv.innerHTML = `
-            <div style="font-weight:bold; color:#2980b9; margin-bottom:5px;">📋 機器人靜態規格</div>
+            <div id="static-title">📋 機器人靜態規格</div>
             吊掛等級: L${staticRecord.staticclimb} | 位置: ${staticRecord.climbposition}<br>
             Fuel 裝載: ${staticRecord.staticfuel} | 跑打能力: ${staticRecord.Runandshoot}<br>
             備註: ${staticRecord.staticreporting || "無"}
@@ -240,16 +240,16 @@ function showDetail(teamNumber) {
 
     // --- 再顯示動態紀錄 ---
     if (moveRecords.length === 0) {
-        list.innerHTML += "<p style='text-align:center; color:#666; margin-top:10px;'>目前沒有動態比賽紀錄</p>";
+        list.innerHTML += "<p id='no-movement-records'>目前沒有動態比賽紀錄</p>";
     } else {
-        list.innerHTML += `<div style="font-weight:bold; margin:10px 0 5px 0;">🎮 比賽表現 (${moveRecords.length} 筆)</div>`;
+        list.innerHTML += `<div id="movement-title">🎮 比賽表現 (${moveRecords.length} 筆)</div>`;
         moveRecords.forEach((r, idx) => {
             const div = document.createElement('div');
             div.className = "record-item";
             const total = (parseInt(r.autoFuel)||0) + (parseInt(r.teleFuel)||0) + getClimbScore(r.autoClimb, true) + getClimbScore(r.teleClimb, false);
             
             div.innerHTML = `
-                <strong>紀錄 #${idx + 1}</strong> <span style="color:#888; font-size:11px;">(ID: ${r.id})</span><br>
+                <strong>紀錄 #${idx + 1}</strong> <span id="record-id">(ID: ${r.id})</span><br>
                 單場預估分: ${total} 分<br>
                 Auto: ${r.autoFuel}F / L${r.autoClimb} | Tele: ${r.teleFuel}F / L${r.teleClimb}<br>
                 備註: ${r.reporting || "無"}
@@ -714,7 +714,7 @@ function updateSyncStatusDisplay() {
     const pendingCount = JSON.parse(localStorage.getItem('pendingRecords') || '[]').length;
     
     if (pendingCount > 0) {
-        statsElem.innerHTML = `同步中... <span style="color:#e67e22; font-weight:bold;">(⚠️ ${pendingCount} 筆待上傳)</span>`;
+        statsElem.innerHTML = `同步中... <span id="pending-count">(⚠️ ${pendingCount} 筆待上傳)</span>`;
     } else {
         // 這裡維持你原本 syncFromCloud 顯示的格式
         statsElem.innerText = `同步完成 (動態:${allScoresRaw.length} | 靜態:${allStaticRaw.length})`;
