@@ -324,7 +324,7 @@ table{
     color: #999;
 }
 
-.score-section, .static-section {
+.score-section, .static-section, .static-zone {
     width: 95%;
     max-width: 600px;
     margin: 30px auto; /* 水平置中 */
@@ -351,18 +351,11 @@ table{
 .counter-container label, .select-container label, .checkbox label {
     color: #ffffff !important;
     font-size: 22px;
+    font-weight: bold;
 }
 
-.auto-zone {
-    background: linear-gradient(-150deg, #c3dc99, #c5d5fa);
-}/* AUTO 區塊顏色（淺藍） */
-
-.tele-zone {
-    background: linear-gradient(-150deg, #c3dc99, #c5d5fa);
-}/* TELEOP 區塊顏色（淺橘） */
-
-.transport-zone {
-    background: linear-gradient(-150deg, #c3dc99, #c5d5fa);
+.auto-zone, .tele-zone, .transport-zone, .static-zone {
+    background: transparent !important
 }
 
 /* 標題文字樣式 */
@@ -423,10 +416,6 @@ table{
     border: 2px solid #333;
     background: white;
 }/* 下拉選單優化 */
-
-.static-zone {
-    background-color: rgb(125, 125, 255);
-}
 
 .checkbox {
     margin: 20px 0;
@@ -529,7 +518,7 @@ table{
 .save-btn {
     display:block;
     margin: 30px auto; 
-    padding: 20px 40px;
+    padding: 18px 45px;
     background: #2ecc71; 
     color: white; 
     border: none; 
@@ -538,5 +527,14 @@ table{
     font-weight: bold; 
     box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
     cursor:pointer;
+    transition: transform 0.2s, filter 0.2s;
 }
 
+.save-btn:hover {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+}
+.save-btn:active {
+    transform: scale(0.95);
+    filter: brightness(0.9);
+}
