@@ -526,7 +526,7 @@ table{
     text-align: center;
 }
 
-#save-btn {
+.save-btn {
     display:block;
     margin: 30px auto; 
     padding: 20px 40px;
