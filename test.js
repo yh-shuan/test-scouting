@@ -717,7 +717,7 @@ function updateSyncStatusDisplay() {
         statsElem.innerHTML = `同步中... <span style="color:#e67e22; font-weight:bold;">(⚠️ ${pendingCount} 筆待上傳)</span>`;
     } else {
         // 這裡維持你原本 syncFromCloud 顯示的格式
-        statsElem.innerText = `同步完成 (共 ${allScoresRaw.length} 筆)`;
+        statsElem.innerText = `同步完成 (動態:${allScoresRaw.length} | 靜態:${allStaticRaw.length})`;
     }
 }
 
