@@ -538,3 +538,53 @@ table{
     transform: scale(0.95);
     filter: brightness(0.9);
 }
+.general-btn {
+    position: fixed;
+    top: 50px; 
+    right: 50px;
+    width: 20vw;
+    height: 7.5vw;  
+    background-color: #0dff00; /* 這裡定義原色 */
+    color: white;
+    border-radius: 5%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 7.5vw;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    z-index: 9999;
+    transition: all 0.3s ease;
+    touch-action: manipulation; /* 提升觸控裝置的反應速度 */
+    overflow: hidden; /* 隱藏超出部分 */
+    text-overflow: ellipsis; /* 超出時顯示 ... */
+
+}/* 預設狀態（列表模式） */
+
+
+.half-teamcard {
+    /* --- 寬度與置中 --- */
+    width: 45%;           /* 手機版建議佔滿一點 */
+    max-width: 1000px;     /* 電腦版不要太大 */
+    margin: 50px auto;    /* 上下 30px，左右 auto 是置中的靈魂 */
+
+    display: flex;
+    flex-direction: column; 
+    align-items: center;    
+    justify-content: flex-start; 
+    background-image: linear-gradient(135deg, #5271C4 0%, #B19FFF 48%, #ECA1FE 100%);
+    /* border: 5px solid;
+    border-color: transparent; */
+    border-radius: 10px 50px 50px;
+    height: auto;               
+    /*min-height: 375px;*/
+    min-width: none;
+    padding: 0; 
+    overflow: hidden;
+
+    /* --- 平滑動畫與陰影 --- */
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 5px 4px rgba(0,0,0,0.1);
+
+    
+}

@@ -30,7 +30,7 @@ const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbxzgNHYYPc06GW
 
 
 
-let currentRankMode = 'team';
+let currentRankMode = 'teamnuber';
 
 
 // --- 新增：從雲端同步數據 ---
@@ -317,8 +317,8 @@ function Rankingteam(rankproperty) {
 
     let rankwhat = 0;
     switch (currentRankMode) { // 改用全域變數判斷
-        case 'team': rankwhat = 0; break;
-        case 'avg': rankwhat = 1; break;
+        case 'teamname': rankwhat = 0; break;
+        case 'avgscore': rankwhat = 1; break;
         default: rankwhat = 0;
     }
 
@@ -510,6 +510,113 @@ function togglePage() {
         btn.innerText = '+';
         btn.classList.remove('active');
     }
+}
+
+
+function battle(){
+    const mainPage = document.getElementById('main-page');
+    const battlepage = document.getElementById('battle-page');
+    const batleteam1page = document.getElementById('batle-team1-page');
+    const batleteam2page = document.getElementById('batle-team2-page');
+    const btn = document.getElementById('battle-btn');
+    const dropdown1 = document.getElementById('battle-team-dropdown1');
+    const dropdown2 = document.getElementById('battle-team-dropdown2');
+
+    if (battlepage.style.display === 'none' || battlepage.style.display === '') {
+        // 1. 先重置所有狀態
+        resetScoring();
+
+        // 2. 切換大頁面
+        mainPage.style.display = 'none';
+        battlepage.style.display = 'flex';
+        
+        
+        btn.innerText = 'back';
+        btn.classList.add('active');
+
+        
+        
+        
+        // 4. 填充下拉選單
+        dropdown1.innerHTML = '<option value="">-- 請選擇第一支隊伍 --</option>';
+
+        allTeams.forEach(t => {
+            const opt = document.createElement('option');
+            opt.value = t.team_number;
+            opt.innerText = `#${t.team_number} - ${t.nickname || "無名稱"}`;
+            dropdown1.appendChild(opt);
+        });
+        batleteam1page.style.display = 'flex';
+
+
+        dropdown2.innerHTML = '<option value="">-- 請選擇第二支隊伍 --</option>';
+
+        allTeams.forEach(t => {
+            const opt = document.createElement('option');
+            opt.value = t.team_number;
+            opt.innerText = `#${t.team_number} - ${t.nickname || "無名稱"}`;
+            dropdown2.appendChild(opt);
+        });
+
+        batleteam2page.style.display = 'flex';
+
+    } else {
+        mainPage.style.display = 'block';
+        battlepage.style.display = 'none';
+        btn.innerText = 'battle';
+        btn.classList.remove('active');
+
+        // 1. 重製下拉選單到預設狀態 
+        dropdown1.selectedIndex = 0;
+        dropdown2.selectedIndex = 0;
+
+        // 2. 清空原本顯示隊伍資訊的文字區塊
+        batleteam1page.innerHTML = '';
+        batleteam2page.innerHTML = '';
+
+
+
+    }
+
+    dropdown1.onchange = function() {
+    const selectedTeamNum = parseInt(this.value); // 取得選中的隊號
+    
+    // 從你現有的 AllTeamsList 陣列中找出那一隊的資料 [隊號, 分數]
+    const teamData = AllTeamsList.find(tuple => tuple[0] === selectedTeamNum);
+    
+    // 如果找到了，就把文字噴進 batleteam1page
+    if (teamData) {
+        const teamNum = teamData[0];
+        const score = teamData[1];
+        
+        batleteam1page.innerHTML = `
+            <div style="display: flex; flex-direction: column; align-items: flex-start;">
+                <span style="font-size: 1.5em; font-weight: bold;">隊伍：#${teamNum}</span>
+                <span style="font-size: 1.2em;">平均分：${score === -1 ? 'N/A' : score.toFixed(1)}</span>
+            </div>
+        `;
+    }
+    };
+
+    // 第二個隊伍選單同理
+    dropdown2.onchange = function() {
+        const selectedTeamNum = parseInt(this.value);
+        const teamData = AllTeamsList.find(tuple => tuple[0] === selectedTeamNum);
+        
+        if (teamData) {
+            batleteam2page.innerHTML = `
+                <div style="display: flex; flex-direction: column; align-items: flex-start;">
+                    <span style="font-size: 1.5em; font-weight: bold;">隊伍：#${teamData[0]}</span>
+                    <span style="font-size: 1.2em;">平均分：${teamData[1] === -1 ? 'N/A' : teamData[1].toFixed(1)}</span>
+                </div>
+            `;
+        }
+    };
+
+
+
+
+
 }
 
 function resetScoring() {
