@@ -621,33 +621,3 @@ table{
 #actual-scoring-content {
     display: none;
 }
-.material-icons {
-    font-size:20px; 
-    color:#333;
-}
-#catch-err {
-    color:red; 
-    padding:20px;
-}
-#static-title {
-    font-weight:bold; 
-    color:#2980b9; 
-    margin-bottom:5px;
-}
-#no-movement-records {
-    text-align:center; 
-    color:#666; 
-    margin-top:10px;
-}
-#movement-title {
-    font-weight:bold; 
-    margin:10px 0 5px 0;
-}
-#record-id {
-    color:#888; 
-    font-size:11px;
-}
-#pending-count {
-    color:#e67e22; 
-    font-weight:bold;
-}
