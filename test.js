@@ -521,6 +521,8 @@ function battle(){
     const btn = document.getElementById('battle-btn');
     const dropdown1 = document.getElementById('battle-team-dropdown1');
     const dropdown2 = document.getElementById('battle-team-dropdown2');
+    const info1 = document.getElementById('team1-info');
+    const info2 = document.getElementById('team2-info');
 
     if (battlepage.style.display === 'none' || battlepage.style.display === '') {
         // 1. 先重置所有狀態
@@ -538,7 +540,7 @@ function battle(){
         
         
         // 4. 填充下拉選單
-        dropdown1.innerHTML = '<option value="">-- 請選擇第一支隊伍 --</option>';
+        dropdown1.innerHTML = '<option value="">-- 正方代表 --</option>';
 
         allTeams.forEach(t => {
             const opt = document.createElement('option');
@@ -549,7 +551,7 @@ function battle(){
         batleteam1page.style.display = 'flex';
 
 
-        dropdown2.innerHTML = '<option value="">-- 請選擇第二支隊伍 --</option>';
+        dropdown2.innerHTML = '<option value="">-- 反方代表 --</option>';
 
         allTeams.forEach(t => {
             const opt = document.createElement('option');
@@ -571,9 +573,8 @@ function battle(){
         dropdown2.selectedIndex = 0;
 
         // 2. 清空原本顯示隊伍資訊的文字區塊
-        batleteam1page.innerHTML = '';
-        batleteam2page.innerHTML = '';
-
+        if (info1) info1.innerHTML = '';
+        if (info2) info2.innerHTML = '';
 
 
     }
