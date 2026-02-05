@@ -526,5 +526,17 @@ table{
     text-align: center;
 }
 
-
+#save-btn {
+    display:block;
+    margin: 30px auto; 
+    padding: 20px 40px;
+    background: #2ecc71; 
+    color: white; 
+    border: none; 
+    border-radius: 50px; 
+    font-size: 20px; 
+    font-weight: bold; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
+    cursor:pointer;
+}
 
