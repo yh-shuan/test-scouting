@@ -17,7 +17,8 @@ if ('serviceWorker' in navigator) {
 
 // 1. 宣告全域變數
 let allTeams = []; 
-let allScoresRaw = []; // 改為儲存雲端抓下來的原始資料陣列 (Flat Array)
+let allScoresRaw = []; // 動態數據
+let allStaticRaw = []; // 靜態數據 
 const API_KEY = "tGy3U4VfP85N98m17nqzN8XCof0zafvCckCLbgWgmy95bGE0Aw97b4lV7UocJvxl"; 
 
 
@@ -25,7 +26,7 @@ const API_KEY = "tGy3U4VfP85N98m17nqzN8XCof0zafvCckCLbgWgmy95bGE0Aw97b4lV7UocJvx
 let AllTeamsList=[];
 
 // --- ⚠️ 重要：請填入 Apps Script 部署後的 Web App URL (結尾通常是 /exec) ---
-const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbwIB__uzBLosDqoODfFWNUtB2QRH_1zDXSshHwdbdMU9KDTW2gwwa4LBnLV0IJxn2Io/exec"; 
+const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbxzgNHYYPc06GWSPk5F6z-bGgWDQpirYjXpuSqef4uf5kIrHrs4B_svsFXjfOEH4FoT/exec"; 
 
 
 
@@ -38,12 +39,21 @@ async function syncFromCloud() {
     if (statsElem) statsElem.innerText = "正在同步雲端數據...";
 
     try {
-        const response = await fetch(GOOGLE_SHEET_URL);
+
+        const resMovement = await fetch(`${GOOGLE_SHEET_URL}?type=movement`);
         // 假設 Apps Script 回傳的是物件陣列 [ {id, teamNumber, autoFuel...}, ... ]
-        allScoresRaw = await response.json();
-        console.log("雲端數據同步成功:", allScoresRaw.length, "筆紀錄");
+        allScoresRaw = await resMovement.json();
+        const resStatic = await fetch(`${GOOGLE_SHEET_URL}?type=static`);
+        // 假設 Apps Script 回傳的是物件陣列 [ {id, teamNumber, autoFuel...}, ... ]
+        allStaticRaw = await resStatic.json();
+
+
+
+
+
+        console.log("雲端數據同步成功:", allScoresRaw.length, "筆動態紀錄",allStaticRaw,"筆動態紀錄靜態");
         
-        if (statsElem) statsElem.innerText = `同步完成 (共 ${allScoresRaw.length} 筆)`;
+        if (statsElem) statsElem.innerText = `同步完成 (動態:${allScoresRaw.length} | 靜態:${allStaticRaw.length})`;
         
         // 數據回來後，重新渲染卡片以更新平均分
         resetproperty();
@@ -55,6 +65,10 @@ async function syncFromCloud() {
         if (statsElem) statsElem.innerText = "雲端同步失敗，請檢查網路。";
     }
 }
+
+
+
+
 
 async function autoFetchTeams() {
     const event_key = "2026nysu";
@@ -203,41 +217,47 @@ function showDetail(teamNumber) {
     const list = document.getElementById('detail-list');
     const title = document.getElementById('detail-title');
     
-    // 從 allScoresRaw 過濾出該隊伍的紀錄
-    const records = allScoresRaw.filter(r => r.teamNumber == teamNumber);
+    // 過濾出該隊伍的資料
+    const moveRecords = allScoresRaw.filter(r => r.teamNumber == teamNumber);
+    const staticRecord = allStaticRaw.find(r => r.teamNumber == teamNumber); // 靜態通常只有一筆
 
-    const statsElem = document.getElementById('search-stats');
-    if (statsElem) {
-        statsElem.innerText = `同步完成 (共 ${allScoresRaw.length} 筆)`;
-        // 選擇性：加個紅色閃爍代表刪除成功
-        statsElem.style.color = "#e74c3c"; 
-        setTimeout(() => { statsElem.style.color = ""; }, 1500);
+    title.innerText = `隊伍 #${teamNumber} 詳細資料`;
+    list.innerHTML = ""; 
+
+    // --- 先顯示靜態資訊 (如果有) ---
+    if (staticRecord) {
+        const sDiv = document.createElement('div');
+        sDiv.className = "record-item";
+        sDiv.style.borderLeft = "4px solid #3498db"; // 藍邊區分
+        sDiv.innerHTML = `
+            <div style="font-weight:bold; color:#2980b9; margin-bottom:5px;">📋 機器人靜態規格</div>
+            吊掛等級: L${staticRecord.staticclimb} | 位置: ${staticRecord.climbposition}<br>
+            Fuel 裝載: ${staticRecord.staticfuel} | 跑打能力: ${staticRecord.Runandshoot}<br>
+            備註: ${staticRecord.staticreporting || "無"}
+        `;
+        list.appendChild(sDiv);
     }
 
-    
-    title.innerText = `隊伍 #${teamNumber} (${records.length} 筆資料)`;
-    list.innerHTML = ""; // 清空舊內容
-
-    if (records.length === 0) {
-        list.innerHTML = "<p style='text-align:center; color:#666;'>目前沒有雲端紀錄</p>";
+    // --- 再顯示動態紀錄 ---
+    if (moveRecords.length === 0) {
+        list.innerHTML += "<p style='text-align:center; color:#666; margin-top:10px;'>目前沒有動態比賽紀錄</p>";
     } else {
-        records.forEach((r, idx) => {
+        list.innerHTML += `<div style="font-weight:bold; margin:10px 0 5px 0;">🎮 比賽表現 (${moveRecords.length} 筆)</div>`;
+        moveRecords.forEach((r, idx) => {
             const div = document.createElement('div');
             div.className = "record-item";
-            // 簡單計算該筆總分
             const total = (parseInt(r.autoFuel)||0) + (parseInt(r.teleFuel)||0) + getClimbScore(r.autoClimb, true) + getClimbScore(r.teleClimb, false);
             
             div.innerHTML = `
-                <strong>紀錄 #${idx + 1}</strong> <span style="color:#888; font-size:12px;">(ID: ${r.id})</span><br>
-                總分預估: ${total}<br>
-                Auto Fuel: ${r.autoFuel} | Tele Fuel: ${r.teleFuel}<br>
-                Auto Climb: L${r.autoClimb} | Tele Climb: L${r.teleClimb}
-                <button class="delete-btn-small" onclick="deleteCloudData('${r.id}', '${teamNumber}')">刪除</button>
+                <strong>紀錄 #${idx + 1}</strong> <span style="color:#888; font-size:11px;">(ID: ${r.id})</span><br>
+                單場預估分: ${total} 分<br>
+                Auto: ${r.autoFuel}F / L${r.autoClimb} | Tele: ${r.teleFuel}F / L${r.teleClimb}<br>
+                備註: ${r.reporting || "無"}
+                <button class="delete-btn-small" onclick="deleteCloudData('${r.id}', '${teamNumber}', 'movement')">刪除</button>
             `;
             list.appendChild(div);
         });
     }
-    
     overlay.style.display = 'flex';
 }
 
@@ -246,29 +266,28 @@ function closeDetail() {
 }
 
 // --- 新功能：刪除雲端資料 ---
-async function deleteCloudData(id, teamNumber) {
-    if (!confirm("確定要從雲端刪除這筆資料嗎？此操作無法復原。")) return;
+async function deleteCloudData(id, teamNumber, targetTable) {
+    if (!confirm("確定要刪除這筆資料嗎？")) return;
 
-    // 1. 先從本地陣列移除，讓 UI 立刻反應 (不用等雲端回應)
-    allScoresRaw = allScoresRaw.filter(r => r.id != id);
+    // 本地移除
+    if (targetTable === 'movement') {
+        allScoresRaw = allScoresRaw.filter(r => r.id != id);
+    } else {
+        allStaticRaw = allStaticRaw.filter(r => r.id != id);
+    }
     
-    // 2. 重新渲染詳細頁面與主頁平均分
-    showDetail(teamNumber);
+    showDetail(teamNumber); // 重新整理視窗內容
     resetproperty();
     Rankingteam(currentRankMode);
-    
 
-    // 3. 發送請求給 Google Apps Script
     try {
         await fetch(GOOGLE_SHEET_URL, {
             method: "POST",
             mode: "no-cors",
-            body: JSON.stringify({ action: "DELETE", id: id })
+            body: JSON.stringify({ action: "DELETE", id: id, target: targetTable }) // 傳送 target 告知 GS
         });
-        console.log(`ID ${id} 刪除請求已發送`);
     } catch (e) {
-        alert("刪除請求發送失敗，請檢查網路");
-        // 如果失敗，理論上應該要把資料加回來，但這裡簡化處理
+        console.error("刪除失敗:", e);
     }
 }
 
@@ -672,6 +691,8 @@ async function processQueue() {
                 method: "POST",
                 mode: "no-cors",
                 body: JSON.stringify(record)
+
+
             });
 
             // 成功後移除該筆
