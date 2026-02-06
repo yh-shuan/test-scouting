@@ -55,19 +55,7 @@ table{
     transition: all 0.3s ease;
     touch-action: manipulation; /* 提升觸控裝置的反應速度 */
 }/* 預設狀態（列表模式） */
-@media screen and (max-aspect-ratio:1/1) {
-    .floating-btn {
-        width: 10vh !important;
-        height: 10vh !important;
-        font-size: 10vh !important;
-        bottom: 2.5vw !important;
-        right: 2.5vw !important;
-    }
 
-
-
-
-}/* 手機版調整大小與位置 */
 
 .floating-btn:hover { 
     transform: scale(1.1) rotate(90deg);
@@ -138,11 +126,7 @@ table{
 
     align-items: stretch;
 }
-@media (min-width: 600px) {
-    .card-button {
-        grid-template-columns: repeat(4, 1fr); /* 螢幕寬度大於 600px 時改為一排四個 */
-    }
-}
+
 .card-button > *:nth-child(1) {
     background-color: #f1c40f;
     border-color: #f39c12;
@@ -203,14 +187,7 @@ table{
 .card-button .material-icons {
     font-size: 40px; /* 調整圖示大小 */
 }/* 針對圖示大小的單獨設定 */
-@media (max-width: 300px) {
-    .card-button .material-icons {
-        font-size: 20px; /* 超小螢幕時圖示稍微縮小 */
-    }
-    .card-button > * {
-        font-size: 30px; /* 超小螢幕時文字稍微縮小 */
-    }
-}
+
 
 .team-score-botton:hover, 
 .card-button > *:hover .material-icons {
@@ -585,6 +562,26 @@ table{
     /* --- 平滑動畫與陰影 --- */
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     box-shadow: 0 5px 4px rgba(0,0,0,0.1);
-
-    
 }
+
+@media (min-width: 600px) {
+    .card-button {
+        grid-template-columns: repeat(4, 1fr); /* 螢幕寬度大於 600px 時改為一排四個 */
+    }
+    .card-button .material-icons {
+        font-size: 20px; /* 超小螢幕時圖示稍微縮小 */
+    }
+    .card-button > * {
+        font-size: 30px; /* 超小螢幕時文字稍微縮小 */
+    }
+}
+
+@media screen and (max-aspect-ratio:1/1) {
+    .floating-btn {
+        width: 10vh !important;
+        height: 10vh !important;
+        font-size: 10vh !important;
+        bottom: 2.5vw !important;
+        right: 2.5vw !important;
+    }
+}/* 手機版調整大小與位置 */
