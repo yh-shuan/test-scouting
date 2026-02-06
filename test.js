@@ -297,13 +297,18 @@ function resetproperty(){
 if (!allTeams || allTeams.length === 0) return;
 
     AllTeamsList = allTeams.map(t => {
-        const avg = calculateAverage(t.team_number);
+        const avg = calculateAverage(t.team_number,'allscore');
+        const autoavg   = calculateAverage(t.team_number,'auto');
+        const teleavg   = calculateAverage(t.team_number,'tele');
         // 防呆：如果是 N/A 就給 -1，確保這隊排在最後；轉成浮點數以便排序
         const score = avg === "N/A" ? -1 : parseFloat(avg);
-        
+        const autoscore = autoavg === "N/A" ? -1 : parseFloat(autoavg);
+        const telescore = teleavg === "N/A" ? -1 : parseFloat(teleavg);
         return {
-            teamNumber :t.team_number, // Index 0: 隊號
-            avragescore:score          // Index 1: 平均分
+            teamNumber :t.team_number, // 隊伍的號碼
+            avragescore:score,        // 加總平均分
+            autoavgscore:autoscore,  // 自動平均分
+            teleavgscore:telescore  // 人動平均分 
         };
     });
 
@@ -319,6 +324,8 @@ function Rankingteam(rankproperty) {
     switch (currentRankMode) { // 改用全域變數判斷
         case 'teamname': rankwhat = 0; break;
         case 'avgscore': rankwhat = 'avragescore'; break;
+        case 'auto'    : rankwhat = 'autoscore'; break;
+        case 'auto'    : rankwhat = 'telescore'; break;
         default: rankwhat = 0;
     }
 
@@ -416,20 +423,46 @@ function saveData(data) {
 
 
 // --- 修改：平均分計算 (從 allScoresRaw 陣列過濾) ---
-function calculateAverage(teamNumber) {
+function calculateAverage(teamNumber,type) {
     // 這裡改用 filter 從原始陣列抓
     const records = allScoresRaw.filter(r => r.teamNumber == teamNumber);
     
     if (records.length === 0) return "N/A";
 
     let totalScore = 0;
-    records.forEach(r => {
-        totalScore += (parseInt(r.autoFuel) || 0) * 1;
-        totalScore += (parseInt(r.teleFuel) || 0) * 1;
+    switch(type){
+        case('allscore'):
+            records.forEach(r => {
+                totalScore += (parseInt(r.autoFuel) || 0) * 1;
+                totalScore += (parseInt(r.teleFuel) || 0) * 1;
+                
+                totalScore += getClimbScore(r.autoClimb, true);
+                totalScore += getClimbScore(r.teleClimb, false);
+            });
+        break;
+        case('auto'):
+            records.forEach(r => {
+                totalScore += (parseInt(r.autoFuel) || 0) * 1;
+                
+                
+                totalScore += getClimbScore(r.autoClimb, true);
+                
+            });
+
+        break;
+        case('tele'):
+            records.forEach(r => {
+                
+                totalScore += (parseInt(r.teleFuel) || 0) * 1;
+                
+                
+                totalScore += getClimbScore(r.teleClimb, false);
+            });
+        break;
+
         
-        totalScore += getClimbScore(r.autoClimb, true);
-        totalScore += getClimbScore(r.teleClimb, false);
-    });
+
+    }
 
     return (totalScore / records.length).toFixed(1);
 }
@@ -465,10 +498,18 @@ if (searchBar) {
 
         // 2. 將過濾後的結果轉成 renderCards 需要的 tuple 格式
         const filteredTuples = filtered.map(t => {
-            const avg = calculateAverage(t.team_number);
-            return  {
-            teamNumber: t.team_number,
-            avragescore: avg === "N/A" ? -1 : parseFloat(avg)
+            const avg = calculateAverage(t.team_number,'allscore');
+            const autoavg   = calculateAverage(t.team_number,'auto');
+            const teleavg   = calculateAverage(t.team_number,'tele');
+            // 防呆：如果是 N/A 就給 -1，確保這隊排在最後；轉成浮點數以便排序
+            const score = avg === "N/A" ? -1 : parseFloat(avg);
+            const autoscore = autoavg === "N/A" ? -1 : parseFloat(autoavg);
+            const telescore = teleavg === "N/A" ? -1 : parseFloat(teleavg);
+            return {
+                teamNumber :t.team_number, // 隊伍的號碼
+                avragescore:score,        // 加總平均分
+                autoavgscore:autoscore,  // 自動平均分
+                teleavgscore:telescore  // 人動平均分 
             };
         });
 
