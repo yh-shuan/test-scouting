@@ -14,7 +14,6 @@ if ('serviceWorker' in navigator) {
 // --- 註冊結束，以下接著你原本的程式碼 ---
 
 
-
 // 1. 宣告全域變數
 let allTeams = []; 
 let allScoresRaw = []; // 動態數據
@@ -22,12 +21,10 @@ let allStaticRaw = []; // 靜態數據
 const API_KEY = "tGy3U4VfP85N98m17nqzN8XCof0zafvCckCLbgWgmy95bGE0Aw97b4lV7UocJvxl"; 
 
 
-
 let AllTeamsList=[];
 
 // --- ⚠️ 重要：請填入 Apps Script 部署後的 Web App URL (結尾通常是 /exec) ---
 const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbxzgNHYYPc06GWSPk5F6z-bGgWDQpirYjXpuSqef4uf5kIrHrs4B_svsFXjfOEH4FoT/exec"; 
-
 
 
 let currentRankMode = 'teamnuber';
@@ -47,10 +44,6 @@ async function syncFromCloud() {
         // 假設 Apps Script 回傳的是物件陣列 [ {id, teamNumber, autoFuel...}, ... ]
         allStaticRaw = await resStatic.json();
 
-
-
-
-
         console.log("雲端數據同步成功:", allScoresRaw.length, "筆動態紀錄",allStaticRaw,"筆動態紀錄靜態");
         
         if (statsElem) statsElem.innerText = `同步完成 (動態:${allScoresRaw.length} | 靜態:${allStaticRaw.length})`;
@@ -58,15 +51,12 @@ async function syncFromCloud() {
         // 數據回來後，重新渲染卡片以更新平均分
         resetproperty();
         Rankingteam(currentRankMode);
-        
 
     } catch (e) {
         console.error("雲端同步失敗:", e);
         if (statsElem) statsElem.innerText = "雲端同步失敗，請檢查網路。";
     }
 }
-
-
 
 
 
@@ -99,10 +89,7 @@ async function autoFetchTeams() {
         
         resetproperty();
         Rankingteam(currentRankMode);
-        
-        
-        
-       
+
 
     } catch (e) {
         console.error("抓取失敗:", e);
@@ -174,9 +161,6 @@ function renderCards(tupleList) {
     // 地址抓取也改傳 tupleList
     fetchAddresses(tupleList.map(t => ({ team_number: t[0] })));
 }
-
-
-
 
 
 // 輔助函式：為了版面整潔把 fetch address 抽出來 (實際上你可以直接用你原本的寫法)
@@ -479,18 +463,22 @@ let currentScoringTeam = "";
 function togglePage() {
     const mainPage = document.getElementById('main-page');
     const scorePage = document.getElementById('score-page');
+    const battlePage = document.getElementById('battle-page');
     const btn = document.getElementById('toggle-btn');
+    const battlebtn = document.getElementById('battle-btn');
     const dropdown = document.getElementById('team-dropdown');
 
-    if (scorePage.style.display === 'none' || scorePage.style.display === '') {
+    if ((scorePage.style.display === 'none' || scorePage.style.display === '') && (battlePage.style.display === 'none' || battlePage.style.display === '')) {
         // 1. 先重置所有狀態
         resetScoring();
 
         // 2. 切換大頁面
         mainPage.style.display = 'none';
         scorePage.style.display = 'block';
+        battlePage.style.display = 'none';
         btn.innerText = '×';
         btn.classList.add('active');
+        battlebtn.style.display = 'none'; // 隱藏戰鬥按鈕
 
         // 3. 【關鍵】強制顯示選隊伍區，隱藏其他區
         document.getElementById('team-select-zone').style.setProperty('display', 'block', 'important');
@@ -507,8 +495,11 @@ function togglePage() {
     } else {
         mainPage.style.display = 'block';
         scorePage.style.display = 'none';
+        battlePage.style.display = 'none';
         btn.innerText = '+';
         btn.classList.remove('active');
+        battlebtn.style.display = 'flex'; // 顯示戰鬥按鈕
+        battlebtn.classList.add('active');
     }
 }
 
@@ -518,7 +509,8 @@ function battle(){
     const battlepage = document.getElementById('battle-page');
     const batleteam1page = document.getElementById('batle-team1-page');
     const batleteam2page = document.getElementById('batle-team2-page');
-    const btn = document.getElementById('battle-btn');
+    const battlebtn = document.getElementById('battle-btn');
+    const btn = document.getElementById('toggle-btn');
     const dropdown1 = document.getElementById('battle-team-dropdown1');
     const dropdown2 = document.getElementById('battle-team-dropdown2');
     const info1 = document.getElementById('team1-info');
@@ -530,14 +522,12 @@ function battle(){
 
         // 2. 切換大頁面
         mainPage.style.display = 'none';
-        battlepage.style.display = 'flex';
+        battlepage.style.display = 'block';
         
         
-        btn.innerText = 'back';
+        battlebtn.style.display = 'none'; // 隱藏戰鬥按鈕
+        btn.innerText = '×';
         btn.classList.add('active');
-
-        
-        
         
         // 4. 填充下拉選單
         dropdown1.innerHTML = '<option value="">-- 正方代表 --</option>';
@@ -563,10 +553,13 @@ function battle(){
         batleteam2page.style.display = 'flex';
 
     } else {
-        mainPage.style.display = 'block';
-        battlepage.style.display = 'none';
-        btn.innerText = 'battle';
-        btn.classList.remove('active');
+        togglePage();
+        //mainPage.style.display = 'block';
+        //battlepage.style.display = 'none';
+        //battlebtn.style.display = 'block'; // 顯示戰鬥按鈕
+        //battlebtn.classList.add('active');
+        //btn.innerText = '+';
+        //btn.classList.remove('active');
 
         // 1. 重製下拉選單到預設狀態 
         dropdown1.selectedIndex = 0;
@@ -613,11 +606,6 @@ function battle(){
             `;
         }
     };
-
-
-
-
-
 }
 
 function resetScoring() {
@@ -707,6 +695,8 @@ function confirmTeam() {
 function quickSelectTeam(num) {
     const btn = document.getElementById('toggle-btn');
     const scorePage = document.getElementById('score-page');
+    const battlePage = document.getElementById('battle-page');
+    const battlebtn = document.getElementById('battle-btn');
     
     if (scorePage.style.display === 'none') {
         // 1. 【關鍵】先執行大掃除，這會把所有區域設為 none
@@ -732,6 +722,8 @@ function quickSelectTeam(num) {
 
         btn.innerText = '×';
         btn.classList.add('active');
+        battlebtn.style.display = 'none'; // 隱藏戰鬥按鈕
+        battlePage.style.display = 'none';
     }
 }
 
