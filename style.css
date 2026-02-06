@@ -7,7 +7,7 @@ body{
     background-size: 80px 80px;
     background-position: 0 0 , 40px 40px; */
     background: linear-gradient(120deg, #c5d5fa, #c3dc99); 
-    /* min-height: 100vh; */
+    min-height: 100vh; 
     background-attachment: fixed; 
 }
 * {
@@ -63,6 +63,10 @@ table{
         bottom: 2.5vw !important;
         right: 2.5vw !important;
     }
+
+
+
+
 }/* 手機版調整大小與位置 */
 
 .floating-btn:hover { 
@@ -526,30 +530,7 @@ table{
     transition: transform 0.2s, filter 0.2s;
 }
 
-.general-btn, 
-.general-btn.active {
-    position: fixed;
-    top: 50px; 
-    right: 50px;
-    width: 20vw;
-    height: 7.5vh; 
-    color: white;
-    background-color: #0dff00; /* 這裡定義原色 */
-    border-radius: 5%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 7.5vh;
-    cursor: pointer;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-    z-index: 9999;
-    touch-action: manipulation; /* 提升觸控裝置的反應速度 */
-    transition: all 0.3s ease;
-    overflow: hidden; /* 隱藏超出部分 */
-    text-overflow: ellipsis; /* 超出時顯示 ... */
-}/* 預設狀態（列表模式） */
-
-.save-btn:hover, .general-btn.active:hover {
+.save-btn:hover {
     transform: scale(1.05);
     filter: brightness(1.1);
 }
@@ -557,6 +538,29 @@ table{
     transform: scale(0.95);
     filter: brightness(0.9);
 }
+.general-btn {
+    position: fixed;
+    top: 50px; 
+    right: 50px;
+    width: 20vw;
+    height: 7.5vw;  
+    background-color: #0dff00; /* 這裡定義原色 */
+    color: white;
+    border-radius: 5%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 7.5vw;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    z-index: 9999;
+    transition: all 0.3s ease;
+    touch-action: manipulation; /* 提升觸控裝置的反應速度 */
+    overflow: hidden; /* 隱藏超出部分 */
+    text-overflow: ellipsis; /* 超出時顯示 ... */
+
+}/* 預設狀態（列表模式） */
+
 
 .half-teamcard {
     /* --- 寬度與置中 --- */
