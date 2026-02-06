@@ -325,7 +325,7 @@ function Rankingteam(rankproperty) {
         case 'teamname': rankwhat = 0; break;
         case 'avgscore': rankwhat = 'avragescore'; break;
         case 'auto'    : rankwhat = 'autoavgscore'; break;
-        case 'auto'    : rankwhat = 'teleavgscore'; break;
+        case 'tele'    : rankwhat = 'teleavgscore'; break;
         default: rankwhat = 0;
     }
 
