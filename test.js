@@ -117,8 +117,8 @@ function renderCards(tupleList) {
 
     // tupleList 結構: [[6036, 15.5], [1678, 20.0], ...]
     container.innerHTML = tupleList.map(tuple => {
-        const teamNum = tuple[0];
-        const scoreVal = tuple[1];
+        const teamNum = tuple.teamNumber;
+        const scoreVal = tuple.avragescore;
         
         // 顯示用的分數字串
         const displayScore = scoreVal === -1 ? "N/A" : scoreVal.toFixed(1);
@@ -172,7 +172,7 @@ function renderCards(tupleList) {
     });
 
     // 地址抓取也改傳 tupleList
-    fetchAddresses(tupleList.map(t => ({ team_number: t[0] })));
+    fetchAddresses(tupleList.map(t => ({ team_number: t.teamNumber })));
 }
 
 
@@ -301,10 +301,10 @@ if (!allTeams || allTeams.length === 0) return;
         // 防呆：如果是 N/A 就給 -1，確保這隊排在最後；轉成浮點數以便排序
         const score = avg === "N/A" ? -1 : parseFloat(avg);
         
-        return [
-            t.team_number, // Index 0: 隊號
-            score          // Index 1: 平均分
-        ];
+        return {
+            teamNumber :t.team_number, // Index 0: 隊號
+            avragescore:score          // Index 1: 平均分
+        };
     });
 
 }
@@ -318,14 +318,14 @@ function Rankingteam(rankproperty) {
     let rankwhat = 0;
     switch (currentRankMode) { // 改用全域變數判斷
         case 'teamname': rankwhat = 0; break;
-        case 'avgscore': rankwhat = 1; break;
+        case 'avgscore': rankwhat = 'avragescore'; break;
         default: rankwhat = 0;
     }
 
     AllTeamsList.sort((a, b) => {
         // 模式 A：純隊號 (index 0) -> 由小到大
         if (rankwhat === 0) {
-            return a[0] - b[0]; 
+            return a.teamNumber - b.teamNumber; 
         }
         
         // 模式 B：戰力 (index 1) -> 由大到小
@@ -334,7 +334,7 @@ function Rankingteam(rankproperty) {
         }
         
         // 保底：戰力一樣時，隊號由小到大
-        return a[0] - b[0];
+        return a.teamNumber - b.teamNumber;
     });
 
     // --- 關鍵：直接渲染排好的 Tuple ---
@@ -466,7 +466,10 @@ if (searchBar) {
         // 2. 將過濾後的結果轉成 renderCards 需要的 tuple 格式
         const filteredTuples = filtered.map(t => {
             const avg = calculateAverage(t.team_number);
-            return [t.team_number, avg === "N/A" ? -1 : parseFloat(avg)];
+            return  {
+            teamNumber: t.team_number,
+            avragescore: avg === "N/A" ? -1 : parseFloat(avg)
+            };
         });
 
         // 3. 渲染過濾後的 tuple
@@ -583,12 +586,12 @@ function battle(){
     const selectedTeamNum = parseInt(this.value); // 取得選中的隊號
     
     // 從你現有的 AllTeamsList 陣列中找出那一隊的資料 [隊號, 分數]
-    const teamData = AllTeamsList.find(tuple => tuple[0] === selectedTeamNum);
+    const teamData = AllTeamsList.find(tuple => tuple.teamNumber === selectedTeamNum);
     
     // 如果找到了，就把文字噴進 batleteam1page
     if (teamData) {
-        const teamNum = teamData[0];
-        const score = teamData[1];
+        const teamNum = teamData.teamNumber;
+        const score = teamData.avragescore;
         
         batleteam1page.innerHTML = `
             <div style="display: flex; flex-direction: column; align-items: flex-start;">
@@ -602,13 +605,13 @@ function battle(){
     // 第二個隊伍選單同理
     dropdown2.onchange = function() {
         const selectedTeamNum = parseInt(this.value);
-        const teamData = AllTeamsList.find(tuple => tuple[0] === selectedTeamNum);
+        const teamData = AllTeamsList.find(tuple => tuple.teamNumber === selectedTeamNum);
         
         if (teamData) {
             batleteam2page.innerHTML = `
                 <div style="display: flex; flex-direction: column; align-items: flex-start;">
-                    <span style="font-size: 1.5em; font-weight: bold;">隊伍：#${teamData[0]}</span>
-                    <span style="font-size: 1.2em;">平均分：${teamData[1] === -1 ? 'N/A' : teamData[1].toFixed(1)}</span>
+                    <span style="font-size: 1.5em; font-weight: bold;">隊伍：#${teamData.teamNumber}</span>
+                    <span style="font-size: 1.2em;">平均分：${teamData.teamNumber === -1 ? 'N/A' : teamData.teamNumber.toFixed(1)}</span>
                 </div>
             `;
         }
