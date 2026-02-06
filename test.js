@@ -551,16 +551,7 @@ function battle(){
         });
 
         batleteam2page.style.display = 'flex';
-
     } else {
-        togglePage();
-        //mainPage.style.display = 'block';
-        //battlepage.style.display = 'none';
-        //battlebtn.style.display = 'block'; // 顯示戰鬥按鈕
-        //battlebtn.classList.add('active');
-        //btn.innerText = '+';
-        //btn.classList.remove('active');
-
         // 1. 重製下拉選單到預設狀態 
         dropdown1.selectedIndex = 0;
         dropdown2.selectedIndex = 0;
@@ -568,8 +559,7 @@ function battle(){
         // 2. 清空原本顯示隊伍資訊的文字區塊
         if (info1) info1.innerHTML = '';
         if (info2) info2.innerHTML = '';
-
-
+        togglePage();
     }
 
     dropdown1.onchange = function() {
