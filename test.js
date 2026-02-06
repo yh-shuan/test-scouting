@@ -324,8 +324,8 @@ function Rankingteam(rankproperty) {
     switch (currentRankMode) { // 改用全域變數判斷
         case 'teamname': rankwhat = 0; break;
         case 'avgscore': rankwhat = 'avragescore'; break;
-        case 'auto'    : rankwhat = 'autoscore'; break;
-        case 'auto'    : rankwhat = 'telescore'; break;
+        case 'auto'    : rankwhat = 'autoavgscore'; break;
+        case 'auto'    : rankwhat = 'teleavgscore'; break;
         default: rankwhat = 0;
     }
 
