@@ -560,6 +560,7 @@ function togglePage() {
 function battle(){
     const mainPage = document.getElementById('main-page');
     const battlepage = document.getElementById('battle-page');
+    const cardpage = document.getElementById('cardpage');
     const batleteam1page = document.getElementById('batle-team1-page');
     const batleteam2page = document.getElementById('batle-team2-page');
     const btn = document.getElementById('battle-btn');
@@ -567,6 +568,9 @@ function battle(){
     const dropdown2 = document.getElementById('battle-team-dropdown2');
     const info1 = document.getElementById('team1-info');
     const info2 = document.getElementById('team2-info');
+   
+    const propertypage = document.getElementById('batle-property-page');
+
 
     if (battlepage.style.display === 'none' || battlepage.style.display === '') {
         // 1. 先重置所有狀態
@@ -576,7 +580,8 @@ function battle(){
 
         // 2. 切換大頁面
         mainPage.style.display = 'none';
-        battlepage.style.display = 'flex';
+        
+        battlepage.style.display = 'block';
 
         dropdown1.style.display='block';
         dropdown2.style.display='block';
@@ -586,7 +591,7 @@ function battle(){
         btn.innerText = 'back';
         btn.classList.add('active');
 
-        
+        propertypage.style.display='flex';
         
         
         // 4. 填充下拉選單
@@ -645,12 +650,12 @@ function battle(){
 
             
             info1.innerHTML = `
-                <div style="display: flex; flex-direction: column; align-items: flex-start;">
-                    <span style="font-size: 5em; font-weight: bold;">隊伍：#${teamNum}</span>
-                    <span style="font-size: 4em;">加總平均分：${score === -1 ? 'N/A' : score.toFixed(1)}</span>
-                    <span style="font-size: 4em;">自動平均分：${autoscore === -1 ? 'N/A' : autoscore.toFixed(1)}</span>
-                    <span style="font-size: 4em;">人動平均分：${telescore === -1 ? 'N/A' : telescore.toFixed(1)}</span>
-                </div>
+                
+                    <span style="font-size: 5em; font-weight: bold;">${teamNum}</span>
+                    <span style="font-size: 4em;">${score === -1 ? 'N/A' : score.toFixed(1)}</span>
+                    <span style="font-size: 4em;">${autoscore === -1 ? 'N/A' : autoscore.toFixed(1)}</span>
+                    <span style="font-size: 4em;">${telescore === -1 ? 'N/A' : telescore.toFixed(1)}</span>
+                
             `;
         }
     };
@@ -668,12 +673,12 @@ function battle(){
             const telescore =teamData.teleavgscore;
 
             info2.innerHTML = `
-                <div style="display: flex; flex-direction: column; align-items: flex-start;">
-                    <span style="font-size: 5em; font-weight: bold;">隊伍：#${teamNum}</span>
-                    <span style="font-size: 4em;">加總平均分：${score === -1 ? 'N/A' : score.toFixed(1)}</span>
-                    <span style="font-size: 4em;">自動平均分：${autoscore === -1 ? 'N/A' : autoscore.toFixed(1)}</span>
-                    <span style="font-size: 4em;">人動平均分：${telescore === -1 ? 'N/A' : telescore.toFixed(1)}</span>
-                </div>
+                
+                    <span style="font-size: 5em; font-weight: bold;">${teamNum}</span>
+                    <span style="font-size: 4em;">${score === -1 ? 'N/A' : score.toFixed(1)}</span>
+                    <span style="font-size: 4em;">${autoscore === -1 ? 'N/A' : autoscore.toFixed(1)}</span>
+                    <span style="font-size: 4em;">${telescore === -1 ? 'N/A' : telescore.toFixed(1)}</span>
+                
             `;
         }
     };

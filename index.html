@@ -196,22 +196,40 @@
 
         <div class="floating-btn" id="toggle-btn" onclick="togglePage()">+</div>
         <div class="general-btn" id="battle-btn" onclick="battle()">battle</div>
-
+        
         <div id="battle-page" style="display: none; padding: 20px;">
-            <h3 style="margin: auto; align-self: center;">YO battle</h3>
-            
-            <div id="batle-team1-page" class="half-teamcard" style="display: none;">
-                <select id="battle-team-dropdown1" style="width: 45%; padding: 10px; font-size: 18px; margin: auto; align-self: left;">
-                    <option value="">-- 正方代表 --</option>
-                </select>
-                <div id="team1-info"></div> 
-            </div>
 
-            <div id="batle-team2-page" class="half-teamcard" style="display: none;">
-                <select id="battle-team-dropdown2" style="width: 45%; padding: 10px; font-size: 18px; margin: auto; align-self: right;">
-                    <option value="">-- 反方代表 --</option>
-                </select>
-                <div id="team2-info"></div>
+
+
+
+            <h2 style="display: table; margin: 0 auto 20px auto; text-align: center;">YO battle</h2>
+
+
+            <div id="cardpage" style="display: flex; padding: 20px;">
+
+
+                <div id="batle-property-page" class="half-teamcard" style="display: grid;">
+                    <div id="property-info" style="display: grid; grid-template-rows: repeat(4, 4em); align-items: center; row-gap: 15px;">
+                        <span style="font-size: 5em; font-weight: bold; white-space: nowrap;">隊伍號碼：</span>
+                        <span style="font-size: 4em; white-space: nowrap;">加總平均分：</span>
+                        <span style="font-size: 4em; white-space: nowrap;">自動平均分：</span>
+                        <span style="font-size: 4em; white-space: nowrap;">人動平均分：</span>
+                    </div>
+                </div>
+
+                <div id="batle-team1-page" class="half-teamcard" style="display: none;">
+                    <select id="battle-team-dropdown1" style="width: 45%; padding: 10px; font-size: 18px; margin: auto; align-self: left;">
+                        <option value="">-- 正方代表 --</option>
+                    </select>
+                    <div id="team1-info"style="display: grid; grid-template-rows: repeat(4, 4em); align-items: center; row-gap: 15px;"></div> 
+                </div>
+
+                <div id="batle-team2-page" class="half-teamcard" style="display: none;">
+                    <select id="battle-team-dropdown2" style="width: 45%; padding: 10px; font-size: 18px; margin: auto; align-self: right;">
+                        <option value="">-- 反方代表 --</option>
+                    </select>
+                    <div id="team2-info"style="display: grid; grid-template-rows: repeat(4, 4em); align-items: center; row-gap: 15px;"></div>
+                </div>
             </div>
         </div>
 
