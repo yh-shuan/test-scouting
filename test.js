@@ -266,6 +266,9 @@ function showDetail(teamNumber) {
             list.appendChild(div);
         });
     }
+
+
+    
     overlay.style.display = 'flex';
 }
 
