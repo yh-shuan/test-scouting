@@ -247,7 +247,27 @@ table{
 .search-container {
     margin: 20px auto;
     text-align: center;
+    
 }/* 搜尋區塊 */
+
+.general-select{
+    display: block; /* 確保它們獨立佔據一行 */
+    margin: 10px auto; /* 置中 */
+    width: 90%; /* 手機版寬度 */
+    max-width: 500px; /* 避免在電腦上變得太長變形 */
+    padding: 12px 20px;
+    font-size: 18px;
+    border: 2px solid #ddd;
+    border-radius: 25px; /* 圓角看起來更像查詢畫面 */
+    outline: none;
+    transition: 0.3s;
+    text-align: center;
+}
+
+
+
+
+
 
 #search-bar,
 #reporting {
@@ -523,7 +543,7 @@ table{
 }
 .general-btn {
     position: fixed;
-    top: 5vh; 
+    top: 2.5vh; 
     right: 2.5vw;
     width: 20vw;
     height: 7.5vw;  

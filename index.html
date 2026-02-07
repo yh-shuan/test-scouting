@@ -24,13 +24,17 @@
         <hr>    
             
         <div id="main-page">
-            <h3>請選擇排序方式：</h3>
-            <select onchange="Rankingteam(value)"style="width: 80%; padding: 10px; font-size: 18px;">
-                <option value='teamnumber'>隊伍名稱排序(默認)</option>
-                <option value='avgscore'>隊伍平均分排序</option>
-                <option value='auto'>自動平均分排序</option>
-                <option value='tele'>人動平均分排序</option>
-            </select>
+            
+            <div class="search-container" >
+                <h3>請選擇排序方式：</h3>
+                <select onchange="Rankingteam(value)"class="general-select">
+                    <option value='teamnumber'>隊伍名稱排序(默認)</option>
+                    <option value='avgscore'>隊伍平均分排序</option>
+                    <option value='auto'>自動平均分排序</option>
+                    <option value='tele'>人動平均分排序</option>
+                </select>
+            
+            </div>
             
             <div class="search-container" >
                 <input type="text" id="search-bar" placeholder=" 輸入隊號或隊名進行查詢...">
