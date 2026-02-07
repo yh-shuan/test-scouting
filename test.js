@@ -154,7 +154,7 @@ function renderCards(tupleList) {
                 </div>
 
                 <button onclick="event.stopPropagation(); quickSelectTeam('${teamNum}')" class="team-score-botton">
-                <span class="material-icons" style="font-size:20px; color:#333;">add_circle</span>
+                <span class="material-icons" style="font-size:5vw; color:#333;">add_circle</span>
                 快速計分
                 </button>
             </div>
