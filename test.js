@@ -646,10 +646,10 @@ function battle(){
             
             info1.innerHTML = `
                 <div style="display: flex; flex-direction: column; align-items: flex-start;">
-                    <span style="font-size: 1.5em; font-weight: bold;">隊伍：#${teamNum}</span>
-                    <span style="font-size: 1.2em;">平均分：${score === -1 ? 'N/A' : score.toFixed(1)}</span>
-                    <span style="font-size: 1.2em;">平均分：${autoscore === -1 ? 'N/A' : autoscore.toFixed(1)}</span>
-                    <span style="font-size: 1.2em;">平均分：${telescore === -1 ? 'N/A' : telescore.toFixed(1)}</span>
+                    <span style="font-size: 5em; font-weight: bold;">隊伍：#${teamNum}</span>
+                    <span style="font-size: 4em;">加總平均分：${score === -1 ? 'N/A' : score.toFixed(1)}</span>
+                    <span style="font-size: 4em;">自動平均分：${autoscore === -1 ? 'N/A' : autoscore.toFixed(1)}</span>
+                    <span style="font-size: 4em;">人動平均分：${telescore === -1 ? 'N/A' : telescore.toFixed(1)}</span>
                 </div>
             `;
         }
@@ -669,10 +669,10 @@ function battle(){
 
             info2.innerHTML = `
                 <div style="display: flex; flex-direction: column; align-items: flex-start;">
-                    <span style="font-size: 1.5em; font-weight: bold;">隊伍：#${teamNum}</span>
-                    <span style="font-size: 1.2em;">平均分：${score === -1 ? 'N/A' : score.toFixed(1)}</span>
-                    <span style="font-size: 1.2em;">平均分：${autoscore === -1 ? 'N/A' : autoscore.toFixed(1)}</span>
-                    <span style="font-size: 1.2em;">平均分：${telescore === -1 ? 'N/A' : telescore.toFixed(1)}</span>
+                    <span style="font-size: 5em; font-weight: bold;">隊伍：#${teamNum}</span>
+                    <span style="font-size: 4em;">加總平均分：${score === -1 ? 'N/A' : score.toFixed(1)}</span>
+                    <span style="font-size: 4em;">自動平均分：${autoscore === -1 ? 'N/A' : autoscore.toFixed(1)}</span>
+                    <span style="font-size: 4em;">人動平均分：${telescore === -1 ? 'N/A' : telescore.toFixed(1)}</span>
                 </div>
             `;
         }
