@@ -572,10 +572,16 @@ function battle(){
         // 1. 先重置所有狀態
         resetScoring();
 
+
+
         // 2. 切換大頁面
         mainPage.style.display = 'none';
         battlepage.style.display = 'flex';
-        
+
+        dropdown1.style.display='block';
+        dropdown2.style.display='block';
+
+
         
         btn.innerText = 'back';
         btn.classList.add('active');
@@ -624,35 +630,40 @@ function battle(){
     }
 
     dropdown1.onchange = function() {
-    const selectedTeamNum = parseInt(this.value); // 取得選中的隊號
-    
-    // 從你現有的 AllTeamsList 陣列中找出那一隊的資料 [隊號, 分數]
-    const teamData = AllTeamsList.find(tuple => tuple.teamNumber === selectedTeamNum);
-    
-    // 如果找到了，就把文字噴進 batleteam1page
-    if (teamData) {
-        const teamNum = teamData.teamNumber;
-        const score = teamData.avragescore;
+        const selectedTeamNum = parseInt(this.value); // 取得選中的隊號
         
-        batleteam1page.innerHTML = `
-            <div style="display: flex; flex-direction: column; align-items: flex-start;">
-                <span style="font-size: 1.5em; font-weight: bold;">隊伍：#${teamNum}</span>
-                <span style="font-size: 1.2em;">平均分：${score === -1 ? 'N/A' : score.toFixed(1)}</span>
-            </div>
-        `;
-    }
+        // 從你現有的 AllTeamsList 陣列中找出那一隊的資料 [隊號, 分數]
+        const teamData = AllTeamsList.find(tuple => tuple.teamNumber === selectedTeamNum);
+        dropdown1.style.display='none';
+        
+       
+        if (teamData) {
+            const teamNum = teamData.teamNumber;
+            const score = teamData.avragescore;
+            
+            info1.innerHTML = `
+                <div style="display: flex; flex-direction: column; align-items: flex-start;">
+                    <span style="font-size: 1.5em; font-weight: bold;">隊伍：#${teamNum}</span>
+                    <span style="font-size: 1.2em;">平均分：${score === -1 ? 'N/A' : score.toFixed(1)}</span>
+                </div>
+            `;
+        }
     };
 
     // 第二個隊伍選單同理
     dropdown2.onchange = function() {
         const selectedTeamNum = parseInt(this.value);
         const teamData = AllTeamsList.find(tuple => tuple.teamNumber === selectedTeamNum);
+        dropdown2.style.display='none';
         
         if (teamData) {
-            batleteam2page.innerHTML = `
+            const teamNum = teamData.teamNumber;
+            const score = teamData.avragescore;
+
+            info2.innerHTML = `
                 <div style="display: flex; flex-direction: column; align-items: flex-start;">
-                    <span style="font-size: 1.5em; font-weight: bold;">隊伍：#${teamData.teamNumber}</span>
-                    <span style="font-size: 1.2em;">平均分：${teamData.teamNumber === -1 ? 'N/A' : teamData.teamNumber.toFixed(1)}</span>
+                    <span style="font-size: 1.5em; font-weight: bold;">隊伍：#${teamNum}</span>
+                    <span style="font-size: 1.2em;">平均分：${score === -1 ? 'N/A' : score.toFixed(1)}</span>
                 </div>
             `;
         }
