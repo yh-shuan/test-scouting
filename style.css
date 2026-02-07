@@ -254,7 +254,7 @@ table{
     display: block; /* 確保它們獨立佔據一行 */
     margin: 10px auto; /* 置中 */
     width: 90%; /* 手機版寬度 */
-    max-width: 500px; /* 避免在電腦上變得太長變形 */
+    max-width: 100vw; /* 避免在電腦上變得太長變形 */
     padding: 12px 20px;
     font-size: 5vh;
     border: 2px solid #ddd;
@@ -274,7 +274,7 @@ table{
     display: block; /* 確保它們獨立佔據一行 */
     margin: 10px auto; /* 置中 */
     width: 90%; /* 手機版寬度 */
-    max-width: 500px; /* 避免在電腦上變得太長變形 */
+    max-width: 100vw; /* 避免在電腦上變得太長變形 */
     padding: 12px 20px;
     font-size: 5vh;
     border: 2px solid #ddd;
