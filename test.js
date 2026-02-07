@@ -216,6 +216,7 @@ function showDetail(teamNumber) {
     const overlay = document.getElementById('detail-overlay');
     const list = document.getElementById('detail-list');
     const title = document.getElementById('detail-title');
+    document.getElementById('main-page').style.display = 'none';
     
     // 過濾出該隊伍的資料
     const moveRecords = allScoresRaw.filter(r => r.teamNumber == teamNumber);
@@ -228,11 +229,14 @@ function showDetail(teamNumber) {
     if (staticRecord) {
         const sDiv = document.createElement('div');
         sDiv.className = "record-item";
-        sDiv.style.borderLeft = "4px solid #3498db"; // 藍邊區分
+        sDiv.style.borderLeft = "1vw solid #3498db"; // 藍邊區分
+        sDiv.style.fontSize="2.5vh"
         sDiv.innerHTML = `
-            <div style="font-weight:bold; color:#2980b9; margin-bottom:5px;">📋 機器人靜態規格</div>
-            吊掛等級: L${staticRecord.staticclimb} | 位置: ${staticRecord.climbposition}<br>
-            Fuel 裝載: ${staticRecord.staticfuel} | 跑打能力: ${staticRecord.Runandshoot}<br>
+            <div style="font-weight:bold; color:#2980b9; margin-bottom:0.5vh;">靜態：</div><br>
+            吊掛等級: ${staticRecord.staticclimb}<br>
+            吊掛位置: ${staticRecord.climbposition}<br>
+            帶幾顆球: ${staticRecord.staticfuel}<br>
+            跑打能力: ${staticRecord.Runandshoot}<br>
             備註: ${staticRecord.staticreporting || "無"}
         `;
         list.appendChild(sDiv);
@@ -242,16 +246,20 @@ function showDetail(teamNumber) {
     if (moveRecords.length === 0) {
         list.innerHTML += "<p style='text-align:center; color:#666; margin-top:10px;'>目前沒有動態比賽紀錄</p>";
     } else {
-        list.innerHTML += `<div style="font-weight:bold; margin:10px 0 5px 0;">🎮 比賽表現 (${moveRecords.length} 筆)</div>`;
+        list.innerHTML += `<div style="font-weight:bold; margin:10px 0 5px 0;">比賽表現 (${moveRecords.length} 筆)</div>`;
         moveRecords.forEach((r, idx) => {
             const div = document.createElement('div');
             div.className = "record-item";
+            div.style.fontSize="2.5vh"
             const total = (parseInt(r.autoFuel)||0) + (parseInt(r.teleFuel)||0) + getClimbScore(r.autoClimb, true) + getClimbScore(r.teleClimb, false);
             
             div.innerHTML = `
-                <strong>紀錄 #${idx + 1}</strong> <span style="color:#888; font-size:11px;">(ID: ${r.id})</span><br>
+                <strong>紀錄 #${idx + 1}</strong> <span style="color:#888; font-size:2.5vh;">(ID: ${r.id})</span><br>
                 單場預估分: ${total} 分<br>
-                Auto: ${r.autoFuel}F / L${r.autoClimb} | Tele: ${r.teleFuel}F / L${r.teleClimb}<br>
+                auto進球 ${r.autoFuel}<br>
+                auto吊掛${r.autoClimb}<br>  
+                人動進球 ${r.teleFuel}<br> 
+                人動吊掛${r.teleClimb}<br>
                 備註: ${r.reporting || "無"}
                 <button class="delete-btn-small" onclick="deleteCloudData('${r.id}', '${teamNumber}', 'movement')">刪除</button>
             `;
@@ -263,6 +271,7 @@ function showDetail(teamNumber) {
 
 function closeDetail() {
     document.getElementById('detail-overlay').style.display = 'none';
+    document.getElementById('main-page').style.display = 'block';
 }
 
 // --- 新功能：刪除雲端資料 ---
