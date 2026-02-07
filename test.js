@@ -640,11 +640,16 @@ function battle(){
         if (teamData) {
             const teamNum = teamData.teamNumber;
             const score = teamData.avragescore;
+            const autoscore=teamData.autoavgscore;
+            const telescore =teamData.teleavgscore;
+
             
             info1.innerHTML = `
                 <div style="display: flex; flex-direction: column; align-items: flex-start;">
                     <span style="font-size: 1.5em; font-weight: bold;">隊伍：#${teamNum}</span>
                     <span style="font-size: 1.2em;">平均分：${score === -1 ? 'N/A' : score.toFixed(1)}</span>
+                    <span style="font-size: 1.2em;">平均分：${autoscore === -1 ? 'N/A' : autoscore.toFixed(1)}</span>
+                    <span style="font-size: 1.2em;">平均分：${telescore === -1 ? 'N/A' : telescore.toFixed(1)}</span>
                 </div>
             `;
         }
@@ -659,11 +664,15 @@ function battle(){
         if (teamData) {
             const teamNum = teamData.teamNumber;
             const score = teamData.avragescore;
+            const autoscore=teamData.autoavgscore;
+            const telescore =teamData.teleavgscore;
 
             info2.innerHTML = `
                 <div style="display: flex; flex-direction: column; align-items: flex-start;">
                     <span style="font-size: 1.5em; font-weight: bold;">隊伍：#${teamNum}</span>
                     <span style="font-size: 1.2em;">平均分：${score === -1 ? 'N/A' : score.toFixed(1)}</span>
+                    <span style="font-size: 1.2em;">平均分：${autoscore === -1 ? 'N/A' : autoscore.toFixed(1)}</span>
+                    <span style="font-size: 1.2em;">平均分：${telescore === -1 ? 'N/A' : telescore.toFixed(1)}</span>
                 </div>
             `;
         }
