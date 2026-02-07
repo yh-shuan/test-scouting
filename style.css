@@ -80,7 +80,7 @@ table{
     /* --- 寬度與置中 --- */
     width: 95%;           /* 手機版建議佔滿一點 */
     max-width: 1000px;     /* 電腦版不要太大 */
-    margin: 10vh auto;    /* 上下 30px，左右 auto 是置中的靈魂 */
+    margin: 5vh auto;    /* 上下 30px，左右 auto 是置中的靈魂 */
 
     display: flex;
     flex-direction: column; 
