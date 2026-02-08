@@ -57,7 +57,7 @@
             <div id="team-select-zone" class="score-section" style="background-color: #7d7dff;">
                 <h3>請選擇隊伍：</h3>
                 <select id="team-dropdown" style="width: 80%; padding: 10px; font-size: 18px;">
-                    <option value="">-- 請選擇隊伍 --</option>
+                    <option value=""> 請選擇隊伍</option>
                 </select>
                 <button onclick="confirmTeam()" style="margin-top: 15px; padding: 10px 20px; cursor:pointer;">確認並開始記錄</button>
             </div>
@@ -71,6 +71,8 @@
                     <option value="static">靜態 (Static)</option>
                     <option value="dynamic">動態 (Dynamic)</option>
                     <option value="battle">battle </option>
+                    <option value="bucket">bucket </option>
+                    
                 </select>
                 
                 <br>
@@ -236,11 +238,14 @@
             </div>
 
             <div id="bucket-page" style="display: none; padding: 20px;">
-                <div class="general-btn" id="bucket-btn" onclick="">+</div>
+                <select id="bucket-dropdown" class="general-select">
+                    <option value="">恭迎皇帝選妃</option>
+                </select>
+                <button onclick="bucket()" class="general-btn">確認</button>
 
                 
 
-
+                <div id="bucket-container"></div>
                 
             </div>
 
@@ -258,7 +263,7 @@
             <div class="detail-box">
                 <div class="detail-header">
                     <h3 id="detail-title">隊伍資料</h3>
-                    <button class="close-btn" onclick="closeDetail()">關閉</button>
+                    <button id ="closedetail-btn" class="close-btn" onclick="closeDetail(true)">關閉</button>
                 </div>
                 <div id="detail-list"></div>
             </div>

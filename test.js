@@ -124,12 +124,12 @@ function renderCards(tupleList) {
     // 先生成 HTML 骨架 (此時 tbaDetail 可能只有 team_number)
     container.innerHTML = tupleList.map(teamObj => {
         const tbaDetail = allTeams.find(obj => obj.team_number === teamObj.teamNumber) || {};
-        return generateTeamCardHTML(teamObj, tbaDetail);
+        return generateTeamCardHTML(teamObj, tbaDetail,false);
     }).join('');
 
     // 針對每一張卡片，啟動整合抓取函式
     tupleList.forEach(teamObj => {
-        fetchAndPopulateTeamData(teamObj.teamNumber);
+        fetchAndPopulateTeamData(teamObj.teamNumber,false);
     });
 }
 
@@ -137,9 +137,9 @@ function renderCards(tupleList) {
  * 3. 整合函式：根據隊號抓取所有 TBA 資訊並直接更新 UI
  * 取代了舊的 fetchSingleAddress
  */
-async function fetchAndPopulateTeamData(teamNum) {
+async function fetchAndPopulateTeamData(teamNum,bucket) {
     // 找到畫面上對應的卡片與 ID
-    const card = document.querySelector(`.t:has(#loc-${teamNum})`);
+    const card = document.querySelector(`.t:has(#loc-${teamNum}-${(bucket)?"bucket":""})`);
     if (!card) return;
 
     try {
@@ -169,7 +169,7 @@ async function fetchAndPopulateTeamData(teamNum) {
         if (cityElem) cityElem.innerHTML = `<span class="material-icons">location_city</span> ${detail.city || "未知城市"}`;
 
         // 3. 更新學校/地址資訊
-        const locElem = document.getElementById(`loc-${teamNum}`);
+        const locElem = document.getElementById(`loc-${teamNum}-${(bucket)?"bucket":""}`);
         if (locElem) {
             const schoolName = detail.school_name || detail.address || "無詳細地址資訊";
             locElem.innerHTML = `<span class="material-icons">school</span><div class="addr-text">${schoolName}</div>`;
@@ -196,43 +196,47 @@ async function fetchAndPopulateTeamData(teamNum) {
 /**
  * 4. 卡片模板 (保持不變，但確保 id 正確)
  */
-function generateTeamCardHTML(teamObj, tbaDetail = {}) {
+function generateTeamCardHTML(teamObj, tbaDetail = {},bucket) {
     const teamNum = teamObj.teamNumber;
     const scoreVal = teamObj.avragescore;
     const displayScore = scoreVal === -1 ? "N/A" : scoreVal.toFixed(1);
 
     return `
     <div class="t">
-        <div class="team-card" onclick="showDetail('${teamNum}')">
+        <div class="team-card" onclick="showDetail('${teamNum}',${(bucket)?'true':'false'})">
             <div class="card-top">
                 <div class="team-number"># ${teamNum}</div>
                 <div class="team-name">${tbaDetail.nickname || "載入中..."}</div>
             </div>
             <div class="card-button">
                 <div class="team-avg-score">AVG: ${displayScore}</div>
-                <div class="team-state"><span class="material-icons">map</span> ...</div>
+                <div class="team-state"><span class="material-icons">bigcity</span> ...</div>
                 <div class="team-city"><span class="material-icons">location_city</span> ...</div>
-                
-                <div id="loc-${teamNum}" class="team-location">
+
+                <div id="loc-${teamNum}-${(bucket)?"bucket":""}" class="team-location">
                     <span class="material-icons">school</span>
                     never gonnon give you up...
                 </div>
             </div>
-            <button onclick="event.stopPropagation(); quickSelectTeam('${teamNum}')" class="team-score-botton">
+            ${(!bucket)?`<button onclick="event.stopPropagation(); quickSelectTeam('${teamNum}')" class="team-score-botton">
                 <span class="material-icons" style="font-size:5vw; color:#333;">add_circle</span>
                 快速計分
-            </button>
+            </button>`:``}
+            
         </div>
     </div>
     `;
 }
 
 // --- 新功能：顯示隊伍詳細資料 ---
-function showDetail(teamNumber) {
+function showDetail(teamNumber,bucket) {
     const overlay = document.getElementById('detail-overlay');
     const list = document.getElementById('detail-list');
     const title = document.getElementById('detail-title');
-    document.getElementById('main-page').style.display = 'none';
+    document.getElementById((!bucket)?'main-page':'bucket-page').style.display = 'none';
+    const closbotton = document.getElementById('closedetail-btn');
+    closbotton.onclick = () => closeDetail(bucket);
+
     
     // 過濾出該隊伍的資料
     const moveRecords = allScoresRaw.filter(r => r.teamNumber == teamNumber);
@@ -277,7 +281,7 @@ function showDetail(teamNumber) {
                 人動進球 ${r.teleFuel}<br> 
                 人動吊掛${r.teleClimb}<br>
                 備註: ${r.reporting || "無"}
-                <button class="delete-btn-small" onclick="deleteCloudData('${r.id}', '${teamNumber}', 'movement')">刪除</button>
+                ${(!bucket)?`<button class="delete-btn-small" onclick="deleteCloudData('${r.id}', '${teamNumber}', 'movement')">刪除</button>`:``}
             `;
             list.appendChild(div);
         });
@@ -285,9 +289,9 @@ function showDetail(teamNumber) {
     overlay.style.display = 'flex';
 }
 
-function closeDetail() {
+function closeDetail(bucket) {
     document.getElementById('detail-overlay').style.display = 'none';
-    document.getElementById('main-page').style.display = 'block';
+    document.getElementById((bucket)?'bucket-page':'main-page').style.display = 'block';
 }
 
 // --- 新功能：刪除雲端資料 ---
@@ -301,7 +305,7 @@ async function deleteCloudData(id, teamNumber, targetTable) {
         allStaticRaw = allStaticRaw.filter(r => r.id != id);
     }
     
-    showDetail(teamNumber); // 重新整理視窗內容
+    showDetail(teamNumber,false); // 重新整理視窗內容
     resetproperty();
     Rankingteam(currentRankMode);
 
@@ -566,7 +570,14 @@ function togglePage() {
         document.getElementById('static-section').style.setProperty('display', 'none', 'important');
         document.getElementById('actual-scoring-content').style.setProperty('display', 'none', 'important');
         document.getElementById('battle-page').style.setProperty('display', 'none', 'important');
+        document.getElementById('bucket-page').style.setProperty('display', 'none', 'important');
 
+        const modeDropdown = document.getElementById('mode-selec');
+        if (modeDropdown) {
+            Array.from(modeDropdown.options).forEach(option => {
+                    option.style.display = 'block'; 
+            });
+        }
         
         // 清空標題，因為還沒選隊伍
         const h2Title = document.querySelector('#score-page h2');
@@ -712,6 +723,35 @@ function battle(){
 
 }
 
+function bucket(){
+    const bucketdropdown = document.getElementById('bucket-dropdown');
+    const selectedTeamNum = parseInt(bucketdropdown.value);
+    
+    if (!selectedTeamNum) {
+        alert("請選擇隊伍！");
+        return;
+    }
+
+    const container = document.getElementById('bucket-container');
+    if (!container) return;
+
+    const scoreObj = AllTeamsList.find(t => t.teamNumber === selectedTeamNum);
+
+    const tbaObj = allTeams.find(t => t.team_number === selectedTeamNum) || {};
+
+    // 先生成 HTML 骨架 (此時 tbaDetail 可能只有 team_number)
+    if (!scoreObj) {
+        container.innerHTML = `<div style="padding:20px;">找不到隊伍 #${selectedTeamNum} 的數據。</div>`;
+        return;
+    }
+
+    // 針對每一張卡片，啟動整合抓取函式
+    container.innerHTML = generateTeamCardHTML(scoreObj, tbaObj,true);
+
+    // 4. 啟動非同步細節更新 (這會處理名稱、學校、地址的抓取)
+    fetchAndPopulateTeamData(selectedTeamNum,true);
+}
+
 function resetScoring() {
     // --- 1. 動態計分欄位重置 ---
     const af = document.getElementById('auto-fuel');
@@ -801,7 +841,7 @@ function quickSelectTeam(num) {
     const scorePage = document.getElementById('score-page');
     
     if (scorePage.style.display === 'none') {
-        // 1. 【關鍵】先執行大掃除，這會把所有區域設為 none
+        // 1. 先執行大掃除
         resetScoring(); 
 
         // 2. 設定目前的隊伍
@@ -818,7 +858,22 @@ function quickSelectTeam(num) {
             h2Title.style.display = 'block';
         }
 
-        // 5. 【關鍵】在 resetScoring 之後，單獨把模式選擇區叫出來
+        // --- 關鍵修改：過濾下拉選單選項 ---
+        const modeDropdown = document.getElementById('mode-selec');
+        if (modeDropdown) {
+            // 遍歷所有選項，如果是 battle 或 bucket 就隱藏
+            Array.from(modeDropdown.options).forEach(option => {
+                if (option.value === 'battle' || option.value === 'bucket') {
+                    option.style.display = 'none'; // 隱藏
+                } else {
+                    option.style.display = 'block'; // 確保其他的（static/movement）有顯示
+                }
+            });
+            // 重置到第一個選項 "請選擇模式"
+            modeDropdown.selectedIndex = 0;
+        }
+
+        // 5. 顯示模式選擇區
         document.getElementById('team-select-zone').style.display = 'none';
         document.getElementById('mode-selec-zone').style.setProperty('display', 'block', 'important');
 
@@ -862,13 +917,18 @@ function whatmode() {
 
         battle();
     }else{
+        
+        
+        const zone=(selectedMatchMode==='bucket')?'bucket-page':'team-select-zone';
+        const dropdown=(selectedMatchMode==='bucket')?'bucket-dropdown':'team-dropdown';
+        
         // 2. 顯示隊伍選擇區
-        const teamZone = document.getElementById('team-select-zone');
+        const teamZone = document.getElementById(zone);
         teamZone.style.setProperty('display', 'block', 'important');
 
         // 3. 填充隊伍下拉選單 (確保裡面有東西)
-        const teamDropdown = document.getElementById('team-dropdown');
-        teamDropdown.innerHTML = '<option value="">-- 接著選擇隊伍 --</option>';
+        const teamDropdown = document.getElementById(dropdown);
+        
         allTeams.forEach(t => {
             const opt = document.createElement('option');
             opt.value = t.team_number;
