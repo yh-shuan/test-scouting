@@ -115,54 +115,14 @@ function renderCards(tupleList) {
     const container = document.getElementById('team-container');
     if (!container) return;
 
-    // tupleList 結構: [[6036, 15.5], [1678, 20.0], ...]
-    container.innerHTML = tupleList.map(tuple => {
-        const teamNum = tuple.teamNumber;
-        const scoreVal = tuple.avragescore;
-        
-        // 顯示用的分數字串
-        const displayScore = scoreVal === -1 ? "N/A" : scoreVal.toFixed(1);
-
-        // 去原始資料找詳細資訊 (Nickname, Location)
-        // 這裡用 find，雖然效率 O(n)，但在 100 隊規模下毫秒級完成，沒問題
-        const t = allTeams.find(obj => obj.team_number === teamNum) || {};
-
-        return `
-        <div class="t">
-            <div class="team-card" onclick="showDetail('${teamNum}')">
-                <div class="card-top">
-                    <div class="team-number"># ${teamNum}</div>
-                    <div class="team-name">${t.nickname || "無名稱"}</div>
-                </div>
-                <div class="card-button">
-                    <div class="team-avg-score">
-                        AVG: ${displayScore}
-                    </div>
-                    <div class="team-state">
-                        <span class="material-icons">map</span>
-                        ${t.state_prov || "未知區域"}
-                    </div>
-                    <div class="team-city">
-                        <span class="material-icons">location_city</span>
-                        ${t.city || "未知城市"}
-                    </div>
-
-                    <div id="loc-${teamNum}" class="team-location">
-                        <span class="material-icons">school</span>
-                        never gonnon give you up...
-                    </div>
-                </div>
-
-                <button onclick="event.stopPropagation(); quickSelectTeam('${teamNum}')" class="team-score-botton">
-                <span class="material-icons" style="font-size:5vw; color:#333;">add_circle</span>
-                快速計分
-                </button>
-            </div>
-        </div>
-        `;
+    // 使用新函數生成 HTML
+    container.innerHTML = tupleList.map(teamObj => {
+        // 尋找 TBA 靜態資料
+        const tbaDetail = allTeams.find(obj => obj.team_number === teamObj.teamNumber) || {};
+        return generateTeamCardHTML(teamObj, tbaDetail);
     }).join('');
 
-    // 字體調整
+    // 字體調整與地址抓取邏輯保持不變
     const nameLabels = container.querySelectorAll('.team-name');
     nameLabels.forEach(label => {
         label.style.width = "100%";
@@ -171,9 +131,60 @@ function renderCards(tupleList) {
         autoShrinkText(label, 12); 
     });
 
-    // 地址抓取也改傳 tupleList
     fetchAddresses(tupleList.map(t => ({ team_number: t.teamNumber })));
 }
+
+
+/**
+ * 核心函數：生成單一隊伍卡片的 HTML
+ * @param {Object} teamObj - 包含 teamNumber, avragescore 等計算後數據的物件
+ * @param {Object} tbaDetail - 從 TBA 獲取的隊伍靜態資訊 (nickname, city, state_prov...)
+ */
+
+function generateTeamCardHTML(teamObj, tbaDetail = {}) {
+    const teamNum = teamObj.teamNumber;
+    const scoreVal = teamObj.avragescore;
+    
+    // 格式化分數
+    const displayScore = scoreVal === -1 ? "N/A" : scoreVal.toFixed(1);
+
+    return `
+    <div class="t">
+        <div class="team-card" onclick="showDetail('${teamNum}')">
+            <div class="card-top">
+                <div class="team-number"># ${teamNum}</div>
+                <div class="team-name">${tbaDetail.nickname || "無名稱"}</div>
+            </div>
+            <div class="card-button">
+                <div class="team-avg-score">
+                    AVG: ${displayScore}
+                </div>
+                <div class="team-state">
+                    <span class="material-icons">map</span>
+                    ${tbaDetail.state_prov || "未知區域"}
+                </div>
+                <div class="team-city">
+                    <span class="material-icons">location_city</span>
+                    ${tbaDetail.city || "未知城市"}
+                </div>
+
+                <div id="loc-${teamNum}" class="team-location">
+                    <span class="material-icons">school</span>
+                    正在載入學校資訊...
+                </div>
+            </div>
+
+            <button onclick="event.stopPropagation(); quickSelectTeam('${teamNum}')" class="team-score-botton">
+                <span class="material-icons" style="font-size:5vw; color:#333;">add_circle</span>
+                快速計分
+            </button>
+        </div>
+    </div>
+    `;
+}
+
+
+
 
 
 
