@@ -70,82 +70,135 @@ async function syncFromCloud() {
 
 
 
+
+
+/**
+ * 1. 初始化：只抓取 Event 的隊伍號碼清單
+ */
 async function autoFetchTeams() {
     const event_key = "2026nysu";
-    const url = `https://www.thebluealliance.com/api/v3/event/${event_key}/teams`;
+    // 改用 /teams/keys 接口，只拿隊號清單 (例如 ["frc1678", "frc254"...])，速度最快
+    const url = `https://www.thebluealliance.com/api/v3/event/${event_key}/teams/keys`;
     
     const statsElem = document.getElementById('search-stats');
-    if (statsElem) statsElem.innerText = "正在從 TBA 抓取數據...";
+    if (statsElem) statsElem.innerText = "正在取得隊伍名單...";
 
     try {
         const response = await fetch(url, {
-            headers: { 
-                "X-TBA-Auth-Key": API_KEY,
-                "Accept": "application/json"
-            }
+            headers: { "X-TBA-Auth-Key": API_KEY, "Accept": "application/json" }
         });
 
         if (!response.ok) throw new Error(`連線失敗: ${response.status}`);
 
-        allTeams = await response.json();
+        const teamKeys = await response.json();
         
-        // 按隊號從小到大排序
+        // 將 ["frc1678"...] 轉換成 [{team_number: 1678}...]
+        allTeams = teamKeys.map(key => ({
+            team_number: parseInt(key.replace('frc', ''))
+        }));
+
+        // 按隊號排序
         allTeams.sort((a, b) => a.team_number - b.team_number);
         
-        console.log("TBA 數據抓取成功:", allTeams.length, "支隊伍");
-        // --- 關鍵修改：TBA 抓完後，立刻抓雲端分數 --
+        console.log("已取得隊伍清單:", allTeams.length, "支隊伍");
+
+        // 抓取雲端分數並計算
         await syncFromCloud();
-        
-        
         resetproperty();
-        Rankingteam(currentRankMode);
-        
-        
-        
-       
+        Rankingteam(currentRankMode); // 這會觸發 renderCards
 
     } catch (e) {
-        console.error("抓取失敗:", e);
+        console.error("初始化失敗:", e);
         const container = document.getElementById('team-container');
-        if (container) container.innerHTML = `<div style="color:red; padding:20px;">數據載入失敗，請確認 API KEY 是否正確。</div>`;
+        if (container) container.innerHTML = `<div style="color:red; padding:20px;">載入失敗，請檢查網路或 API KEY。</div>`;
     }
 }
 
+/**
+ * 2. 渲染：先畫骨架，再非同步補齊所有資料
+ */
 function renderCards(tupleList) {
     const container = document.getElementById('team-container');
     if (!container) return;
 
-    // 使用新函數生成 HTML
+    // 先生成 HTML 骨架 (此時 tbaDetail 可能只有 team_number)
     container.innerHTML = tupleList.map(teamObj => {
-        // 尋找 TBA 靜態資料
         const tbaDetail = allTeams.find(obj => obj.team_number === teamObj.teamNumber) || {};
         return generateTeamCardHTML(teamObj, tbaDetail);
     }).join('');
 
-    // 字體調整與地址抓取邏輯保持不變
-    const nameLabels = container.querySelectorAll('.team-name');
-    nameLabels.forEach(label => {
-        label.style.width = "100%";
-        label.style.overflow = "hidden";
-        label.style.whiteSpace = "nowrap";
-        autoShrinkText(label, 12); 
+    // 針對每一張卡片，啟動整合抓取函式
+    tupleList.forEach(teamObj => {
+        fetchAndPopulateTeamData(teamObj.teamNumber);
     });
-
-    fetchAddresses(tupleList.map(t => ({ team_number: t.teamNumber })));
 }
 
+/**
+ * 3. 整合函式：根據隊號抓取所有 TBA 資訊並直接更新 UI
+ * 取代了舊的 fetchSingleAddress
+ */
+async function fetchAndPopulateTeamData(teamNum) {
+    // 找到畫面上對應的卡片與 ID
+    const card = document.querySelector(`.t:has(#loc-${teamNum})`);
+    if (!card) return;
+
+    try {
+        // 直接抓取該隊伍的完整資料
+        const res = await fetch(`https://www.thebluealliance.com/api/v3/team/frc${teamNum}`, {
+            headers: { "X-TBA-Auth-Key": API_KEY, "Accept": "application/json" }
+        });
+        const detail = await res.json();
+
+        // --- 更新記憶體數據 (allTeams) ---
+        const teamInStore = allTeams.find(t => t.team_number === teamNum);
+        if (teamInStore) Object.assign(teamInStore, detail);
+
+        // --- 直接更新 UI 元素 (索引式更新) ---
+        // 1. 更新暱稱
+        const nameLabel = card.querySelector('.team-name');
+        if (nameLabel) {
+            nameLabel.innerText = detail.nickname || "無名稱";
+            autoShrinkText(nameLabel, 12);
+        }
+
+        // 2. 更新城市與區域
+        const stateElem = card.querySelector('.team-state');
+        if (stateElem) stateElem.innerHTML = `<span class="material-icons">map</span> ${detail.state_prov || "未知區域"}`;
+        
+        const cityElem = card.querySelector('.team-city');
+        if (cityElem) cityElem.innerHTML = `<span class="material-icons">location_city</span> ${detail.city || "未知城市"}`;
+
+        // 3. 更新學校/地址資訊
+        const locElem = document.getElementById(`loc-${teamNum}`);
+        if (locElem) {
+            const schoolName = detail.school_name || detail.address || "無詳細地址資訊";
+            locElem.innerHTML = `<span class="material-icons">school</span><div class="addr-text">${schoolName}</div>`;
+            
+            const textElem = locElem.querySelector('.addr-text');
+            if(textElem) autoShrinkText(textElem, 10);
+
+            // 點擊搜尋邏輯
+            locElem.onclick = (e) => {
+                e.stopPropagation();
+                if (schoolName !== "無詳細地址資訊") {
+                    window.open(`https://www.google.com/search?q=${encodeURIComponent(schoolName)}`, '_blank');
+                }
+            };
+        }
+
+    } catch (err) {
+        console.warn(`隊伍 ${teamNum} 資料補完失敗:`, err);
+        const locElem = document.getElementById(`loc-${teamNum}`);
+        if (locElem) locElem.querySelector('.addr-text').innerText = "載入失敗";
+    }
+}
 
 /**
- * 核心函數：生成單一隊伍卡片的 HTML
- * @param {Object} teamObj - 包含 teamNumber, avragescore 等計算後數據的物件
- * @param {Object} tbaDetail - 從 TBA 獲取的隊伍靜態資訊 (nickname, city, state_prov...)
+ * 4. 卡片模板 (保持不變，但確保 id 正確)
  */
-
 function generateTeamCardHTML(teamObj, tbaDetail = {}) {
     const teamNum = teamObj.teamNumber;
     const scoreVal = teamObj.avragescore;
-    
-    // 格式化分數
     const displayScore = scoreVal === -1 ? "N/A" : scoreVal.toFixed(1);
 
     return `
@@ -153,27 +206,18 @@ function generateTeamCardHTML(teamObj, tbaDetail = {}) {
         <div class="team-card" onclick="showDetail('${teamNum}')">
             <div class="card-top">
                 <div class="team-number"># ${teamNum}</div>
-                <div class="team-name">${tbaDetail.nickname || "無名稱"}</div>
+                <div class="team-name">${tbaDetail.nickname || "載入中..."}</div>
             </div>
             <div class="card-button">
-                <div class="team-avg-score">
-                    AVG: ${displayScore}
-                </div>
-                <div class="team-state">
-                    <span class="material-icons">map</span>
-                    ${tbaDetail.state_prov || "未知區域"}
-                </div>
-                <div class="team-city">
-                    <span class="material-icons">location_city</span>
-                    ${tbaDetail.city || "未知城市"}
-                </div>
-
+                <div class="team-avg-score">AVG: ${displayScore}</div>
+                <div class="team-state"><span class="material-icons">map</span> ...</div>
+                <div class="team-city"><span class="material-icons">location_city</span> ...</div>
+                
                 <div id="loc-${teamNum}" class="team-location">
                     <span class="material-icons">school</span>
-                    正在載入學校資訊...
+                    never gonnon give you up...
                 </div>
             </div>
-
             <button onclick="event.stopPropagation(); quickSelectTeam('${teamNum}')" class="team-score-botton">
                 <span class="material-icons" style="font-size:5vw; color:#333;">add_circle</span>
                 快速計分
@@ -181,45 +225,6 @@ function generateTeamCardHTML(teamObj, tbaDetail = {}) {
         </div>
     </div>
     `;
-}
-
-
-
-
-
-
-
-
-// 輔助函式：為了版面整潔把 fetch address 抽出來 (實際上你可以直接用你原本的寫法)
-function fetchAddresses(teamsList) {
-    teamsList.forEach(async (t) => {
-        try {
-            const res = await fetch(`https://www.thebluealliance.com/api/v3/team/frc${t.team_number}`, {
-                headers: { "X-TBA-Auth-Key": API_KEY, "Accept": "application/json" }
-            });
-            const detail = await res.json();
-            const target = document.getElementById(`loc-${t.team_number}`);
-            
-            if (target) {
-                const schoolName = detail.school_name || detail.address || "無詳細地址資訊";
-                // 不要用 innerText，改用這個方式保留圖標
-                target.innerHTML = `<span class="material-icons">school</span><div class="addr-text">${schoolName}</div>`;
-
-                // 呼叫縮放功能
-                const textElem = target.querySelector('.addr-text');
-                if(textElem) autoShrinkText(textElem, 10);
-
-                target.onclick = (e) => {
-                      e.stopPropagation(); // 防止冒泡
-                      if (schoolName !== "無詳細地址資訊") {
-                        window.open(`https://www.google.com/search?q=${encodeURIComponent(schoolName)}`, '_blank');
-                      }
-                };
-            }
-        } catch (err) {
-            console.warn(`隊伍 ${t.team_number} 詳細資料補抓失敗`);
-        }
-    });
 }
 
 // --- 新功能：顯示隊伍詳細資料 ---

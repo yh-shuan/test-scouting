@@ -544,8 +544,6 @@ table{
 }
 .general-btn {
     position: fixed;
-    top: 2.5vh; 
-    right: 2.5vw;
     width: 20vw;
     height: 7.5vw;  
     background-color: #0dff00; /* 這裡定義原色 */
