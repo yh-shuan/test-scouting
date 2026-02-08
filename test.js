@@ -218,10 +218,11 @@ function generateTeamCardHTML(teamObj, tbaDetail = {},bucket) {
                     never gonnon give you up...
                 </div>
             </div>
-            ${(!bucket)?`<button onclick="event.stopPropagation(); quickSelectTeam('${teamNum}')" class="team-score-botton">
-                <span class="material-icons" style="font-size:5vw; color:#333;">add_circle</span>
-                快速計分
-            </button>`:``}
+            
+            <button onclick="event.stopPropagation(); ${(!bucket)?`quickSelectTeam('${teamNum}')"`:`removebucTeam('${teamNum}')"`} class="team-score-botton"${(bucket)?`style ="background-image: linear-gradient(to top left, red 0%, red 1%, red 31%,red 75%,red 100%);"`:``}>
+                <span class="material-icons" style="font-size:5vw; color:#333;">${(!bucket)?`add_circle`:``}</span>
+                ${(!bucket)?`快速計分`:`中出`}
+            </button>
             
         </div>
     </div>
@@ -723,7 +724,7 @@ function battle(){
 
 }
 
-function bucket(){
+function bucket() {
     const bucketdropdown = document.getElementById('bucket-dropdown');
     const selectedTeamNum = parseInt(bucketdropdown.value);
     
@@ -732,24 +733,43 @@ function bucket(){
         return;
     }
 
+    // --- 關鍵修改：防止重複 ---
+    // 檢查畫面上是否已經存在該隊伍的特定元素
+    const existingCard = document.getElementById(`loc-${selectedTeamNum}-bucket`);
+    if (existingCard) {
+        alert(`${selectedTeamNum} 他媽已經在了是要多眼瞎了才選！`);
+        return;
+    }
+
     const container = document.getElementById('bucket-container');
     if (!container) return;
 
     const scoreObj = AllTeamsList.find(t => t.teamNumber === selectedTeamNum);
-
     const tbaObj = allTeams.find(t => t.team_number === selectedTeamNum) || {};
 
-    // 先生成 HTML 骨架 (此時 tbaDetail 可能只有 team_number)
     if (!scoreObj) {
-        container.innerHTML = `<div style="padding:20px;">找不到隊伍 #${selectedTeamNum} 的數據。</div>`;
+        alert("找不到隊伍數據。");
         return;
     }
 
-    // 針對每一張卡片，啟動整合抓取函式
-    container.innerHTML = generateTeamCardHTML(scoreObj, tbaObj,true);
+    // 使用 += 增加卡片而不覆蓋舊的
+    container.innerHTML += generateTeamCardHTML(scoreObj, tbaObj, true);
 
-    // 4. 啟動非同步細節更新 (這會處理名稱、學校、地址的抓取)
-    fetchAndPopulateTeamData(selectedTeamNum,true);
+    // 啟動非同步細節更新 (這會處理名稱、學校、地址的抓取)
+    fetchAndPopulateTeamData(selectedTeamNum, true);
+}
+function removebucTeam(teamNum) {
+    // 找到對應的卡片節點
+    const targetCard = document.querySelector(`.t:has(#loc-${teamNum}-bucket)`);;
+    if (targetCard) {
+        // 增加一個簡單的淡出效果（選配）
+        targetCard.style.opacity = '0';
+        targetCard.style.transform = 'scale(0.8)';
+        
+        setTimeout(() => {
+            targetCard.remove();
+        }, 200); // 0.2秒後真正移除
+    }
 }
 
 function resetScoring() {
