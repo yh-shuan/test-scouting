@@ -544,31 +544,31 @@ function togglePage() {
     const mainPage = document.getElementById('main-page');
     const scorePage = document.getElementById('score-page');
     const btn = document.getElementById('toggle-btn');
-    const dropdown = document.getElementById('team-dropdown');
 
     if (scorePage.style.display === 'none' || scorePage.style.display === '') {
-        // 1. 先重置所有狀態
+        // 1. 重置所有狀態
         resetScoring();
 
-        // 2. 切換大頁面
+        // 2. 切換頁面顯示
         mainPage.style.display = 'none';
         scorePage.style.display = 'block';
         btn.innerText = '×';
         btn.classList.add('active');
 
-        // 3. 【關鍵】強制顯示選隊伍區，隱藏其他區
-        document.getElementById('team-select-zone').style.setProperty('display', 'block', 'important');
-        document.getElementById('mode-selec-zone').style.setProperty('display', 'none', 'important');
+        // 3. 【關鍵】只顯示「模式選擇區」，隱藏其他所有區域
+        document.getElementById('mode-selec-zone').style.setProperty('display', 'block', 'important');
+        document.getElementById('team-select-zone').style.setProperty('display', 'none', 'important');
+        document.getElementById('static-section').style.setProperty('display', 'none', 'important');
+        document.getElementById('actual-scoring-content').style.setProperty('display', 'none', 'important');
+        document.getElementById('battle-page').style.setProperty('display', 'none', 'important');
+
         
-        // 4. 填充下拉選單
-        dropdown.innerHTML = '<option value="">-- 請選擇隊伍 --</option>';
-        allTeams.forEach(t => {
-            const opt = document.createElement('option');
-            opt.value = t.team_number;
-            opt.innerText = `#${t.team_number} - ${t.nickname || "無名稱"}`;
-            dropdown.appendChild(opt);
-        });
+        // 清空標題，因為還沒選隊伍
+        const h2Title = document.querySelector('#score-page h2');
+        if (h2Title) h2Title.style.display = 'none';
+
     } else {
+        // 關閉頁面邏輯保持不變
         mainPage.style.display = 'block';
         scorePage.style.display = 'none';
         btn.innerText = '+';
@@ -592,26 +592,30 @@ function battle(){
     const propertypage = document.getElementById('batle-property-page');
 
 
-    if (battlepage.style.display === 'none' || battlepage.style.display === '') {
+        dropdown1.style.display ='block';
+        dropdown2.style.display ='block';
+        // 1. 重製下拉選單到預設狀態 
+        dropdown1.selectedIndex = 0;
+        dropdown2.selectedIndex = 0;
+
+        // 2. 清空原本顯示隊伍資訊的文字區塊
+        if (info1) info1.innerHTML = '';
+        if (info2) info2.innerHTML = '';
+
+
+    
         // 1. 先重置所有狀態
         resetScoring();
 
 
 
         // 2. 切換大頁面
-        mainPage.style.display = 'none';
+        
         
         battlepage.style.display = 'block';
 
-        dropdown1.style.display='block';
-        dropdown2.style.display='block';
-
 
         
-        btn.innerText = 'back';
-        btn.classList.add('active');
-
-        propertypage.style.display='flex';
         
         
         // 4. 填充下拉選單
@@ -637,22 +641,16 @@ function battle(){
 
         batleteam2page.style.display = 'flex';
 
-    } else {
-        mainPage.style.display = 'block';
-        battlepage.style.display = 'none';
-        btn.innerText = 'battle';
-        btn.classList.remove('active');
+    
+        
+        
+        
+        
 
-        // 1. 重製下拉選單到預設狀態 
-        dropdown1.selectedIndex = 0;
-        dropdown2.selectedIndex = 0;
-
-        // 2. 清空原本顯示隊伍資訊的文字區塊
-        if (info1) info1.innerHTML = '';
-        if (info2) info2.innerHTML = '';
+        
 
 
-    }
+    
 
     dropdown1.onchange = function() {
         const selectedTeamNum = parseInt(this.value); // 取得選中的隊號
@@ -765,31 +763,31 @@ function resetScoring() {
 }
 
 function confirmTeam() {
-    
     const dropdown = document.getElementById('team-dropdown');
     const selectedTeam = dropdown.value;
     
     if (!selectedTeam) {
-        alert("請先選擇一個隊伍！");
+        alert("請選擇隊伍！");
         return;
     }
     
     currentScoringTeam = selectedTeam;
     
-    // 1. 隱藏選隊伍區域
+    // 1. 隱藏隊伍選擇區
     document.getElementById('team-select-zone').style.setProperty('display', 'none', 'important');
     
-    // 2. 強制顯示選模式區域 (使用 important 破除 resetScoring 的限制)
-    const modeZone = document.getElementById('mode-selec-zone');
-    if (modeZone) {
-        modeZone.style.setProperty('display', 'block', 'important');
-    }
-
-    // 3. 同步更新標題
+    // 2. 顯示標題
     const h2Title = document.querySelector('#score-page h2');
     if (h2Title) {
-        h2Title.innerText = `正在為 #${selectedTeam} 計分`;
+        h2Title.innerText = `正在為 #${selectedTeam} 進行 ${selectedMatchMode === 'static' ? '靜態偵查' : '動態計分'}`;
         h2Title.style.display = 'block';
+    }
+
+    // 3. 根據先前選好的模式，顯示對應內容
+    if (selectedMatchMode === 'static') {
+        document.getElementById('static-section').style.setProperty('display', 'block', 'important');
+    } else {
+        document.getElementById('actual-scoring-content').style.setProperty('display', 'block', 'important');
     }
 }
 
@@ -842,24 +840,40 @@ function changeVal(id, delta) {
 let selectedMatchMode = "";
 
 function whatmode() {
+    
     const dropdown = document.getElementById('mode-selec');
     const val = dropdown.value;
-    if (!val) return; // 如果選回預設選項則不動作
+    
+    
+    if (!val) return; 
 
-    selectedMatchMode = val;
-    console.log("當前模式:", selectedMatchMode);
+    selectedMatchMode = val; // 紀錄模式：'static' 或 'dynamic'
+    console.log("已選擇模式:", selectedMatchMode);
 
     // 1. 隱藏模式選擇區
     document.getElementById('mode-selec-zone').style.setProperty('display', 'none', 'important');
 
-    // 2. 根據選擇顯示對應計分區
-    if (selectedMatchMode === 'static') {
-        document.getElementById('static-section').style.setProperty('display', 'block', 'important');
-        document.getElementById('actual-scoring-content').style.setProperty('display', 'none', 'important');
-    } else if (selectedMatchMode === 'dynamic') {
-        document.getElementById('static-section').style.setProperty('display', 'none', 'important');
-        document.getElementById('actual-scoring-content').style.setProperty('display', 'block', 'important');
+    if(selectedMatchMode==="battle"){
+
+        battle();
+    }else{
+        // 2. 顯示隊伍選擇區
+        const teamZone = document.getElementById('team-select-zone');
+        teamZone.style.setProperty('display', 'block', 'important');
+
+        // 3. 填充隊伍下拉選單 (確保裡面有東西)
+        const teamDropdown = document.getElementById('team-dropdown');
+        teamDropdown.innerHTML = '<option value="">-- 接著選擇隊伍 --</option>';
+        allTeams.forEach(t => {
+            const opt = document.createElement('option');
+            opt.value = t.team_number;
+            opt.innerText = `#${t.team_number} - ${t.nickname || "無名稱"}`;
+            teamDropdown.appendChild(opt);
+        });
+
+
     }
+    
 }
 
 
