@@ -134,21 +134,16 @@ table{
 }
 
 .card-button > *:nth-child(1) {
-    background-color: #ebc83d;
-    border-color: #f39c12;
+    background-color: #eed633;
+    border-color: #ddb922;
 }
-.card-button > *:nth-child(2) {
-    background-color: #3498db;
-    border-color: #2980b9;
-}
-.card-button > *:nth-child(3) {
-    background-color: #9b59b6;
-    border-color: #8e44ad;
-}
+.card-button > *:nth-child(2),
+.card-button > *:nth-child(3),
 .card-button > *:nth-child(4) {
-    background-color: #e67e22;
-    border-color: #d35400
+    background-color: #785ad9;
+    border-color: #6749c8;
 }
+
 .card-button > * {
     flex: 1; /* 改用 flex 佈局來讓圖示和文字垂直排列 */
     background-color: #00c8c8;
@@ -181,7 +176,7 @@ table{
 }
 .card-button > *:hover {
     transform: scale(1.05); 
-    filter: brightness(1.2); 
+    filter: brightness(1.1); 
     z-index: 1; /* 確保放大的時候不會被旁邊的盒子遮住 */
 }/* 滑鼠移上去時變大 1.05 倍 */
 
@@ -195,15 +190,10 @@ table{
 }/* 針對圖示大小的單獨設定 */
 
 
-.team-score-botton:hover, 
-.card-button > *:hover .material-icons {
-    transform: translateY(-3px);
-    filter: brightness(1.1); 
-}/* 滑鼠移入時的效果 */
 
 .team-number {
     font-size: 7.5vw;
-    color: #5b2f23cc;
+    color: #000055;
     white-space: nowrap; /* 防止換行 */
     text-align: top left;
     text-shadow: 2px 2px 3px #33333377;
@@ -301,6 +291,12 @@ table{
     font-size: 5vw;
     gap: 8px;
 }
+
+.team-score-botton:hover, 
+.card-button > *:hover .material-icons {
+    transform: translateY(-3px);
+    filter: brightness(1.1); 
+}/* 滑鼠移入時的效果 */
 
 .no-result {
     grid-column: 1 / -1;
