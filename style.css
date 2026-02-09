@@ -6,7 +6,7 @@ body{
     background-attachment: fixed; 
     background-size: 80px 80px;
     background-position: 0 0 , 40px 40px; */
-    background: linear-gradient(120deg, #c5d5fa, #c3dc99); 
+    background: linear-gradient(120deg, #c5d5fa, #c3ecd9); 
     min-height: 100vh; 
     background-attachment: fixed !important; 
 }
@@ -90,7 +90,7 @@ table{
     flex-direction: column; 
     align-items: center; 
     justify-content: flex-start;
-    background-image: linear-gradient(135deg, #5271C4 0%, #B19FFF 48%, #ECA1FE 100%);
+    background: #9199FF;
     /* border: 5px solid;
     border-color: transparent; */
     border-radius: 10px 50px 50px;
@@ -106,13 +106,13 @@ table{
 .team-card:hover {
     /* 同時向上浮動並稍微放大 */
     /*transform: translateY(-10px) scale(1.02); */
-    box-shadow: 0px 25px 35px rgba(0,0,0,0.3); 
-    background-color: #7970fe;
+    box-shadow: 0px 15px 25px rgba(0,0,0,0.3); 
+    filter: brightness(0.95);
     z-index: 10;
 }/* 修正後的 Hover：把縮放跟位移寫在一起 */
 
 .card-top {
-    background-image: linear-gradient(to top, #65379B 0%, #886AEA 15%, #7459C9 100%); 
+    background-image: linear-gradient(to top, #65379B 0%, #886AEA 5%, #785ad9 100%); 
     display: flex;
     align-items: center;    
     justify-content: center; 
@@ -134,7 +134,7 @@ table{
 }
 
 .card-button > *:nth-child(1) {
-    background-color: #f1c40f;
+    background-color: #ebc83d;
     border-color: #f39c12;
 }
 .card-button > *:nth-child(2) {
@@ -167,7 +167,7 @@ table{
     border-radius: 12px;
     font-size: 40px; 
     font-weight: bold;
-    color: #ffffff;
+    color: #ffffffee;
     text-align: center;
     white-space: break-word; /* 強制換行 */
     overflow: hidden; /* 隱藏超出部分 */
@@ -203,7 +203,7 @@ table{
 
 .team-number {
     font-size: 7.5vw;
-    color: #f5229dcc;
+    color: #5b2f23cc;
     white-space: nowrap; /* 防止換行 */
     text-align: top left;
     text-shadow: 2px 2px 3px #33333377;
@@ -316,7 +316,7 @@ table{
     margin: 30px auto; /* 水平置中 */
     padding: 25px;
     /* 使用主畫面卡片的經典漸層色 */
-    background: linear-gradient(135deg, #5271C4 0%, #B19FFF 48%, #ECA1FE 100%) !important; 
+    background: #B199FF !important; 
 
     border: none;
     border-radius: 10px 50px 50px;
@@ -523,7 +523,6 @@ table{
     filter: brightness(0.9);
 }
 .general-btn {
-    
     width: 20vw;
     height: 7.5vw;  
     background: #2ecc71;  /* 這裡定義原色 */
@@ -557,7 +556,7 @@ table{
     flex-direction: column; 
     align-items: center;    
     justify-content: flex-start; 
-    background-image: linear-gradient(135deg, #5271C4 0%, #B19FFF 48%, #ECA1FE 100%);
+    background: #B199FF; 
     /* border: 5px solid;
     border-color: transparent; */
     border-radius: 10px 50px 50px;
