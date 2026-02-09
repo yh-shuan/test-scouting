@@ -606,6 +606,9 @@ table{
         font-size: 10vw;
         padding: 3px 7px;
     }
+    #search-stats{
+        font-size: 2vh;
+    }
 }
 
 @media screen and (max-aspect-ratio:1/1) {
