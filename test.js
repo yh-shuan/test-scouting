@@ -557,8 +557,12 @@ function togglePage() {
     const btn = document.getElementById('toggle-btn');
 
     if (scorePage.style.display === 'none' || scorePage.style.display === '') {
+        // --- 開啟計分頁面 ---
+        
         // 1. 重置所有狀態
         resetScoring();
+        // 確保這裡進去時沒有預設隊伍 (除非是透過 quickSelectTeam 呼叫，那邊會自己設定)
+        currentScoringTeam = ""; 
 
         // 2. 切換頁面顯示
         mainPage.style.display = 'none';
@@ -566,34 +570,31 @@ function togglePage() {
         btn.innerText = '×';
         btn.classList.add('active');
 
-        // 3. 【關鍵】只顯示「模式選擇區」，隱藏其他所有區域
+        // 3. 只顯示「模式選擇區」
         document.getElementById('mode-selec-zone').style.setProperty('display', 'block', 'important');
-        document.getElementById('team-select-zone').style.setProperty('display', 'none', 'important');
-        document.getElementById('static-section').style.setProperty('display', 'none', 'important');
-        document.getElementById('actual-scoring-content').style.setProperty('display', 'none', 'important');
-        document.getElementById('battle-page').style.setProperty('display', 'none', 'important');
-        document.getElementById('bucket-page').style.setProperty('display', 'none', 'important');
-
+        
+        // 確保下拉選單可見
         const modeDropdown = document.getElementById('mode-selec');
         if (modeDropdown) {
-            Array.from(modeDropdown.options).forEach(option => {
-                    option.style.display = 'block'; 
-            });
+            modeDropdown.style.display = 'block';
         }
-        
-        // 清空標題，因為還沒選隊伍
-        const h2Title = document.querySelector('#score-page h2');
-        if (h2Title) h2Title.style.display = 'none';
 
     } else {
-        // 關閉頁面邏輯保持不變
+        // --- 關閉計分頁面 (回到主頁) ---
         mainPage.style.display = 'block';
         scorePage.style.display = 'none';
         btn.innerText = '+';
         btn.classList.remove('active');
+        closeDetail(mainPage);
+        
+        // 清空全域狀態，避免下次快速計分出錯
+        currentScoringTeam = "";
+        selectedMatchMode = "";
+        
+        // 重新刷新主頁排名 (確保最新數據)
+        Rankingteam(currentRankMode);
     }
 }
-
 
 function battle(){
     const mainPage = document.getElementById('main-page');
@@ -787,30 +788,25 @@ function resetScoring() {
     if(document.getElementById('tele-climb')) document.getElementById('tele-climb').value = "0";
     if(document.getElementById('reporting')) document.getElementById('reporting').value = "";
 
-    // --- 2. 靜態計分欄位重置 (新增這部分) ---
-    // 重置靜態 Climb 下拉選單
+    // --- 2. 靜態計分欄位重置 ---
     const sc = document.getElementById('static-climb');
     if(sc) sc.value = "0";
 
-    // 重置 Climb Position 下拉選單
     const cp = document.getElementById('climb-position');
-    if(cp) cp.value = ""; // 假設預設是空值或 None
+    if(cp) cp.value = ""; 
 
-    // 重置靜態 Fuel 數值 (如果是透過 changeVal 控制的 innerText)
     const sf = document.getElementById('static-fuel');
     if(sf) (sf.tagName === "INPUT" ? sf.value = "0" : sf.innerText = "0");
 
-    // 重置 Run and Shoot 核取方塊
     const rs = document.getElementById('Run_and_shoot');
     if(rs) rs.checked = false;
 
-    // 重置靜態備註
     const sr = document.getElementById('static-reporting');
     if(sr) sr.value = "";
 
     // --- 3. UI 顯示狀態重置 ---
     // 強制隱藏所有子區域
-    const zones = ['team-select-zone', 'mode-selec-zone', 'static-section', 'actual-scoring-content','battle-page','bucket-page'];
+    const zones = ['team-select-zone', 'mode-selec-zone', 'static-section', 'actual-scoring-content','battle-page','bucket-page', 'batle-team1-page', 'batle-team2-page'];
     zones.forEach(id => {
         const el = document.getElementById(id);
         if (el) el.style.setProperty('display', 'none', 'important'); 
@@ -818,7 +814,14 @@ function resetScoring() {
     
     // 重置模式選擇下拉選單
     const modeDropdown = document.getElementById('mode-selec');
-    if(modeDropdown) modeDropdown.selectedIndex = 0;
+    if(modeDropdown) {
+        modeDropdown.selectedIndex = 0;
+        
+        // --- 修正：把之前可能被快速計分隱藏的 Battle/Bucket 選項顯示回來 ---
+        Array.from(modeDropdown.options).forEach(option => {
+            option.style.display = 'block';
+        });
+    }
 
     // 抹除計分頁面標題
     const h2Title = document.querySelector('#score-page h2');
@@ -826,6 +829,10 @@ function resetScoring() {
         h2Title.innerText = ""; 
         h2Title.style.display = 'none';
     }
+
+    // --- 4. 變數狀態重置 (重要) ---
+    // 這裡不清空 currentScoringTeam，因為快速計分需要它。
+    // currentScoringTeam 的清空由 saveAndExit 或 togglePage 負責。
 }
 
 function confirmTeam() {
@@ -921,45 +928,84 @@ function changeVal(id, delta) {
 let selectedMatchMode = "";
 
 function whatmode() {
-    
     const dropdown = document.getElementById('mode-selec');
     const val = dropdown.value;
-    
-    
-    if (!val) return; 
 
-    selectedMatchMode = val; // 紀錄模式：'static' 或 'dynamic'
+    if (!val) return;
+
+    selectedMatchMode = val; // 紀錄模式
     console.log("已選擇模式:", selectedMatchMode);
 
     // 1. 隱藏模式選擇區
     document.getElementById('mode-selec-zone').style.setProperty('display', 'none', 'important');
 
-    if(selectedMatchMode==="battle"){
-
+    // --- 特殊模式處理 ---
+    if (selectedMatchMode === "battle") {
         battle();
-    }else{
+        return;
+    } 
+    
+    if (selectedMatchMode === "bucket") {
+        // Bucket 模式邏輯
+        const bucketZone = document.getElementById('bucket-page');
+        const bucketDropdown = document.getElementById('bucket-dropdown');
         
+        // 顯示 Bucket 頁面 (這裡不需要顯示 team-select-zone，因為 Bucket 有自己的選單)
+        bucketZone.style.setProperty('display', 'block', 'important');
+        document.getElementById('team-select-zone').style.setProperty('display', 'none', 'important'); // 讓選單區塊顯示
         
-        const zone=(selectedMatchMode==='bucket')?'bucket-page':'team-select-zone';
-        const dropdown=(selectedMatchMode==='bucket')?'bucket-dropdown':'team-dropdown';
+        // --- 修正：清空舊選項，避免重複 ---
+        bucketDropdown.innerHTML = '<option value="">恭迎皇帝選妃</option>';
         
-        // 2. 顯示隊伍選擇區
-        const teamZone = document.getElementById(zone);
-        teamZone.style.setProperty('display', 'block', 'important');
+        allTeams.forEach(t => {
+            const opt = document.createElement('option');
+            opt.value = t.team_number;
+            opt.innerText = `#${t.team_number} - ${t.nickname || "無名稱"}`;
+            bucketDropdown.appendChild(opt);
+        });
+        
+        // Bucket 不需要進入 confirmTeam 流程
+        return;
+    }
 
-        // 3. 填充隊伍下拉選單 (確保裡面有東西)
-        const teamDropdown = document.getElementById(dropdown);
+    // --- 一般計分模式 (Static / Movement) ---
+
+    // 判斷是否為「快速計分」 (currentScoringTeam 已經有值)
+    if (currentScoringTeam && currentScoringTeam !== "") {
+        // 🚀 直通車：跳過選隊伍，直接顯示計分欄位
+        console.log("偵測到快速計分，跳過隊伍選擇");
         
+        // 更新標題
+        const h2Title = document.querySelector('#score-page h2');
+        if (h2Title) {
+            h2Title.innerText = `正在 ${selectedMatchMode === 'static' ? '質詢' : '視監'}#${currentScoringTeam}  `;
+            h2Title.style.display = 'block';
+        }
+
+        // 直接顯示對應區塊
+        if (selectedMatchMode === 'static') {
+            document.getElementById('static-section').style.setProperty('display', 'block', 'important');
+        } else {
+            document.getElementById('actual-scoring-content').style.setProperty('display', 'block', 'important');
+        }
+
+    } else {
+        // 🐢 一般流程：顯示隊伍選擇選單
+        const teamZone = document.getElementById('team-select-zone');
+        teamZone.style.setProperty('display', 'block', 'important');
+        
+        const teamDropdown = document.getElementById('team-dropdown');
+
+        // --- 修正：清空舊選項，避免重複 ---
+        teamDropdown.innerHTML = '<option value="">請選擇隊伍</option>';
+
         allTeams.forEach(t => {
             const opt = document.createElement('option');
             opt.value = t.team_number;
             opt.innerText = `#${t.team_number} - ${t.nickname || "無名稱"}`;
             teamDropdown.appendChild(opt);
         });
-
-
     }
-    
 }
 
 
