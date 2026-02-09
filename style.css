@@ -610,7 +610,7 @@ table{
 
 @media screen and (max-aspect-ratio:1/1) {
     h1{
-        font-size: 10vh;
+        font-size: 5vh;
     }
     .floating-btn {
         width: 10vh !important;
