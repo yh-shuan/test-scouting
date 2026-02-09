@@ -84,15 +84,14 @@ table{
 
     display: flex;
     flex-direction: column; 
-    align-items: center;    
-    justify-content: flex-start; 
+    align-items: center; 
+    justify-content: flex-start;
     background-image: linear-gradient(135deg, #5271C4 0%, #B19FFF 48%, #ECA1FE 100%);
     /* border: 5px solid;
     border-color: transparent; */
     border-radius: 10px 50px 50px;
     height: auto;               
     min-height: 15vh;
-    min-width: none;
     padding: 0; 
     overflow: hidden;
 
@@ -584,8 +583,14 @@ table{
 }
 
 @media (max-width: 600px) {
+    h1{
+        font-size: 10vh;
+    }
+    h3{
+        font-size: 3vh;
+    }
     .card-button {
-        grid-template-columns: repeat(2, 1fr); /* 螢幕寬度大於 600px 時改為一排四個 */
+        grid-template-columns: repeat(4, 1fr); /* 超小螢幕時改為兩列 */
     }
     .card-button .material-icons {
         font-size: 20px; /* 超小螢幕時圖示稍微縮小 */
@@ -615,17 +620,11 @@ table{
         right: 2.5vw !important;
     }
     .general-select{
-    
         font-size: 2.5vh !important;
-    
     }
     #search-bar,
-
     #reporting {
-        
         font-size: 2.5vh !important;
-        
     }
-
 
 }/* 手機版調整大小與位置 */
