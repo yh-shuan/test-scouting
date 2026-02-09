@@ -17,9 +17,12 @@ body{
 }
 h1{
     color: #7fffd4;
-    font-size: 64px;
+    font-size: 15vh;
     text-align: center;
     text-shadow:  2px 2px 4px #33333333;
+}
+h3{
+    font-size: 4vh;
 }
 p{
     color: #e89374;
@@ -35,9 +38,6 @@ table{
     border-collapse: separate;
     overflow: hidden;
 }/* 修改後的 CSS */
-
-
-
 
 
 .floating-btn {
@@ -99,8 +99,6 @@ table{
     /* --- 平滑動畫與陰影 --- */
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     box-shadow: 0 5px 4px rgba(0,0,0,0.1);
-
-    
 }
 .team-card:hover {
     /* 同時向上浮動並稍微放大 */
@@ -123,7 +121,7 @@ table{
 }
 .card-button {
     display: grid; /* 改用 Grid 佈局 */
-    grid-template-columns: repeat(2, 1fr); /* 預設為一排兩個 */
+    grid-template-columns: repeat(4, 1fr); /* 預設為一排四個 */
     gap: 25px; /* 按鈕之間的間距 */
     width: 100%; 
     padding: 25px;      /* 這決定了青色背景與卡片最外框的距離 */
@@ -263,10 +261,6 @@ table{
     transition: 0.3s;
     text-align: center;
 }
-
-
-
-
 
 
 #search-bar,
@@ -465,10 +459,7 @@ table{
     
     border-radius: 20px;
     padding: 20px;
-    overflow-y: auto;
-    
-    
-    
+    overflow-y: auto;    
 }
 .detail-header {
     display: flex;
@@ -564,15 +555,7 @@ table{
     margin: 5vw auto; 
     padding: 1vw 2vw;
     font-weight: bold;     
-    
-    
-    
-
 }/* 預設狀態（列表模式） */
-
-
-
-
 
 
 .half-teamcard {
@@ -600,15 +583,26 @@ table{
     box-shadow: 0 5px 4px rgba(0,0,0,0.1);
 }
 
-@media (min-width: 600px) {
+@media (max-width: 600px) {
     .card-button {
-        grid-template-columns: repeat(4, 1fr); /* 螢幕寬度大於 600px 時改為一排四個 */
+        grid-template-columns: repeat(2, 1fr); /* 螢幕寬度大於 600px 時改為一排四個 */
     }
     .card-button .material-icons {
         font-size: 20px; /* 超小螢幕時圖示稍微縮小 */
     }
     .card-button > * {
         font-size: 30px; /* 超小螢幕時文字稍微縮小 */
+    }
+    .team-name {
+        font-size: 5vh;
+    }
+    .close-btn {
+        font-size: 10vw;
+        padding: 8px 20px;
+    }
+    .delete-btn-small {
+        font-size: 10vw;
+        padding: 3px 7px;
     }
 }
 
@@ -632,36 +626,6 @@ table{
         font-size: 2.5vh !important;
         
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }/* 手機版調整大小與位置 */
