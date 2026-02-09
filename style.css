@@ -584,7 +584,7 @@ table{
 
 @media (max-width: 600px) {
     h3{
-        font-size: 3vh;
+        font-size: 2.5vh;
     }
     .card-button {
         grid-template-columns: repeat(4, 1fr); /* 超小螢幕時改為兩列 */
@@ -607,7 +607,7 @@ table{
         padding: 3px 7px;
     }
     #search-stats{
-        font-size: 2vh;
+        font-size: 12px;
     }
 }
 
