@@ -584,7 +584,7 @@ table{
 
 @media (max-width: 600px) {
     h1{
-        font-size: 90vw;
+        font-size: 10vh;
     }
     h3{
         font-size: 3vh;
