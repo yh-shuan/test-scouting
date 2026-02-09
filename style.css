@@ -8,7 +8,7 @@ body{
     background-position: 0 0 , 40px 40px; */
     background: linear-gradient(120deg, #c5d5fa, #c3dc99); 
     min-height: 100vh; 
-    background-attachment: fixed; 
+    background-attachment: fixed !important; 
 }
 * {
     box-sizing: border-box;
@@ -20,6 +20,10 @@ h1{
     font-size: 15vh;
     text-align: center;
     text-shadow:  2px 2px 4px #33333333;
+}
+h2{
+    color: black;
+    text-align: center;
 }
 h3{
     font-size: 4vh;
@@ -247,21 +251,7 @@ table{
     
 }/* 搜尋區塊 */
 
-.general-select{
-    display: block; /* 確保它們獨立佔據一行 */
-    margin: 10px auto; /* 置中 */
-    width: 90%; /* 手機版寬度 */
-    max-width: 100vw; /* 避免在電腦上變得太長變形 */
-    padding: 12px 20px;
-    font-size: 2.5vw;
-    border: 2px solid #ddd;
-    border-radius: 25px; /* 圓角看起來更像查詢畫面 */
-    outline: none;
-    transition: 0.3s;
-    text-align: center;
-}
-
-
+.general-select,
 #search-bar,
 #reporting {
     display: block; /* 確保它們獨立佔據一行 */
