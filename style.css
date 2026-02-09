@@ -583,9 +583,6 @@ table{
 }
 
 @media (max-width: 600px) {
-    h1{
-        font-size: 5vh;
-    }
     h3{
         font-size: 3vh;
     }
@@ -612,6 +609,9 @@ table{
 }
 
 @media screen and (max-aspect-ratio:1/1) {
+    h1{
+        font-size: 10vh;
+    }
     .floating-btn {
         width: 10vh !important;
         height: 10vh !important;
