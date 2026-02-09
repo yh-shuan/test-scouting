@@ -219,8 +219,8 @@ function generateTeamCardHTML(teamObj, tbaDetail = {},bucket) {
                 </div>
             </div>
             
-            <button onclick="event.stopPropagation(); ${(!bucket)?`quickSelectTeam('${teamNum}')"`:`removebucTeam('${teamNum}')"`} class="team-score-botton"${(bucket)?`style ="background-image: linear-gradient(to top left, red 0%, red 1%, red 31%,red 75%,red 100%);"`:``}>
-                <span class="material-icons" style="font-size:5vw; color:#333;">${(!bucket)?`add_circle`:``}</span>
+            <button onclick="event.stopPropagation(); ${(!bucket)?`quickSelectTeam('${teamNum}')"`:`removebucTeam('${teamNum}')"`} class="team-score-botton"${(bucket)?``:``}>
+                <span class="material-icons">${(!bucket)?`add_circle`:``}</span>
                 ${(!bucket)?`快速計分`:`中出`}
             </button>
             

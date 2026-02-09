@@ -291,7 +291,10 @@ table{
     font-size: 5vw;
     gap: 8px;
 }
-
+.team-score-botton .material-icons {
+    font-size: 5vw; 
+    color: #333;
+}
 .team-score-botton:hover, 
 .card-button > *:hover .material-icons {
     transform: translateY(-3px);
