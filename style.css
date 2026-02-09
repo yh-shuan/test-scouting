@@ -129,7 +129,6 @@ table{
     width: 100%; 
     padding: 25px;      /* 這決定了青色背景與卡片最外框的距離 */
     box-sizing: border-box;
-
     align-items: stretch;
 }
 
@@ -146,10 +145,8 @@ table{
 
 .card-button > * {
     flex: 1; /* 改用 flex 佈局來讓圖示和文字垂直排列 */
-    background-color: #00c8c8;
     border-radius: 10px;
-    border: 2px solid #009b96;
-    margin: 5px;
+    border: 2px solid;
     
     display: flex;
     flex-direction: column; /* 圖示在上，文字在下 */
@@ -159,7 +156,6 @@ table{
     padding: 50%;
     height: 0; /* 讓 padding-top 決定高度 */
     padding-top: 50%; /* 這樣可以保持比例 */
-    border-radius: 12px;
     font-size: 40px; 
     font-weight: bold;
     color: #ffffffee;
