@@ -26,7 +26,7 @@ const API_KEY = "tGy3U4VfP85N98m17nqzN8XCof0zafvCckCLbgWgmy95bGE0Aw97b4lV7UocJvx
 let AllTeamsList=[];
 
 // --- ⚠️ 重要：請填入 Apps Script 部署後的 Web App URL (結尾通常是 /exec) ---
-const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbxzgNHYYPc06GWSPk5F6z-bGgWDQpirYjXpuSqef4uf5kIrHrs4B_svsFXjfOEH4FoT/exec"; 
+const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbwQEE2_pVzSRuSuMe0hRstsVDccP4SXkg0M_S6xMHtgjqa-cwGtHkwb8_sX1vrAqdXD/exec"; 
 
 
 
@@ -398,6 +398,7 @@ async function saveAndExit(type) {
         
         target: type,
         id: uniqueId,
+        identifymark:"2026nysu",
         teamNumber: currentScoringTeam,
         };
     if(type==='movement'){
@@ -809,7 +810,7 @@ function resetScoring() {
 
     // --- 3. UI 顯示狀態重置 ---
     // 強制隱藏所有子區域
-    const zones = ['team-select-zone', 'mode-selec-zone', 'static-section', 'actual-scoring-content'];
+    const zones = ['team-select-zone', 'mode-selec-zone', 'static-section', 'actual-scoring-content','battle-page','bucket-page'];
     zones.forEach(id => {
         const el = document.getElementById(id);
         if (el) el.style.setProperty('display', 'none', 'important'); 
