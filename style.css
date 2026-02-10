@@ -668,5 +668,11 @@ table{
 
 
     
+    .score-num {
+        font-size: 5vh !important;
+    }/* 數字顯示 */
+
+
+    
 
 }/* 手機版調整大小與位置 */
