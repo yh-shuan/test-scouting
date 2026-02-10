@@ -366,20 +366,18 @@ table{
     height: 70px;
     font-size: 35px;
     font-weight: bold;
-    text-align: center;
+    
     border: 1px solid rgba(255, 255, 255, 0.4);
     border-radius: 20px;
     cursor: pointer;
     transition: transform 0.1s active;
     touch-action: manipulation;
-    justify-items: center;
-    align-items: center;
-    justify-content: center;
+    
     
 }/* 加減按鈕 */
 
-.minus { background-color: #ff7675cc; color: white; text-align: center;} /* 紅色減號 */
-.plus { background-color: #55efc4cc; color: white; text-align: center;}  /* 綠色加號 */
+.minus { background-color: #ff7675cc; color: white; } /* 紅色減號 */
+.plus { background-color: #55efc4cc; color: white; }  /* 綠色加號 */
 
 .cnt-btn:active { 
     transform: scale(0.9); 
@@ -659,7 +657,7 @@ table{
         width: 10vh;
         height: 10vh;
         font-size: 15vh;       
-        margin: 5vh auto;
+        
     }/* 加減按鈕 */
 
 }/* 手機版調整大小與位置 */
