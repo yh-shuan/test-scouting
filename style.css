@@ -656,15 +656,11 @@ table{
     .cnt-btn {
         width: 10vh;
         height: 10vh;
-        font-size: 15vh;       
+        font-size: 5vh;       
         
     }/* 加減按鈕 */
 
 
-    .counter-controls {
-        display: flex;
-        align-items: center;
-        gap: 5vh;
-    }/* 控制列 */
+    
 
 }/* 手機版調整大小與位置 */
