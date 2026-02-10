@@ -375,7 +375,7 @@ table{
     justify-items: center;
     align-items: center;
     justify-content: center;
-    margin: 30px auto; 
+    
 }/* 加減按鈕 */
 
 .minus { background-color: #ff7675cc; color: white; text-align: center;} /* 紅色減號 */
@@ -658,7 +658,8 @@ table{
     .cnt-btn {
         width: 10vh;
         height: 10vh;
-        font-size: 10vh;       
+        font-size: 15vh;       
+        margin: 30px auto; 
     }/* 加減按鈕 */
 
 }/* 手機版調整大小與位置 */
