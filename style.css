@@ -651,9 +651,9 @@ table{
 
 
     .cnt-btn {
-        width: 5vw;
-        height: 5vw;
-        font-size: 5vw;       
+        width: 5vh;
+        height: 5vh;
+        font-size: 5vh;       
     }/* 加減按鈕 */
 
 }/* 手機版調整大小與位置 */
