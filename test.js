@@ -817,7 +817,7 @@ function resetScoring() {
         
         // --- 修正：把之前可能被快速計分隱藏的 Battle/Bucket 選項顯示回來 ---
         Array.from(modeDropdown.options).forEach(option => {
-            option.style.disabled = false;
+            option.style.display = 'block';
         });
     }
 
@@ -890,9 +890,9 @@ function quickSelectTeam(num) {
             // 遍歷所有選項，如果是 battle 或 bucket 就隱藏
             Array.from(modeDropdown.options).forEach(option => {
                 if (option.value === 'battle' || option.value === 'bucket') {
-                    option.disabled = true; // 隱藏
+                    option.style.display = 'none' ; // 隱藏
                 } else {
-                    option.disabled = false; // 確保其他的（static/movement）有顯示
+                    option.style.display = 'block'; // 確保其他的（static/movement）有顯示
                 }
             });
             // 重置到第一個選項 "請選擇模式"
