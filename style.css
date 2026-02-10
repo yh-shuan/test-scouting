@@ -619,7 +619,7 @@ table{
 
         width: 100%;
         padding: 2.5vw 1vw; /* 增加一點內距讓標題有厚度 */
-        gap: 1vw;
+        gap: 2.5vw;
         word-wrap: break-word;
         flex-shrink: 0; /* 確保標題區塊不會被縮小 */
     }
