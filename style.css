@@ -659,7 +659,7 @@ table{
         width: 10vh;
         height: 10vh;
         font-size: 15vh;       
-        text-align: center;
+        margin: 5vh auto;
     }/* 加減按鈕 */
 
 }/* 手機版調整大小與位置 */
