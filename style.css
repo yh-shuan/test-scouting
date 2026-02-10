@@ -624,4 +624,16 @@ table{
         flex-shrink: 0; /* 確保標題區塊不會被縮小 */
     }
 
+
+    .team-number {
+        font-size: 2.5vw;
+        
+        
+    }
+
+    .team-name {
+        font-size: 5vw;
+        
+    }
+
 }/* 手機版調整大小與位置 */
