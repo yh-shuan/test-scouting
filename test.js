@@ -251,9 +251,8 @@ function showDetail(teamNumber,bucket) {
         const sDiv = document.createElement('div');
         sDiv.className = "record-item";
         sDiv.style.borderLeft = "1vw solid #3498db"; // 藍邊區分
-        sDiv.style.fontSize="2.5vh"
         sDiv.innerHTML = `
-            <div style="font-weight:bold; color:#2980b9; margin-bottom:0.5vh;">靜態：</div><br>
+            <div style="font-weight:bold; color:#2980b9; margin-bottom:0.5vh;">靜態：</div>
             吊掛等級: ${staticRecord.staticclimb}<br>
             吊掛位置: ${staticRecord.climbposition}<br>
             帶幾顆球: ${staticRecord.staticfuel}<br>
@@ -271,16 +270,15 @@ function showDetail(teamNumber,bucket) {
         moveRecords.forEach((r, idx) => {
             const div = document.createElement('div');
             div.className = "record-item";
-            div.style.fontSize="2.5vh"
             const total = (parseInt(r.autoFuel)||0) + (parseInt(r.teleFuel)||0) + getClimbScore(r.autoClimb, true) + getClimbScore(r.teleClimb, false);
             
             div.innerHTML = `
-                <strong>紀錄 #${idx + 1}</strong> <span style="color:#888; font-size:2.5vh;">(ID: ${r.id})</span><br>
+                <strong>紀錄 #${idx + 1}</strong> <span style="color:#888; font-size:0.75em">(ID: ${r.id})</span><br>
                 單場預估分: ${total} 分<br>
-                auto進球 ${r.autoFuel}<br>
-                auto吊掛${r.autoClimb}<br>  
-                人動進球 ${r.teleFuel}<br> 
-                人動吊掛${r.teleClimb}<br>
+                auto進球: ${r.autoFuel}<br>
+                auto吊掛: ${r.autoClimb}<br>  
+                人動進球: ${r.teleFuel}<br> 
+                人動吊掛: ${r.teleClimb}<br>
                 備註: ${r.reporting || "無"}
                 ${(!bucket)?`<button class="delete-btn-small" onclick="deleteCloudData('${r.id}', '${teamNumber}', 'movement')">刪除</button>`:``}
             `;

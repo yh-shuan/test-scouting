@@ -465,10 +465,14 @@ table{
 .record-item {
     background: #f9f9f9;
     border: 1px solid #ddd;
+    font-size: 3vh;
     border-radius: 10px;
     padding: 15px;
     margin-bottom: 10px;
     position: relative;
+}
+.record-item strong{
+    font-size: 3.5vh;
 }
 .delete-btn-small {
     position: absolute; 
@@ -587,11 +591,16 @@ table{
         padding: 8px 20px;
     }
     .delete-btn-small {
-        font-size: 10vw;
-        padding: 3px 7px;
+        font-size: 20px;
     }
     #search-stats{
         font-size: 12px;
+    }
+    .record-item {
+        font-size: 2.5vh;
+    }
+    .record-item strong{
+        font-size: 3vh;
     }
 }
 
