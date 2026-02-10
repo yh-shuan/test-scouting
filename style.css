@@ -368,7 +368,7 @@ table{
     font-weight: bold;
     
     border: 1px solid rgba(255, 255, 255, 0.4);
-    border-radius: 20px;
+    border-radius: 5%;
     cursor: pointer;
     transition: transform 0.1s active;
     touch-action: manipulation;
@@ -656,7 +656,7 @@ table{
     .cnt-btn {
         width: 10vh;
         height: 10vh;
-        font-size: 10vh;       
+        font-size: 5vh;       
         
     }/* 加減按鈕 */
 
