@@ -374,6 +374,7 @@ table{
     touch-action: manipulation;
     justify-items: center;
     align-items: center;
+    justify-content: center;
 }/* 加減按鈕 */
 
 .minus { background-color: #ff7675cc; color: white; text-align: center;} /* 紅色減號 */
