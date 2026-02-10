@@ -370,6 +370,7 @@ table{
     border-radius: 20px;
     cursor: pointer;
     transition: transform 0.1s active;
+    touch-action: manipulation;
 }/* 加減按鈕 */
 
 .minus { background-color: #ff7675cc; color: white; } /* 紅色減號 */
@@ -378,6 +379,8 @@ table{
 .cnt-btn:active { 
     transform: scale(0.9); 
     filter: brightness(0.9); /* 點擊時顏色稍微變深 */
+
+
 }
 
 .score-num {
@@ -644,5 +647,13 @@ table{
         font-size: 7.5vw;
         
     }
+
+
+
+    .cnt-btn {
+        width: 5vw;
+        height: 5vw;
+        font-size: 5vw;       
+    }/* 加減按鈕 */
 
 }/* 手機版調整大小與位置 */
