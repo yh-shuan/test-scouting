@@ -366,11 +366,14 @@ table{
     height: 70px;
     font-size: 35px;
     font-weight: bold;
+    text-align: center;
     border: 1px solid rgba(255, 255, 255, 0.4);
     border-radius: 20px;
     cursor: pointer;
     transition: transform 0.1s active;
     touch-action: manipulation;
+    justify-items: center;
+    align-items: center;
 }/* 加減按鈕 */
 
 .minus { background-color: #ff7675cc; color: white; } /* 紅色減號 */
