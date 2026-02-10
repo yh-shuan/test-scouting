@@ -360,7 +360,7 @@ table{
     align-items: center;
     flex-direction: row;  /* 改為水平排列 */
     
-    gap: 5vh;
+    gap: 2.5vh;
 }/* 控制列 */
 
 .cnt-btn {
