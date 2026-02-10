@@ -358,7 +358,9 @@ table{
 .counter-controls {
     display: flex;
     align-items: center;
-    gap: 20px;
+    flex-direction: row;  /* 改為水平排列 */
+    
+    gap: 5vh;
 }/* 控制列 */
 
 .cnt-btn {
@@ -367,11 +369,14 @@ table{
     font-size: 35px;
     font-weight: bold;
     
+    
     border: 1px solid rgba(255, 255, 255, 0.4);
-    border-radius: 5%;
+    border-radius: 25%;
     cursor: pointer;
     transition: transform 0.1s active;
     touch-action: manipulation;
+
+    
     
     
 }/* 加減按鈕 */
@@ -632,31 +637,31 @@ table{
 
     .card-top {
 
-        width: 100%;
-        padding: 2.5vw 1vw; /* 增加一點內距讓標題有厚度 */
-        gap: 2.5vw;
-        word-wrap: break-word;
-        flex-shrink: 0; /* 確保標題區塊不會被縮小 */
+        width: 100% !important;
+        padding: 2.5vw 1vw !important; /* 增加一點內距讓標題有厚度 */
+        gap: 2.5vw !important;
+        word-wrap: break-word !important;
+        flex-shrink: 0 !important; /* 確保標題區塊不會被縮小 */
     }
 
 
     .team-number {
-        font-size: 7.5vw;
+        font-size: 7.5vw !important;
         
         
     }
 
     .team-name {
-        font-size: 7.5vw;
+        font-size: 7.5vw !important;
         
     }
 
 
 
     .cnt-btn {
-        width: 10vh;
-        height: 10vh;
-        font-size: 5vh;       
+        width: 10vh !important;
+        height: 10vh !important;
+        font-size: 5vh !important;       
         
     }/* 加減按鈕 */
 
