@@ -376,8 +376,8 @@ table{
     align-items: center;
 }/* 加減按鈕 */
 
-.minus { background-color: #ff7675cc; color: white; } /* 紅色減號 */
-.plus { background-color: #55efc4cc; color: white; }  /* 綠色加號 */
+.minus { background-color: #ff7675cc; color: white; text-align: center;} /* 紅色減號 */
+.plus { background-color: #55efc4cc; color: white; text-align: center;}  /* 綠色加號 */
 
 .cnt-btn:active { 
     transform: scale(0.9); 
