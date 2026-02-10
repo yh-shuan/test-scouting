@@ -16,7 +16,7 @@ body{
     padding: 0;
 }
 h1{
-    color: #7fffd4;
+    color: #000000;
     font-size: 15vh;
     text-align: center;
     text-shadow:  2px 2px 4px #33333333;
@@ -612,6 +612,16 @@ table{
     #search-bar,
     #reporting {
         font-size: 2.5vh !important;
+    }
+
+
+    .card-top {
+
+        width: 100%;
+        padding: 2.5vw 1vw; /* 增加一點內距讓標題有厚度 */
+        gap: 1vw;
+        word-wrap: break-word;
+        flex-shrink: 0; /* 確保標題區塊不會被縮小 */
     }
 
 }/* 手機版調整大小與位置 */

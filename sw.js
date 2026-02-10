@@ -1,4 +1,4 @@
-const CACHE_NAME = 'scouter-v111';
+const CACHE_NAME = 'scouter-v112';
 // 這裡列出你所有需要離線使用的檔案名稱
 const ASSETS_TO_CACHE = [
     './',
