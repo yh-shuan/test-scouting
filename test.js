@@ -221,7 +221,7 @@ function generateTeamCardHTML(teamObj, tbaDetail = {},bucket) {
             
             <button onclick="event.stopPropagation(); ${(!bucket)?`quickSelectTeam('${teamNum}')"`:`removebucTeam('${teamNum}')"`} class="team-score-botton"${(bucket)?``:``}>
                 <span class="material-icons">${(!bucket)?`add_circle`:``}</span>
-                ${(!bucket)?`快速計分`:`out`}
+                ${(!bucket)?`快速計分`:`中出`}
             </button>
             
         </div>
