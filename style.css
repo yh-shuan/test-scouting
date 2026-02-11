@@ -369,16 +369,11 @@ table{
     font-size: 35px;
     font-weight: bold;
     
-    
     border: 1px solid rgba(255, 255, 255, 0.4);
     border-radius: 25%;
     cursor: pointer;
     transition: transform 0.1s active;
-    touch-action: manipulation;
-
-    
-    
-    
+    touch-action: manipulation;    
 }/* 加減按鈕 */
 
 .minus { background-color: #ff7675cc; color: white; } /* 紅色減號 */
@@ -387,8 +382,6 @@ table{
 .cnt-btn:active { 
     transform: scale(0.9); 
     filter: brightness(0.9); /* 點擊時顏色稍微變深 */
-
-
 }
 
 .score-num {
@@ -425,8 +418,8 @@ table{
 }
 
 .checking {
-    width: 60px;
-    height: 60px;
+    width: 30px;
+    height: 30px;
     font-size: 30px;
     font-weight: bold;
     border: none;
