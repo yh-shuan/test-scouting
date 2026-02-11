@@ -336,7 +336,7 @@ table{
 }
 
 .auto-zone, .tele-zone, .transport-zone, .static-zone {
-    background: transparent !important
+    background: transparent !important;
 }
 
 /* 標題文字樣式 */
@@ -398,7 +398,7 @@ table{
     padding: 12px;
     font-size: 18px;
     border-radius: 10px;
-    border: 2px solid #333;
+    border: 2px solid #ddd;
     background: white;
 }/* 下拉選單優化 */
 
