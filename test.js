@@ -19,6 +19,8 @@ if ('serviceWorker' in navigator) {
 let allTeams = []; 
 let allScoresRaw = []; // 動態數據
 let allStaticRaw = []; // 靜態數據 
+let allevent = [];
+
 const API_KEY = "tGy3U4VfP85N98m17nqzN8XCof0zafvCckCLbgWgmy95bGE0Aw97b4lV7UocJvxl"; 
 
 
@@ -26,16 +28,21 @@ const API_KEY = "tGy3U4VfP85N98m17nqzN8XCof0zafvCckCLbgWgmy95bGE0Aw97b4lV7UocJvx
 let AllTeamsList=[];
 
 // --- ⚠️ 重要：請填入 Apps Script 部署後的 Web App URL (結尾通常是 /exec) ---
-const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbwQEE2_pVzSRuSuMe0hRstsVDccP4SXkg0M_S6xMHtgjqa-cwGtHkwb8_sX1vrAqdXD/exec"; 
+const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbyo-fVbzMRBUlYf_4d37xnk6JhnykSy9UIk1_J6BwSW0067Wd-lFfABOFbjKziFBwEu/exec"; 
 
 
 
-let currentRankMode = 'teamnuber';
+let currentRankMode = 'teamnumber';
 
 
 // --- 新增：從雲端同步數據 ---
 async function syncFromCloud() {
     const statsElem = document.getElementById('search-stats');
+    const eventselect =document.getElementById('whatevent');
+
+    eventselect.innerHTML = '<option value="" disabled selected hidden>請選擇賽事</option>';
+
+
     if (statsElem) statsElem.innerText = "正在同步雲端數據...";
 
     try {
@@ -46,6 +53,17 @@ async function syncFromCloud() {
         const resStatic = await fetch(`${GOOGLE_SHEET_URL}?type=static`);
         // 假設 Apps Script 回傳的是物件陣列 [ {id, teamNumber, autoFuel...}, ... ]
         allStaticRaw = await resStatic.json();
+        const event = await fetch(`${GOOGLE_SHEET_URL}?type=getevent`);
+        allevent = await event.json();
+
+        allevent.forEach(race => {
+            let opt = document.createElement('option');
+            opt.value = race.race;
+            opt.innerText = race.race;
+            eventselect.appendChild(opt);
+        });
+
+
 
 
 
@@ -350,7 +368,7 @@ function Rankingteam(rankproperty) {
 
     let rankwhat = 0;
     switch (currentRankMode) { // 改用全域變數判斷
-        case 'teamname': rankwhat = 0; break;
+        case 'teamnumber': rankwhat = 0; break;
         case 'avgscore': rankwhat = 'avragescore'; break;
         case 'auto'    : rankwhat = 'autoavgscore'; break;
         case 'tele'    : rankwhat = 'teleavgscore'; break;

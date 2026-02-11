@@ -24,9 +24,17 @@
         <hr>    
             
         <div id="main-page">
+            <div class="search-container" >
+                <select id ="whatevent" class="general-select">
+                    <option value="" disabled selected hidden>請選擇賽事</option>
+
+
+                </select>
+
+            </div>
             
             <div class="search-container" >
-                <h3>請選擇排序方式：</h3>
+                
                 <select onchange="Rankingteam(value)"class="general-select">
                     <option value='teamnumber'>隊伍名稱排序(默認)</option>
                     <option value='avgscore'>隊伍平均分排序</option>
