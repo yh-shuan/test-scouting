@@ -609,65 +609,53 @@ function battle(){
     const propertypage = document.getElementById('batle-property-page');
 
 
-        dropdown1.style.display ='block';
-        dropdown2.style.display ='block';
-        // 1. 重製下拉選單到預設狀態 
-        dropdown1.selectedIndex = 0;
-        dropdown2.selectedIndex = 0;
+    dropdown1.style.display ='block';
+    dropdown2.style.display ='block';
+    // 1. 重製下拉選單到預設狀態 
+    dropdown1.selectedIndex = 0;
+    dropdown2.selectedIndex = 0;
 
         // 2. 清空原本顯示隊伍資訊的文字區塊
-        if (info1) info1.innerHTML = '';
-        if (info2) info2.innerHTML = '';
+    if (info1) info1.innerHTML = '';
+    if (info2) info2.innerHTML = '';
 
 
     
-        // 1. 先重置所有狀態
-        resetScoring();
+    // 1. 先重置所有狀態
+    resetScoring();
 
 
-
-        // 2. 切換大頁面
+    // 2. 切換大頁面
         
         
-        battlepage.style.display = 'block';
+    battlepage.style.display = 'block';
 
 
         
         
         
         // 4. 填充下拉選單
-        dropdown1.innerHTML = '<option value="">-- 正方代表 --</option>';
+    dropdown1.innerHTML = '<option value="">-- 正方代表 --</option>';
 
-        allTeams.forEach(t => {
-            const opt = document.createElement('option');
-            opt.value = t.team_number;
-            opt.innerText = `#${t.team_number} - ${t.nickname || "無名稱"}`;
-            dropdown1.appendChild(opt);
-        });
-        batleteam1page.style.display = 'flex';
-
-
-        dropdown2.innerHTML = '<option value="">-- 反方代表 --</option>';
-
-        allTeams.forEach(t => {
-            const opt = document.createElement('option');
-            opt.value = t.team_number;
-            opt.innerText = `#${t.team_number} - ${t.nickname || "無名稱"}`;
-            dropdown2.appendChild(opt);
-        });
-
-        batleteam2page.style.display = 'flex';
-
-    
-        
-        
-        
-        
-
-        
+    allTeams.forEach(t => {
+        const opt = document.createElement('option');
+        opt.value = t.team_number;
+        opt.innerText = `#${t.team_number} - ${t.nickname || "無名稱"}`;
+        dropdown1.appendChild(opt);
+    });
+    batleteam1page.style.display = 'flex';
 
 
-    
+    dropdown2.innerHTML = '<option value="">-- 反方代表 --</option>';
+
+    allTeams.forEach(t => {
+        const opt = document.createElement('option');
+        opt.value = t.team_number;
+        opt.innerText = `#${t.team_number} - ${t.nickname || "無名稱"}`;
+        dropdown2.appendChild(opt);
+    });
+
+    batleteam2page.style.display = 'flex';
 
     dropdown1.onchange = function() {
         const selectedTeamNum = parseInt(this.value); // 取得選中的隊號
