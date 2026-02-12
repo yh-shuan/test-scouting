@@ -21,15 +21,20 @@
         <p>FRC Team 7589</p>
         <br>
         <a href="file:///C:/Users/cheny/Downloads/test-scouting-main/test-scouting/index2.html" target="_blank">URL</a>
+        <span id="version-label">版本號: </span>
+        <span id="version-num">偵測中...</span>
         <div class="search-container" >
                 <select id ="whatevent" class="general-select" onchange="changeevent(this.value)">
                 <option value="" disabled selected hidden>
-                    You are a soldier 
-                    choose your battle
+                    You are a soldier
+                    choose your battle 
                 </option>
 
 
             </select>
+            <div id="search-stats" onclick="syncFromCloud()" style="cursor:pointer;">
+                點擊強制同步雲端數據...
+            </div>
 
         </div>
         <hr>    

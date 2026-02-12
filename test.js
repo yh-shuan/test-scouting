@@ -11,6 +11,37 @@ if ('serviceWorker' in navigator) {
             });
     });
 }
+
+
+// 在你的主 JS 檔案中
+function updateVersionDisplay() {
+    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+        // 建立訊息管道
+        const messageChannel = new MessageChannel();
+        
+        // 監聽回傳訊息
+        messageChannel.port1.onmessage = (event) => {
+            const version = event.data.version;
+            const verElem = document.getElementById('version-num');
+            if (verElem) {
+                // 去除前面的 "scouter-" 之類的字綴，只留版本號
+                verElem.innerText = version.replace('FRC-Scouter-', ''); 
+            }
+        };
+
+        // 發送詢問請求
+        navigator.serviceWorker.controller.postMessage(
+            { type: 'GET_VERSION' }, 
+            [messageChannel.port2]
+        );
+    }
+}
+
+// 確保在 SW 註冊完成或頁面載入後執行
+navigator.serviceWorker.ready.then(() => {
+    updateVersionDisplay();
+});
+
 // --- 註冊結束，以下接著你原本的程式碼 ---
 
 
@@ -36,50 +67,62 @@ let currentRankMode = 'teamnumber';
 
 
 // --- 新增：從雲端同步數據 ---
+// --- 修改後的 syncFromCloud ---
 async function syncFromCloud() {
     const statsElem = document.getElementById('search-stats');
-    const eventselect =document.getElementById('whatevent');
-
-    eventselect.innerHTML = '<option value="" disabled selected hidden>請選擇賽事</option>';
-
+    const eventselect = document.getElementById('whatevent');
 
     if (statsElem) statsElem.innerText = "正在同步雲端數據...";
 
     try {
-
         const resMovement = await fetch(`${GOOGLE_SHEET_URL}?type=movement`);
-        // 假設 Apps Script 回傳的是物件陣列 [ {id, teamNumber, autoFuel...}, ... ]
         allScoresRaw = await resMovement.json();
+        
         const resStatic = await fetch(`${GOOGLE_SHEET_URL}?type=static`);
-        // 假設 Apps Script 回傳的是物件陣列 [ {id, teamNumber, autoFuel...}, ... ]
         allStaticRaw = await resStatic.json();
-        const event = await fetch(`${GOOGLE_SHEET_URL}?type=geteventteam`); // 必須用 geteventteam
-        allevent = await event.json();
+        
+        const eventRes = await fetch(`${GOOGLE_SHEET_URL}?type=geteventteam`); 
+        allevent = await eventRes.json();
 
-        allevent.forEach(event => {
+        // 1. 更新賽事下拉選單 (保持你原本的邏輯)
+        eventselect.innerHTML = '<option value="" disabled selected hidden>You are a soldier choose your battle </option>';
+        allevent.forEach(ev => {
             let opt = document.createElement('option');
-            opt.value = event.race;
-            opt.innerText = event.race;
+            opt.value = ev.race;
+            opt.innerText = ev.race;
             eventselect.appendChild(opt);
         });
 
+        // 2. ⭐ 關鍵修正：同步更新目前的隊伍名單 allTeams
+        // 找到當前賽事的資料
+        const eventData = allevent.find(e => e.race === currentevent);
         
+        if (eventData && eventData.teams) {
+            // 將雲端最新的隊伍名單同步到本地變數
+            const cloudTeamNumbers = eventData.teams.map(num => parseInt(num));
+            
+            // 檢查是否有新隊伍是本地還沒有的
+            cloudTeamNumbers.forEach(num => {
+                if (!allTeams.some(t => t.team_number === num)) {
+                    allTeams.push({ team_number: num });
+                    // 如果是新發現的隊伍，啟動 TBA 資料補完
+                    fetchAndPopulateTeamData(num, false);
+                }
+            });
+            
+            // 如果是在訓練賽模式，確保 allTeams 只包含該賽事的隊伍
+            if (currentevent.includes("(train)")) {
+                 allTeams = cloudTeamNumbers.map(num => ({ team_number: num }));
+            }
+        }
 
-
-
-
-
-
-
-        console.log("雲端數據同步成功:", allScoresRaw.length, "筆動態紀錄",allStaticRaw,"筆動態紀錄靜態");
-        
+        console.log("雲端數據同步成功");
         if (statsElem) statsElem.innerText = `同步完成 (動態:${allScoresRaw.length} | 靜態:${allStaticRaw.length})`;
         
-        // 數據回來後，重新渲染卡片以更新平均分
+        // 3. 重新計算與渲染
         resetproperty();
         Rankingteam(currentRankMode);
         
-
     } catch (e) {
         console.error("雲端同步失敗:", e);
         if (statsElem) statsElem.innerText = "雲端同步失敗，請檢查網路。";
