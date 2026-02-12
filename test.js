@@ -19,34 +19,11 @@ if ('serviceWorker' in navigator) {
     });
 }
 
-// 統一版本號獲取函式
-async function showVersion() {
-    await navigator.serviceWorker.ready; // 確保 SW 已準備好
-    
-    if (navigator.serviceWorker.controller) {
-        const msgChan = new MessageChannel();
-        msgChan.port1.onmessage = (event) => {
-            const verDisplay = document.getElementById('version-num');
-            if (verDisplay && event.data.version) {
-                verDisplay.innerText = event.data.version;
-            }
-        };
-        // 向 SW 發送詢問請求
-        navigator.serviceWorker.controller.postMessage({ type: 'GET_VERSION' }, [msgChan.port2]);
-    }
-}
-
-// 頁面載入後執行一次
-showVersion();
 
 
 
-// 確保在 SW 註冊完成或頁面載入後執行
-navigator.serviceWorker.ready.then(() => {
-    updateVersionDisplay();
-});
 
-// --- 註冊結束，以下接著你原本的程式碼 ---
+
 
 
 
@@ -1219,20 +1196,6 @@ function updateSyncStatusDisplay() {
 
 // 網頁載入後啟動
 window.onload = () => {
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./sw.js').then((reg) => {
-            // 每當 SW 更新成功，自動詢問版本
-            reg.addEventListener('updatefound', () => {
-                const newWorker = reg.installing;
-                newWorker.addEventListener('statechange', () => {
-                    if (newWorker.state === 'activated') {
-                        showVersion(); // 更新完畢立刻刷新版本顯示
-                    }
-                });
-            });
-        });
-    }
-    showVersion();
     autoFetchTeams();
 
     // 每 30 秒自動從雲端拉取一次最新分數

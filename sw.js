@@ -1,4 +1,4 @@
-const CACHE_NAME = 'scouter-v146'; // 每次更新記得改這個
+const CACHE_NAME = 'scouter-v147'; // 每次更新記得改這個
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
@@ -7,12 +7,6 @@ const ASSETS_TO_CACHE = [
     './mainfest.json'
 ];
 
-// --- 新增：讓 SW 接收到訊息後執行對應動作 ---
-self.addEventListener('message', (event) => {
-    if (event.data && event.data.type === 'GET_VERSION') {
-        event.ports[0].postMessage({ version: CACHE_NAME });
-    }
-});
 
 self.addEventListener('install', (event) => {
     // ⭐ 強制跳過等待，直接進入 activate 階段
