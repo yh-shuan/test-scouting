@@ -28,7 +28,7 @@ const API_KEY = "tGy3U4VfP85N98m17nqzN8XCof0zafvCckCLbgWgmy95bGE0Aw97b4lV7UocJvx
 let AllTeamsList=[];
 
 // --- ⚠️ 重要：請填入 Apps Script 部署後的 Web App URL (結尾通常是 /exec) ---
-const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbyo-fVbzMRBUlYf_4d37xnk6JhnykSy9UIk1_J6BwSW0067Wd-lFfABOFbjKziFBwEu/exec"; 
+const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbyLioEbsGB1czMUM8Ib2gsBZxwdgyimFY85NHSf3i--5l9Oix9wW-voIY280DPI2xY2/exec"; 
 
 
 
@@ -53,15 +53,17 @@ async function syncFromCloud() {
         const resStatic = await fetch(`${GOOGLE_SHEET_URL}?type=static`);
         // 假設 Apps Script 回傳的是物件陣列 [ {id, teamNumber, autoFuel...}, ... ]
         allStaticRaw = await resStatic.json();
-        const event = await fetch(`${GOOGLE_SHEET_URL}?type=getevent`);
+        const event = await fetch(`${GOOGLE_SHEET_URL}?type=geteventteam`); // 必須用 geteventteam
         allevent = await event.json();
 
-        allevent.forEach(race => {
+        allevent.forEach(event => {
             let opt = document.createElement('option');
-            opt.value = race.race;
-            opt.innerText = race.race;
+            opt.value = event.race;
+            opt.innerText = event.race;
             eventselect.appendChild(opt);
         });
+
+        
 
 
 
@@ -84,7 +86,104 @@ async function syncFromCloud() {
     }
 }
 
+var currentevent = '2026nysu';
 
+async function changeevent(whitchevent){
+    const itrain = whitchevent.includes("(train)");
+    currentevent = whitchevent;
+
+    // --- A. 強力清空 UI ---
+    // 確保在載入新東西前，舊的 DOM 完全消失
+    const container = document.getElementById('team-container');
+    if (container) container.innerHTML = ""; 
+    
+    // --- B. 重置數據陣列 ---
+    allTeams = [];
+    
+    // 找到對應的賽事資料
+    const eventData = allevent.find(e => e.race === whitchevent);
+
+    if (itrain) {
+        document.getElementById('Addteam').style.display = 'inline-block';
+        document.getElementById('Addteambtn').style.display = 'inline-block';
+
+        // --- C. 從 GS 存入的隊伍中叫出來 ---
+        // 確保 eventData 存在，且裡面的 teams 是一個陣列
+        if (eventData && eventData.teams && Array.isArray(eventData.teams)) {
+            console.log("從雲端載入預設隊伍:", eventData.teams);
+            allTeams = eventData.teams.map(num => ({ 
+                team_number: parseInt(num) 
+            }));
+        } 
+        
+        // --- D. 雙重保險：如果雲端沒設隊伍，但已經有計分紀錄 ---
+        if (allTeams.length === 0) {
+            const mTeams = allScoresRaw.filter(r => r.identifymark === whitchevent).map(r => parseInt(r.teamNumber));
+            const sTeams = allStaticRaw.filter(r => r.identifymark === whitchevent).map(r => parseInt(r.teamNumber));
+            const uniqueTeams = [...new Set([...mTeams, ...sTeams])];
+            allTeams = uniqueTeams.map(num => ({ team_number: num }));
+        }
+
+        // --- E. 執行重置與渲染 ---
+        resetproperty(); // 重置所有分數統計
+        Rankingteam(currentRankMode); // 重新生成卡片
+    } else {
+        // 官方賽事模式邏輯...
+        document.getElementById('Addteam').style.display = 'none';
+        document.getElementById('Addteambtn').style.display = 'none';
+        await autoFetchTeams(); 
+    }
+}
+
+async function Addteam() {
+    const inputField = document.getElementById('Addteam');
+    const teamNum = parseInt(inputField.value.trim());
+
+    if (!teamNum || isNaN(teamNum)) {
+        alert("請輸入有效的隊號");
+        return;
+    }
+
+    if (allTeams.some(t => t.team_number === teamNum)) {
+        alert("此隊伍已在清單中");
+        return;
+    }
+
+    let data = {
+        action: "SAVE",
+        target: 'seteventteam', // 注意：這裡要對應你 GS 裡的 switch case
+        identifymark: currentevent,
+        teamNumber: teamNum,
+    };
+
+    try {
+        await saveData(data); 
+
+        // 1. 更新目前顯示用的 allTeams
+        allTeams.push({ team_number: teamNum });
+
+        // 2. ⭐ 重要：同步更新全域變數 allevent 裡的資料
+        // 這樣切換賽事再切回來時，隊伍才不會消失
+        let eventInList = allevent.find(e => e.race === currentevent);
+        if (eventInList) {
+            if (!eventInList.teams) eventInList.teams = [];
+            if (!eventInList.teams.includes(teamNum)) {
+                eventInList.teams.push(teamNum);
+            }
+        }
+        
+        // 3. 重新渲染
+        resetproperty();
+        Rankingteam(currentRankMode);
+
+        inputField.value = "";
+        console.log(`✅ 隊伍 ${teamNum} 加入成功`);
+        
+    } catch (error) {
+        console.error("儲存隊伍失敗:", error);
+        alert("儲存失敗，請檢查網路連線");
+    }
+}
 
 
 
@@ -153,7 +252,7 @@ function renderCards(tupleList) {
 
 /**
  * 3. 整合函式：根據隊號抓取所有 TBA 資訊並直接更新 UI
- * 取代了舊的 fetchSingleAddress
+ * 取代舊的 fetchSingleAddress
  */
 async function fetchAndPopulateTeamData(teamNum,bucket) {
     // 找到畫面上對應的卡片與 ID
@@ -414,7 +513,7 @@ async function saveAndExit(type) {
         
         target: type,
         id: uniqueId,
-        identifymark:"2026nysu",
+        identifymark: currentevent,
         teamNumber: currentScoringTeam,
         };
     if(type==='movement'){
@@ -464,7 +563,7 @@ function saveData(data) {
     pending.push(data);
     localStorage.setItem('pendingRecords', JSON.stringify(pending));
     
-    // 現在它就在同一個檔案裡，可以直接叫到了！
+    // 現在會在同一個檔案裡，可以直接叫到
     processQueue(); 
 }
 
@@ -994,7 +1093,7 @@ function whatmode() {
         }
 
     } else {
-        // 🐢 一般流程：顯示隊伍選擇選單
+        //  一般流程：顯示隊伍選擇選單
         const teamZone = document.getElementById('team-select-zone');
         teamZone.style.setProperty('display', 'block', 'important');
         
@@ -1002,6 +1101,7 @@ function whatmode() {
 
         // --- 修正：清空舊選項，避免重複 ---
         teamDropdown.innerHTML = '<option value="">請選擇隊伍</option>';
+
 
         allTeams.forEach(t => {
             const opt = document.createElement('option');

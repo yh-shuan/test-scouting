@@ -238,7 +238,7 @@ table{
 }/* 搜尋區塊 */
 
 .general-select,
-#search-bar,
+.search-bar,
 #reporting {
     display: block; /* 確保它們獨立佔據一行 */
     margin: 10px auto; /* 置中 */
@@ -253,7 +253,7 @@ table{
     text-align: center;
 }
 
-#search-bar:focus,
+.search-bar:focus,
 #reporting:focus {
     border-color: #007bff;
     box-shadow: 0 0 8px #007bff33;
@@ -622,7 +622,7 @@ table{
     .general-select{
         font-size: 2.5vh !important;
     }
-    #search-bar,
+    .search-bar,
     #reporting {
         font-size: 2.5vh !important;
     }
