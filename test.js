@@ -38,47 +38,65 @@ let currentRankMode = 'teamnumber';
 // --- 新增：從雲端同步數據 ---
 async function syncFromCloud() {
     const statsElem = document.getElementById('search-stats');
-    const eventselect =document.getElementById('whatevent');
-
-    eventselect.innerHTML = '<option value="" disabled selected hidden>請選擇賽事</option>';
-
+    const eventselect = document.getElementById('whatevent');
 
     if (statsElem) statsElem.innerText = "正在同步雲端數據...";
 
     try {
+        // 1. 同步抓取所有數據
+        const [resMovement, resStatic, resEvent] = await Promise.all([
+            fetch(`${GOOGLE_SHEET_URL}?type=movement`).then(r => r.json()),
+            fetch(`${GOOGLE_SHEET_URL}?type=static`).then(r => r.json()),
+            fetch(`${GOOGLE_SHEET_URL}?type=geteventteam`).then(r => r.json())
+        ]);
 
-        const resMovement = await fetch(`${GOOGLE_SHEET_URL}?type=movement`);
-        // 假設 Apps Script 回傳的是物件陣列 [ {id, teamNumber, autoFuel...}, ... ]
-        allScoresRaw = await resMovement.json();
-        const resStatic = await fetch(`${GOOGLE_SHEET_URL}?type=static`);
-        // 假設 Apps Script 回傳的是物件陣列 [ {id, teamNumber, autoFuel...}, ... ]
-        allStaticRaw = await resStatic.json();
-        const event = await fetch(`${GOOGLE_SHEET_URL}?type=geteventteam`); // 必須用 geteventteam
-        allevent = await event.json();
-
-        allevent.forEach(event => {
-            let opt = document.createElement('option');
-            opt.value = event.race;
-            opt.innerText = event.race;
-            eventselect.appendChild(opt);
-        });
-
+        // 檢查數據是否有變動 (簡單檢查長度)
+        const isChanged = (allScoresRaw.length !== resMovement.length || allStaticRaw.length !== resStatic.length);
         
+        allScoresRaw = resMovement;
+        allStaticRaw = resStatic;
+        allevent = resEvent;
 
-
-
-
-
-
-
-        console.log("雲端數據同步成功:", allScoresRaw.length, "筆動態紀錄",allStaticRaw,"筆動態紀錄靜態");
+        // 2. 更新賽事下拉選單 (先清空，避免重複堆疊)
+        const currentSelected = eventselect.value; // 記住目前選了什麼
         
+        const optionsHTML = allevent.map(ev => {
+            return `<option value="${ev.race}">${ev.race}</option>`;
+        }).join('');
+        eventselect.innerHTML = '<option value="" disabled selected hidden>you are a soldier Choose your battle...</option>' + optionsHTML;
+
+
+        if (currentSelected) eventselect.value = currentSelected; // 復原選取狀態
+
+        // 3. ⭐ 自動推播新隊伍邏輯
+        // 找出目前選擇賽事的隊伍名單
+        const currentEventData = allevent.find(e => e.race === currentevent);
+        let hasNewTeamAdded = false;
+
+        if (currentEventData && currentEventData.teams) {
+            // 確保隊號是數字陣列
+            const cloudTeams = currentEventData.teams.map(num => parseInt(num));
+
+            cloudTeams.forEach(num => {
+                // 如果本地 allTeams 沒這隻隊伍，就加進去
+                if (!allTeams.some(t => t.team_number === num)) {
+                    console.log(`📡 發現雲端新隊伍: # ${num}`);
+                    allTeams.push({ team_number: num });
+                    // 異步去抓 TBA 詳細資料，不擋住主流程
+                    fetchAndPopulateTeamData(num, false);
+                    hasNewTeamAdded = true;
+                }
+            });
+        }
+
+        console.log("雲端數據同步成功:", allScoresRaw.length, "筆動態 |", allStaticRaw.length, "筆靜態");
         if (statsElem) statsElem.innerText = `同步完成 (動態:${allScoresRaw.length} | 靜態:${allStaticRaw.length})`;
-        
-        // 數據回來後，重新渲染卡片以更新平均分
-        resetproperty();
-        Rankingteam(currentRankMode);
-        
+
+        // 4. ⭐ 只有資料有變或有新隊伍時，才重新計算與渲染，節省效能
+        if (isChanged || hasNewTeamAdded) {
+            resetproperty();
+            Rankingteam(currentRankMode);
+        }
 
     } catch (e) {
         console.error("雲端同步失敗:", e);
@@ -91,6 +109,8 @@ var currentevent = '2026nysu';
 async function changeevent(whitchevent){
     const itrain = whitchevent.includes("(train)");
     currentevent = whitchevent;
+    
+    
 
     // --- A. 強力清空 UI ---
     // 確保在載入新東西前，舊的 DOM 完全消失
@@ -1171,15 +1191,17 @@ function updateSyncStatusDisplay() {
 
 
 // 網頁載入後啟動
-window.onload = () => {
-    autoFetchTeams();
+window.onload = async () => {
+    // 1. 先跑一次同步，確保拿到了最新的賽事列表 (allevent)
+    // 但要在 syncFromCloud 裡面加上判斷：如果 currentevent 是空的，就不要執行 Rankingteam
+    await syncFromCloud();
 
-    // 每 30 秒自動從雲端拉取一次最新分數
+    // 2. 每 30 秒自動從雲端拉取最新數據
     setInterval(() => {
         if (navigator.onLine) syncFromCloud();
     }, 30000);
 
-    // 每 60 秒檢查一次是否有漏傳的離線資料
+    // 3. 每 60 秒檢查離線隊列
     setInterval(processQueue, 60000);
 };
 
