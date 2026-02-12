@@ -13,24 +13,29 @@ if ('serviceWorker' in navigator) {
 }
 
 
-async function showVersion() {
-    // 確保 SW 已經準備好且正在控制頁面
-    await navigator.serviceWorker.ready;
-    
-    if (navigator.serviceWorker.controller) {
-        const msgChan = new MessageChannel();
-        msgChan.port1.onmessage = (event) => {
-            const verDisplay = document.getElementById('version-num');
-            if (verDisplay) {
-                verDisplay.innerText = event.data.version;
+// 在你的主 JS 檔案中
+function updateVersionDisplay() {
+    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+        // 建立訊息管道
+        const messageChannel = new MessageChannel();
+        
+        // 監聽回傳訊息
+        messageChannel.port1.onmessage = (event) => {
+            const version = event.data.version;
+            const verElem = document.getElementById('version-num');
+            if (verElem) {
+                // 去除前面的 "scouter-" 之類的字綴，只留版本號
+                verElem.innerText = version.replace('FRC-Scouter-', ''); 
             }
         };
-        // 向 SW 發送詢問請求
-        navigator.serviceWorker.controller.postMessage({ type: 'GET_VERSION' }, [msgChan.port2]);
+
+        // 發送詢問請求
+        navigator.serviceWorker.controller.postMessage(
+            { type: 'GET_VERSION' }, 
+            [messageChannel.port2]
+        );
     }
 }
-
-
 
 // 確保在 SW 註冊完成或頁面載入後執行
 navigator.serviceWorker.ready.then(() => {
@@ -1210,20 +1215,6 @@ function updateSyncStatusDisplay() {
 
 // 網頁載入後啟動
 window.onload = () => {
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./sw.js').then((reg) => {
-            // 每當 SW 更新成功，自動詢問版本
-            reg.addEventListener('updatefound', () => {
-                const newWorker = reg.installing;
-                newWorker.addEventListener('statechange', () => {
-                    if (newWorker.state === 'activated') {
-                        showVersion(); // 更新完畢立刻刷新版本顯示
-                    }
-                });
-            });
-        });
-    }
-    showVersion();
     autoFetchTeams();
 
     // 每 30 秒自動從雲端拉取一次最新分數
