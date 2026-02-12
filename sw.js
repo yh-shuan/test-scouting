@@ -1,5 +1,4 @@
-const CACHE_NAME = 'scouter-v144';
-// 這裡列出你所有需要離線使用的檔案名稱
+const CACHE_NAME = 'scouter-v145'; // 每次更新記得改這個
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
@@ -8,27 +7,26 @@ const ASSETS_TO_CACHE = [
     './mainfest.json'
 ];
 
+// --- 新增：讓 SW 接收到訊息後執行對應動作 ---
 self.addEventListener('message', (event) => {
     if (event.data && event.data.type === 'GET_VERSION') {
-        // 回傳版本號給前端
-        event.ports[0].postMessage({
-            version: CACHE_NAME
-        });
+        event.ports[0].postMessage({ version: CACHE_NAME });
     }
 });
 
-// 1. 安裝：把檔案通通存起來
 self.addEventListener('install', (event) => {
+    // ⭐ 強制跳過等待，直接進入 activate 階段
+    self.skipWaiting(); 
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
-            console.log('✅ PWA: 正在緩存靜態資源...');
             return cache.addAll(ASSETS_TO_CACHE);
         })
     );
 });
 
-// 2. 啟動：清理舊版快取（如果你以後改了 v1 到 v2，它會幫你清空舊的）
 self.addEventListener('activate', (event) => {
+    // ⭐ 讓新版 SW 立刻接管所有開啟的視窗 (Clients)
+    event.waitUntil(clients.claim()); 
     event.waitUntil(
         caches.keys().then((keys) => {
             return Promise.all(
@@ -39,12 +37,9 @@ self.addEventListener('activate', (event) => {
     );
 });
 
-// 3. 抓取：這是離線開啟的關鍵
+// 抓取策略建議：改為「網路優先」，保證有網路時抓到最新隊伍，沒網路用快取
 self.addEventListener('fetch', (event) => {
     event.respondWith(
-        caches.match(event.request).then((response) => {
-            // 如果快取裡有，就直接給快取；沒有才去網路上抓
-            return response || fetch(event.request);
-        })
+        fetch(event.request).catch(() => caches.match(event.request))
     );
 });
