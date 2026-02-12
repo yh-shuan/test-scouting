@@ -1,4 +1,4 @@
-const CACHE_NAME = 'scouter-v143';
+const CACHE_NAME = 'scouter-v142';
 // 這裡列出你所有需要離線使用的檔案名稱
 const ASSETS_TO_CACHE = [
     './',
@@ -7,15 +7,6 @@ const ASSETS_TO_CACHE = [
     './style.css',
     './mainfest.json'
 ];
-
-self.addEventListener('message', (event) => {
-    if (event.data && event.data.type === 'GET_VERSION') {
-        // 回傳版本號給前端
-        event.ports[0].postMessage({
-            version: CACHE_NAME
-        });
-    }
-});
 
 // 1. 安裝：把檔案通通存起來
 self.addEventListener('install', (event) => {
