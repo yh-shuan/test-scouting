@@ -1,33 +1,27 @@
-// --- 1. PWA Service Worker 註冊與版本顯示 ---
+// --- PWA Service Worker 註冊 ---
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
+        // 這裡的 'sw.js' 檔名必須和你根目錄下的檔案完全一致
         navigator.serviceWorker.register('sw.js')
             .then(registration => {
                 console.log('✅ PWA 註冊成功！範圍:', registration.scope);
-                
-                // 監聽更新：當新版本安裝好並激活時，重新抓取版本號
-                registration.addEventListener('updatefound', () => {
-                    const newWorker = registration.installing;
-                    newWorker.addEventListener('statechange', () => {
-                        if (newWorker.state === 'activated') {
-                            showVersion(); 
-                        }
-                    });
-                });
             })
-            .catch(err => console.log('❌ PWA 註冊失敗:', err));
+            .catch(err => {
+                console.log('❌ PWA 註冊失敗:', err);
+            });
     });
 }
 
-// 統一版本號獲取函式
+
 async function showVersion() {
-    await navigator.serviceWorker.ready; // 確保 SW 已準備好
+    // 確保 SW 已經準備好且正在控制頁面
+    await navigator.serviceWorker.ready;
     
     if (navigator.serviceWorker.controller) {
         const msgChan = new MessageChannel();
         msgChan.port1.onmessage = (event) => {
             const verDisplay = document.getElementById('version-num');
-            if (verDisplay && event.data.version) {
+            if (verDisplay) {
                 verDisplay.innerText = event.data.version;
             }
         };
@@ -35,9 +29,6 @@ async function showVersion() {
         navigator.serviceWorker.controller.postMessage({ type: 'GET_VERSION' }, [msgChan.port2]);
     }
 }
-
-// 頁面載入後執行一次
-showVersion();
 
 
 
