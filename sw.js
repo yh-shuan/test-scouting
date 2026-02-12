@@ -1,4 +1,4 @@
-const CACHE_NAME = 'scouter-v145'; // 每次更新記得改這個
+const CACHE_NAME = 'scouter-v146'; // 每次更新記得改這個
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
