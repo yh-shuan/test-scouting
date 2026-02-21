@@ -63,9 +63,11 @@ async function syncFromCloud() {
         const optionsHTML = allevent.map(ev => {
             return `<option value="${ev.race}">${ev.race}</option>`;
         }).join('');
-        eventselect.innerHTML = '<option value="" disabled selected hidden>you are a soldier Choose your battle...</option>' + optionsHTML;
+        eventselect.innerHTML = '<option value="" disabled selected hidden>Choose your battle...</option>' + optionsHTML;
 
-
+        if (currentevent) {
+            eventselect.value = currentevent; 
+        }
         if (currentSelected) eventselect.value = currentSelected; // 復原選取狀態
 
         // 3. ⭐ 自動推播新隊伍邏輯
@@ -92,11 +94,11 @@ async function syncFromCloud() {
         console.log("雲端數據同步成功:", allScoresRaw.length, "筆動態 |", allStaticRaw.length, "筆靜態");
         if (statsElem) statsElem.innerText = `同步完成 (動態:${allScoresRaw.length} | 靜態:${allStaticRaw.length})`;
 
-        // 4. ⭐ 只有資料有變或有新隊伍時，才重新計算與渲染，節省效能
-        if (isChanged || hasNewTeamAdded) {
-            resetproperty();
-            Rankingteam(currentRankMode);
-        }
+        // 4. ⭐ 不管有沒有變動，同步完都重新渲染一次，確保畫面有東西
+        resetproperty();
+        Rankingteam(currentRankMode);
+
+        console.log("yes!")
 
     } catch (e) {
         console.error("雲端同步失敗:", e);
@@ -107,6 +109,7 @@ async function syncFromCloud() {
 var currentevent = '2026nysu';
 
 async function changeevent(whitchevent){
+    currentevent = whitchevent;
     const itrain = whitchevent.includes("(train)");
     currentevent = whitchevent;
     
