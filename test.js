@@ -56,54 +56,64 @@ async function syncFromCloud() {
         allScoresRaw = resMovement;
         allStaticRaw = resStatic;
         allevent = resEvent;
-
-        // 2. 更新賽事下拉選單 (先清空，避免重複堆疊)
-        const currentSelected = eventselect.value; // 記住目前選了什麼
         
+        console.log("📡 雲端原始賽事列表:", allevent);
+
+        // --- ⭐ 自動補救邏輯 ⭐ ---
+        // 如果原本的 currentevent 在雲端清單中找不到，就強制設定為清單中的第一個
+        const eventExists = allevent.some(e => e.race === currentevent);
+        if (!eventExists && allevent.length > 0) {
+            console.warn(`⚠️ 找不到賽事 [${currentevent}]，自動切換至: ${allevent[0].race}`);
+            currentevent = allevent[0].race;
+        }
+
+        // 2. 更新賽事下拉選單
         const optionsHTML = allevent.map(ev => {
             return `<option value="${ev.race}">${ev.race}</option>`;
         }).join('');
         eventselect.innerHTML = '<option value="" disabled selected hidden>Choose your battle...</option>' + optionsHTML;
 
-        if (currentSelected) {
-            eventselect.value = currentSelected; 
-        } else if (currentevent) {
-            eventselect.value = currentevent; 
-        }
-        // 3. ⭐ 自動推播新隊伍邏輯
-        // 找出目前選擇賽事的隊伍名單
+        // 恢復選取狀態
+        eventselect.value = currentevent;
+
+        // 3. ⭐ 強力提取隊伍邏輯 (Double Insurance)
         const currentEventData = allevent.find(e => e.race === currentevent);
-        let hasNewTeamAdded = false;
-
+        
+        // A. 從賽事表拿隊伍
         if (currentEventData && currentEventData.teams) {
-            // 確保隊號是數字陣列
-            const cloudTeams = currentEventData.teams.map(num => parseInt(num));
-
-            cloudTeams.forEach(num => {
-                // 如果本地 allTeams 沒這隻隊伍，就加進去
-                if (!allTeams.some(t => t.team_number === num)) {
-                    console.log(`📡 發現雲端新隊伍: # ${num}`);
-                    allTeams.push({ team_number: num });
-                    // 異步去抓 TBA 詳細資料，不擋住主流程
-                    fetchAndPopulateTeamData(num, false);
-                    hasNewTeamAdded = true;
+            currentEventData.teams.forEach(num => {
+                const n = parseInt(num);
+                if (!allTeams.some(t => t.team_number === n)) {
+                    allTeams.push({ team_number: n });
+                    fetchAndPopulateTeamData(n, false);
                 }
             });
         }
 
-        console.log("雲端數據同步成功:", allScoresRaw.length, "筆動態 |", allStaticRaw.length, "筆靜態");
-        if (statsElem) statsElem.innerText = `同步完成 (動態:${allScoresRaw.length} | 靜態:${allStaticRaw.length})`;
+        // B. 保險：從現有的分數紀錄中提取該賽事的隊伍 (防止賽事表沒寫清楚)
+        const recordTeams = allScoresRaw
+            .filter(r => r.identifymark === currentevent)
+            .map(r => parseInt(r.teamNumber));
+            
+        recordTeams.forEach(num => {
+            if (!isNaN(num) && !allTeams.some(t => t.team_number === num)) {
+                console.log(`🔎 從紀錄中發現隱藏隊伍: # ${num}`);
+                allTeams.push({ team_number: num });
+                fetchAndPopulateTeamData(num, false);
+            }
+        });
 
-        // 4. ⭐ 不管有沒有變動，同步完都重新渲染一次，確保畫面有東西
-        console.log("Debug - allTeams 內容:", allTeams); // 檢查這裡有沒有東西
-        resetproperty();
-        console.log("Debug - AllTeamsList 內容:", AllTeamsList); // 檢查計算後有沒有東西
-        Rankingteam(currentRankMode);
-
-        console.log("yes!")
-
+        // 4. ⭐ 強制重新計算與渲染
+        if (allTeams.length > 0) {
+            resetproperty();
+            Rankingteam(currentRankMode);
+            if (statsElem) statsElem.innerText = `同步完成 (${allTeams.length} 支隊伍)`;
+        } else {
+            if (statsElem) statsElem.innerText = "同步完成，但此賽事尚無隊伍。";
+            document.getElementById('team-container').innerHTML = `<div style="text-align:center; padding:20px;">此賽事目前沒有隊伍資料</div>`;
+        }
     } catch (e) {
-        console.error("雲端同步失敗:", e);
+        console.error("❌ 雲端同步失敗:", e);
         if (statsElem) statsElem.innerText = "雲端同步失敗，請檢查網路。";
     }
 }
