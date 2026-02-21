@@ -124,8 +124,6 @@ async function changeevent(whitchevent){
     currentevent = whitchevent;
     const itrain = whitchevent.includes("(train)");
     currentevent = whitchevent;
-    
-    
 
     // --- A. 強力清空 UI ---
     // 確保在載入新東西前，舊的 DOM 完全消失
