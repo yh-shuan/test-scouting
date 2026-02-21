@@ -65,11 +65,11 @@ async function syncFromCloud() {
         }).join('');
         eventselect.innerHTML = '<option value="" disabled selected hidden>Choose your battle...</option>' + optionsHTML;
 
-        if (currentevent) {
+        if (currentSelected) {
+            eventselect.value = currentSelected; 
+        } else if (currentevent) {
             eventselect.value = currentevent; 
         }
-        if (currentSelected) eventselect.value = currentSelected; // 復原選取狀態
-
         // 3. ⭐ 自動推播新隊伍邏輯
         // 找出目前選擇賽事的隊伍名單
         const currentEventData = allevent.find(e => e.race === currentevent);
@@ -95,7 +95,9 @@ async function syncFromCloud() {
         if (statsElem) statsElem.innerText = `同步完成 (動態:${allScoresRaw.length} | 靜態:${allStaticRaw.length})`;
 
         // 4. ⭐ 不管有沒有變動，同步完都重新渲染一次，確保畫面有東西
+        console.log("Debug - allTeams 內容:", allTeams); // 檢查這裡有沒有東西
         resetproperty();
+        console.log("Debug - AllTeamsList 內容:", AllTeamsList); // 檢查計算後有沒有東西
         Rankingteam(currentRankMode);
 
         console.log("yes!")
@@ -244,9 +246,6 @@ async function autoFetchTeams() {
 
         // 抓取雲端分數並計算
         await syncFromCloud();
-        resetproperty();
-        Rankingteam(currentRankMode); // 這會觸發 renderCards
-
     } catch (e) {
         console.error("初始化失敗:", e);
         const container = document.getElementById('team-container');
