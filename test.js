@@ -471,24 +471,31 @@ async function deleteCloudData(id, teamNumber, targetTable) {
 
 function resetproperty(){
 
-if (!allTeams || allTeams.length === 0) return;
+    if (!allTeams || allTeams.length === 0) {
+        console.warn("resetproperty: allTeams 是空的，無法計算。")
+        return;
+    }
 
     AllTeamsList = allTeams.map(t => {
+        const teamNum = t.team_number;
+
         const avg = calculateAverage(t.team_number,'allscore');
         const autoavg   = calculateAverage(t.team_number,'auto');
         const teleavg   = calculateAverage(t.team_number,'tele');
-        // 防呆：如果是 N/A 就給 -1，確保這隊排在最後；轉成浮點數以便排序
+
+        // 將 "N/A" 轉為 -1 以便排序（沒分數的排在最後面）
         const score = avg === "N/A" ? -1 : parseFloat(avg);
         const autoscore = autoavg === "N/A" ? -1 : parseFloat(autoavg);
         const telescore = teleavg === "N/A" ? -1 : parseFloat(teleavg);
+        
         return {
-            teamNumber :t.team_number, // 隊伍的號碼
-            avragescore:score,        // 加總平均分
-            autoavgscore:autoscore,  // 自動平均分
-            teleavgscore:telescore  // 人動平均分 
+            teamNumber: teamNum, // 隊伍的號碼
+            avragescore: score,        // 加總平均分
+            autoavgscore: autoscore,  // 自動平均分
+            teleavgscore: telescore  // 人動平均分 
         };
     });
-
+    console.log("✅ 屬性重置完成，清單長度:", AllTeamsList.length);
 }
 
 function Rankingteam(rankproperty) {
