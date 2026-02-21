@@ -52,26 +52,15 @@
                 
                 <input type="number" id="Addteam" placeholder="加入一個隊伍" style="display: none;"class="search-bar">
                 <button class="general-btn" id ="Addteambtn" style="display: none;"onclick ="Addteam()">加入一個隊伍</button>
-
-                
-                
-                
             
             </div>
             
-            
-
             <div id="team-container"></div>
             
-
         </div>
 
 
         <div id="score-page" style="display: none; padding: 20px;">
-
-
-
-
             <h2>Scoring Mode</h2>
 
             <div id="team-select-zone" class="score-section" style="background-color: #7d7dff;">
@@ -81,7 +70,6 @@
                 </select>
                 <button onclick="confirmTeam()" style="margin-top: 15px; padding: 10px 20px; cursor:pointer;">確認並開始記錄</button>
             </div>
-            
             
             <div id="mode-selec-zone" style="display: none; padding: 20px; flex-direction: column; align-items: center; justify-content: center;">
                 <h2 style="width: 100%;font-size: 7.5vw;">敵不動、我不動，敵一動、我亂動</h2>
@@ -159,9 +147,11 @@
                     <div class="counter-container">
                         <label>進球：</label>
                         <div class="counter-controls">
+                            <button class="cnt-btn minus" onclick="changeVal('auto-fuel', -5)">-5</button>
                             <button class="cnt-btn minus" onclick="changeVal('auto-fuel', -1)">-</button>
                             <span id="auto-fuel" class="score-num">0</span>
                             <button class="cnt-btn plus" onclick="changeVal('auto-fuel', 1)">+</button>
+                            <button class="cnt-btn plus" onclick="changeVal('auto-fuel', 5)">+5</button>
                         </div>
                     </div>
                     <div class="select-container">
@@ -180,9 +170,11 @@
                     <div class="counter-container">
                         <label>進球：</label>
                         <div class="counter-controls">
+                            <button class="cnt-btn minus" onclick="changeVal('tele-fuel', -5)">-5</button>
                             <button class="cnt-btn minus" onclick="changeVal('tele-fuel', -1)">-</button>
                             <span id="tele-fuel" class="score-num">0</span>
                             <button class="cnt-btn plus" onclick="changeVal('tele-fuel', 1)">+</button>
+                            <button class="cnt-btn plus" onclick="changeVal('tele-fuel', 5)">+5</button>
                         </div>
                     </div>
                     <div class="select-container">
@@ -201,9 +193,11 @@
                     <div class="counter-container">
                         <label>傳球</label>
                         <div class="counter-controls">
+                            <button class="cnt-btn minus" onclick="changeVal('transport-fuel', -5)">-5</button>
                             <button class="cnt-btn minus" onclick="changeVal('transport-fuel', -1)">-</button>
                             <span id="transport-fuel" class="score-num">0</span>
                             <button class="cnt-btn plus" onclick="changeVal('transport-fuel', 1)">+</button>
+                            <button class="cnt-btn plus" onclick="changeVal('transport-fuel', 5)">+5</button>
                         </div>
                     </div>
                     
