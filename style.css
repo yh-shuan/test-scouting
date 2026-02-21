@@ -112,7 +112,7 @@ table{
 }/* 修正後的 Hover：把縮放跟位移寫在一起 */
 
 .card-top {
-    background-image: linear-gradient(to top, #65379B 0%, #886AEA 5%, #785ad9 100%); 
+    background-image: linear-gradient(to top, #65379B 0%, #886AEA 5%, #7d60dc 100%); 
     display: flex;
     align-items: center;    
     justify-content: center; 
@@ -562,7 +562,7 @@ table{
     background: #B199FF; 
     /* border: 5px solid;
     border-color: transparent; */
-    border-radius: 10px 50px 50px;
+    /*border-radius: 10px 50px 50px;*/
     height: auto;               
     /*min-height: 375px;*/
     min-width: none;
