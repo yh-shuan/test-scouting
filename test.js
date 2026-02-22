@@ -28,7 +28,7 @@ const API_KEY = "tGy3U4VfP85N98m17nqzN8XCof0zafvCckCLbgWgmy95bGE0Aw97b4lV7UocJvx
 let AllTeamsList=[];
 
 // --- ⚠️ 重要：請填入 Apps Script 部署後的 Web App URL (結尾通常是 /exec) ---
-const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbxSWs6Eb0oMSzIcmE5kEpjvFIoITe9s4MrbwyA5pOu5NBzQzs4fSD9YmuxrTT9OUcY/exec"; 
+const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbw1WseIOGZncgPlYnvghQYJDJZLz8XD9Iq_g38gjYzdm328HtFRDNJvCFJSZHDc_v6J/exec"; 
 
 
 
@@ -421,6 +421,8 @@ function showDetail(teamNumber,bucket) {
                 人動吊掛: ${r.teleClimb}<br>
                 人動吊掛時間: ${r.teleclimbtime}<br>
                 人動吊掛位置: ${r.teleclimbposition}<br>
+                人動傳球: ${r.tranFuel}<br>
+                人動傳球時間: ${r.tranTime}<br>
                 備註: ${r.reporting || "無"}
                 ${(!bucket)?`<button class="delete-btn-small" onclick="deleteCloudData('${r.id}', '${teamNumber}', 'movement')">刪除</button>`:``}
             `;
@@ -552,6 +554,7 @@ async function saveAndExit(type) {
         data.teleclimbposition=document.getElementById('tele-climb-position').value||"";
         data.teleclimbtime= getVal('tele-climb-time') || 0;
         data.tranFuel= getVal('transport-fuel') || 0;
+        data.tranTime= getVal('transport-time') || 0;
         data.reporting= document.getElementById('reporting').value || "";
 
         
@@ -912,12 +915,14 @@ function resetScoring() {
     const af = document.getElementById('auto-fuel');
     const tf = document.getElementById('tele-fuel');
     const trf = document.getElementById('transport-fuel');
+    const trt = document.getElementById('transport-time');
     const at =  document.getElementById('auto-climb-time');
     const tt =  document.getElementById('tele-climb-time');
     
     if(af) (af.tagName === "INPUT" ? af.value = "0" : af.innerText = "0");
     if(tf) (tf.tagName === "INPUT" ? tf.value = "0" : tf.innerText = "0");
     if(trf) (trf.tagName === "INPUT" ? trf.value = "0" : trf.innerText = "0");
+    if(trt) (trt.tagName === "INPUT" ? trt.value = "0" : trt.innerText = "0");
     if(at) (at.tagName === "INPUT" ? at.value = "0" : at.innerText = "0");
     if(tt) (tt.tagName === "INPUT" ? tt.value = "0" : tt.innerText = "0");
 
