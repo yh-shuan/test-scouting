@@ -28,11 +28,13 @@ const API_KEY = "tGy3U4VfP85N98m17nqzN8XCof0zafvCckCLbgWgmy95bGE0Aw97b4lV7UocJvx
 let AllTeamsList=[];
 
 // --- ⚠️ 重要：請填入 Apps Script 部署後的 Web App URL (結尾通常是 /exec) ---
-const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbyLioEbsGB1czMUM8Ib2gsBZxwdgyimFY85NHSf3i--5l9Oix9wW-voIY280DPI2xY2/exec"; 
+const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbxAwEsTIjZTppDYpfltTQm0W3ilk7vymv5sNpGjWXlN4Mda3yfuEInseplas6uRrMXq/exec"; 
 
 
 
 let currentRankMode = 'teamnumber';
+
+
 
 
 // --- 新增：從雲端同步數據 ---
@@ -56,64 +58,50 @@ async function syncFromCloud() {
         allScoresRaw = resMovement;
         allStaticRaw = resStatic;
         allevent = resEvent;
+
+        // 2. 更新賽事下拉選單 (先清空，避免重複堆疊)
+        const currentSelected = eventselect.value; // 記住目前選了什麼
         
-        console.log("📡 雲端原始賽事列表:", allevent);
-
-        // --- ⭐ 自動補救邏輯 ⭐ ---
-        // 如果原本的 currentevent 在雲端清單中找不到，就強制設定為清單中的第一個
-        const eventExists = allevent.some(e => e.race === currentevent);
-        if (!eventExists && allevent.length > 0) {
-            console.warn(`⚠️ 找不到賽事 [${currentevent}]，自動切換至: ${allevent[0].race}`);
-            currentevent = allevent[0].race;
-        }
-
-        // 2. 更新賽事下拉選單
         const optionsHTML = allevent.map(ev => {
             return `<option value="${ev.race}">${ev.race}</option>`;
         }).join('');
-        eventselect.innerHTML = '<option value="" disabled selected hidden>Choose your battle...</option>' + optionsHTML;
+        eventselect.innerHTML = '<option value="" disabled selected hidden>you are a soldier Choose your battle...</option>' + optionsHTML;
 
-        // 恢復選取狀態
-        eventselect.value = currentevent;
 
-        // 3. ⭐ 強力提取隊伍邏輯 (Double Insurance)
+        if (currentSelected) eventselect.value = currentSelected; // 復原選取狀態
+
+        // 3. ⭐ 自動推播新隊伍邏輯
+        // 找出目前選擇賽事的隊伍名單
         const currentEventData = allevent.find(e => e.race === currentevent);
-        
-        // A. 從賽事表拿隊伍
+        let hasNewTeamAdded = false;
+
         if (currentEventData && currentEventData.teams) {
-            currentEventData.teams.forEach(num => {
-                const n = parseInt(num);
-                if (!allTeams.some(t => t.team_number === n)) {
-                    allTeams.push({ team_number: n });
-                    fetchAndPopulateTeamData(n, false);
+            // 確保隊號是數字陣列
+            const cloudTeams = currentEventData.teams.map(num => parseInt(num));
+
+            cloudTeams.forEach(num => {
+                // 如果本地 allTeams 沒這隻隊伍，就加進去
+                if (!allTeams.some(t => t.team_number === num)) {
+                    console.log(`📡 發現雲端新隊伍: # ${num}`);
+                    allTeams.push({ team_number: num });
+                    // 異步去抓 TBA 詳細資料，不擋住主流程
+                    fetchAndPopulateTeamData(num, false);
+                    hasNewTeamAdded = true;
                 }
             });
         }
 
-        // B. 保險：從現有的分數紀錄中提取該賽事的隊伍 (防止賽事表沒寫清楚)
-        const recordTeams = allScoresRaw
-            .filter(r => r.identifymark === currentevent)
-            .map(r => parseInt(r.teamNumber));
-            
-        recordTeams.forEach(num => {
-            if (!isNaN(num) && !allTeams.some(t => t.team_number === num)) {
-                console.log(`🔎 從紀錄中發現隱藏隊伍: # ${num}`);
-                allTeams.push({ team_number: num });
-                fetchAndPopulateTeamData(num, false);
-            }
-        });
+        console.log("雲端數據同步成功:", allScoresRaw.length, "筆動態 |", allStaticRaw.length, "筆靜態");
+        if (statsElem) statsElem.innerText = `同步完成 (動態:${allScoresRaw.length} | 靜態:${allStaticRaw.length})`;
 
-        // 4. ⭐ 強制重新計算與渲染
-        if (allTeams.length > 0) {
+        // 4. ⭐ 只有資料有變或有新隊伍時，才重新計算與渲染，節省效能
+        if (isChanged || hasNewTeamAdded) {
             resetproperty();
             Rankingteam(currentRankMode);
-            if (statsElem) statsElem.innerText = `同步完成 (${allTeams.length} 支隊伍)`;
-        } else {
-            if (statsElem) statsElem.innerText = "同步完成，但此賽事尚無隊伍。";
-            document.getElementById('team-container').innerHTML = `<div style="text-align:center; padding:20px;">此賽事目前沒有隊伍資料</div>`;
         }
+
     } catch (e) {
-        console.error("❌ 雲端同步失敗:", e);
+        console.error("雲端同步失敗:", e);
         if (statsElem) statsElem.innerText = "雲端同步失敗，請檢查網路。";
     }
 }
@@ -254,6 +242,9 @@ async function autoFetchTeams() {
 
         // 抓取雲端分數並計算
         await syncFromCloud();
+        resetproperty();
+        Rankingteam(currentRankMode); // 這會觸發 renderCards
+
     } catch (e) {
         console.error("初始化失敗:", e);
         const container = document.getElementById('team-container');
@@ -467,33 +458,27 @@ async function deleteCloudData(id, teamNumber, targetTable) {
 }
 
 
+
 function resetproperty(){
 
-    if (!allTeams || allTeams.length === 0) {
-        console.warn("resetproperty: allTeams 是空的，無法計算。")
-        return;
-    }
+if (!allTeams || allTeams.length === 0) return;
 
     AllTeamsList = allTeams.map(t => {
-        const teamNum = t.team_number;
-
         const avg = calculateAverage(t.team_number,'allscore');
         const autoavg   = calculateAverage(t.team_number,'auto');
         const teleavg   = calculateAverage(t.team_number,'tele');
-
-        // 將 "N/A" 轉為 -1 以便排序（沒分數的排在最後面）
+        // 防呆：如果是 N/A 就給 -1，確保這隊排在最後；轉成浮點數以便排序
         const score = avg === "N/A" ? -1 : parseFloat(avg);
         const autoscore = autoavg === "N/A" ? -1 : parseFloat(autoavg);
         const telescore = teleavg === "N/A" ? -1 : parseFloat(teleavg);
-        
         return {
-            teamNumber: teamNum, // 隊伍的號碼
-            avragescore: score,        // 加總平均分
-            autoavgscore: autoscore,  // 自動平均分
-            teleavgscore: telescore  // 人動平均分 
+            teamNumber :t.team_number, // 隊伍的號碼
+            avragescore:score,        // 加總平均分
+            autoavgscore:autoscore,  // 自動平均分
+            teleavgscore:telescore  // 人動平均分 
         };
     });
-    console.log("✅ 屬性重置完成，清單長度:", AllTeamsList.length);
+
 }
 
 function Rankingteam(rankproperty) {
@@ -556,8 +541,12 @@ async function saveAndExit(type) {
     if(type==='movement'){
         data.autoFuel= getVal('auto-fuel') || 0;
         data.autoClimb= parseInt(document.getElementById('auto-climb').value) || 0;
+        data.autoclimbposition=document.getElementById('auto-climb-position').value||"";
+        data.autoclimbtime= getVal('auto-climb-time') || 0;
         data.teleFuel= getVal('tele-fuel') || 0;
         data.teleClimb= parseInt(document.getElementById('tele-climb').value) || 0;
+        data.teleclimbposition=document.getElementById('tele-climb-position').value||"";
+        data.teleclimbtime= getVal('tele-climb-time') || 0;
         data.tranFuel= getVal('transport-fuel') || 0;
         data.reporting= document.getElementById('reporting').value || "";
 
@@ -919,10 +908,21 @@ function resetScoring() {
     const af = document.getElementById('auto-fuel');
     const tf = document.getElementById('tele-fuel');
     const trf = document.getElementById('transport-fuel');
+    const at =  document.getElementById('auto-climb-time');
+    const tt =  document.getElementById('tele-climb-time');
     
     if(af) (af.tagName === "INPUT" ? af.value = "0" : af.innerText = "0");
     if(tf) (tf.tagName === "INPUT" ? tf.value = "0" : tf.innerText = "0");
     if(trf) (trf.tagName === "INPUT" ? trf.value = "0" : trf.innerText = "0");
+    if(at) (at.tagName === "INPUT" ? at.value = "0" : at.innerText = "0");
+    if(tt) (tt.tagName === "INPUT" ? tt.value = "0" : tt.innerText = "0");
+
+    const acp = document.getElementById('auto-climb-position');
+    if(acp) acp.value = ""; 
+
+    const tcp = document.getElementById('tele-climb-position');
+    if(tcp) tcp.value = ""; 
+
 
     if(document.getElementById('auto-climb')) document.getElementById('auto-climb').value = "0";
     if(document.getElementById('tele-climb')) document.getElementById('tele-climb').value = "0";

@@ -26,7 +26,7 @@
         <div class="search-container" >
             <select id ="whatevent" class="general-select" onchange="changeevent(this.value)">
                 <option value="" disabled selected hidden>
-                    Choose your battle...
+                    you are a soldier Choose your battle...
                 </option>
             </select>
 
@@ -163,7 +163,26 @@
                             <option value="2">Level 2</option>
                             <option value="3">Level 3</option>
                         </select>
+                        <label>吊掛位置：</label>
+                        <select id="auto-climb-position" class="score-input">
+                            <option value="0">None (未吊掛)</option>
+                            <option value="左">左</option>
+                            <option value="中">中</option>
+                            <option value="右">右</option>
+                        </select>
+                        
                     </div>
+                    <div class="counter-container">
+                        <label>吊掛時間：</label>
+                        <div class="counter-controls">
+                            <button class="cnt-btn minus" onclick="changeVal('auto-climb-time', -5)">-5</button>
+                            <button class="cnt-btn minus" onclick="changeVal('auto-climb-time', -1)">-</button>
+                            <span id="auto-climb-time" class="score-num">0</span>
+                            <button class="cnt-btn plus" onclick="changeVal('auto-climb-time', 1)">+</button>
+                            <button class="cnt-btn plus" onclick="changeVal('auto-climb-time', 5)">+5</button>
+                        </div>
+                    </div>
+
                 </div>
 
                 <div class="score-section tele-zone">
@@ -186,7 +205,26 @@
                             <option value="2">Level 2</option>
                             <option value="3">Level 3</option>
                         </select>
+                        <label>吊掛位置：</label>
+                        <select id="tele-climb-position" class="score-input">
+                            <option value="0">None (未吊掛)</option>
+                            <option value="左">左</option>
+                            <option value="中">中</option>
+                            <option value="右">右</option>
+                        </select>
                     </div>
+                    <div class="counter-container">
+                        <label>吊掛時間：</label>
+                        <div class="counter-controls">
+                            <button class="cnt-btn minus" onclick="changeVal('tele-climb-time', -5)">-5</button>
+                            <button class="cnt-btn minus" onclick="changeVal('tele-climb-time', -1)">-</button>
+                            <span id="tele-climb-time" class="score-num">0</span>
+                            <button class="cnt-btn plus" onclick="changeVal('tele-climb-time', 1)">+</button>
+                            <button class="cnt-btn plus" onclick="changeVal('tele-climb-time', 5)">+5</button>
+                        </div>
+                    </div>
+
+                    
                 </div>
 
                 <div class="score-section transport-zone">
