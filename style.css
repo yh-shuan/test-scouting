@@ -311,7 +311,7 @@ table{
     margin: 30px auto; /* 水平置中 */
     padding: 25px;
     /* 使用主畫面卡片的經典漸層色 */
-    background: #B199FF !important; 
+    background: transparent !important;
 
     border: none;
     border-radius: 10px 50px 50px;

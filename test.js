@@ -28,7 +28,7 @@ const API_KEY = "tGy3U4VfP85N98m17nqzN8XCof0zafvCckCLbgWgmy95bGE0Aw97b4lV7UocJvx
 let AllTeamsList=[];
 
 // --- ⚠️ 重要：請填入 Apps Script 部署後的 Web App URL (結尾通常是 /exec) ---
-const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbw1WseIOGZncgPlYnvghQYJDJZLz8XD9Iq_g38gjYzdm328HtFRDNJvCFJSZHDc_v6J/exec"; 
+const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbzI23YWsclgTH30tuFa0qTFi6892IC-CimvTvDcHUoW0ScYOF46tRkuENGr5kc9dHI/exec"; 
 
 
 
@@ -423,6 +423,8 @@ function showDetail(teamNumber,bucket) {
                 人動吊掛位置: ${r.teleclimbposition}<br>
                 人動傳球: ${r.tranFuel}<br>
                 人動傳球時間: ${r.tranTime}<br>
+                遲滯對方: ${r.defensetime}<br>
+                人動傳球時間: ${r.penalty}<br>
                 備註: ${r.reporting || "無"}
                 ${(!bucket)?`<button class="delete-btn-small" onclick="deleteCloudData('${r.id}', '${teamNumber}', 'movement')">刪除</button>`:``}
             `;
@@ -547,14 +549,16 @@ async function saveAndExit(type) {
     if(type==='movement'){
         data.autoFuel= getVal('auto-fuel') || 0;
         data.autoClimb= parseInt(document.getElementById('auto-climb').value) || 0;
-        data.autoclimbposition=document.getElementById('auto-climb-position').value||"";
+        data.autoclimbposition=document.getElementById('auto-climb-position').value||"沒有吊掛";
         data.autoclimbtime= getVal('auto-climb-time') || 0;
         data.teleFuel= getVal('tele-fuel') || 0;
         data.teleClimb= parseInt(document.getElementById('tele-climb').value) || 0;
-        data.teleclimbposition=document.getElementById('tele-climb-position').value||"";
+        data.teleclimbposition=document.getElementById('tele-climb-position').value||"沒有吊掛";
         data.teleclimbtime= getVal('tele-climb-time') || 0;
         data.tranFuel= getVal('transport-fuel') || 0;
         data.tranTime= getVal('transport-time') || 0;
+        data.defensetime= getVal('defense-time') || 0;
+        data.penalty= getVal('penalty') || 0;
         data.reporting= document.getElementById('reporting').value || "";
 
         
@@ -918,13 +922,18 @@ function resetScoring() {
     const trt = document.getElementById('transport-time');
     const at =  document.getElementById('auto-climb-time');
     const tt =  document.getElementById('tele-climb-time');
-    
+    const dt =  document.getElementById('defense-time');
+    const pp =  document.getElementById('penalty');
+
     if(af) (af.tagName === "INPUT" ? af.value = "0" : af.innerText = "0");
     if(tf) (tf.tagName === "INPUT" ? tf.value = "0" : tf.innerText = "0");
     if(trf) (trf.tagName === "INPUT" ? trf.value = "0" : trf.innerText = "0");
     if(trt) (trt.tagName === "INPUT" ? trt.value = "0" : trt.innerText = "0");
     if(at) (at.tagName === "INPUT" ? at.value = "0" : at.innerText = "0");
     if(tt) (tt.tagName === "INPUT" ? tt.value = "0" : tt.innerText = "0");
+    if(dt) (dt.tagName === "INPUT" ? dt.value = "0" : dt.innerText = "0");
+    if(pp) (pp.tagName === "INPUT" ? pp.value = "0" : pp.innerText = "0");
+
 
     const acp = document.getElementById('auto-climb-position');
     if(acp) acp.value = ""; 

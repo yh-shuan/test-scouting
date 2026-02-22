@@ -252,6 +252,31 @@
                     
                 </div>
 
+                <div class="score-section defense-zone">
+                    <h3>defense (防禦)</h3>
+                    <div class="counter-container">
+                        <label>defense遲滯敵方時間</label>
+                        <div class="counter-controls">
+                            <button class="cnt-btn minus" onclick="changeVal('defense-time', -5)">-5</button>
+                            <button class="cnt-btn minus" onclick="changeVal('defense-time', -1)">-</button>
+                            <span id="defense-time" class="score-num">0</span>
+                            <button class="cnt-btn plus" onclick="changeVal('defense-time', 1)">+</button>
+                            <button class="cnt-btn plus" onclick="changeVal('defense-time', 5)">+5</button>
+                        </div>
+
+                        <label>defense犯規</label>
+                        <div class="counter-controls">
+                            <button class="cnt-btn minus" onclick="changeVal('penalty', -5)">-5</button>
+                            <button class="cnt-btn minus" onclick="changeVal('tpenalty', -1)">-</button>
+                            <span id="penalty" class="score-num">0</span>
+                            <button class="cnt-btn plus" onclick="changeVal('penalty', 1)">+</button>
+                            <button class="cnt-btn plus" onclick="changeVal('penalty', 5)">+5</button>
+                        </div>
+                    </div>
+                    
+                    
+                </div>
+
 
                 <div class="report">
                     <input type="text" id="reporting" placeholder="備註:...">
