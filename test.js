@@ -28,7 +28,7 @@ const API_KEY = "tGy3U4VfP85N98m17nqzN8XCof0zafvCckCLbgWgmy95bGE0Aw97b4lV7UocJvx
 let AllTeamsList=[];
 
 // --- ⚠️ 重要：請填入 Apps Script 部署後的 Web App URL (結尾通常是 /exec) ---
-const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbxAwEsTIjZTppDYpfltTQm0W3ilk7vymv5sNpGjWXlN4Mda3yfuEInseplas6uRrMXq/exec"; 
+const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbxSWs6Eb0oMSzIcmE5kEpjvFIoITe9s4MrbwyA5pOu5NBzQzs4fSD9YmuxrTT9OUcY/exec"; 
 
 
 
@@ -414,9 +414,13 @@ function showDetail(teamNumber,bucket) {
                 <strong>紀錄 #${idx + 1}</strong> <span style="color:#888; font-size:0.75em">(ID: ${r.id})</span><br>
                 單場預估分: ${total} 分<br>
                 auto進球: ${r.autoFuel}<br>
-                auto吊掛: ${r.autoClimb}<br>  
+                auto吊掛: ${r.autoClimb}<br>
+                auto吊掛時間: ${r.autoclimbtime}<br>
+                auto吊掛位置: ${r.autoclimbposition}<br>
                 人動進球: ${r.teleFuel}<br> 
                 人動吊掛: ${r.teleClimb}<br>
+                人動吊掛時間: ${r.teleclimbtime}<br>
+                人動吊掛位置: ${r.teleclimbposition}<br>
                 備註: ${r.reporting || "無"}
                 ${(!bucket)?`<button class="delete-btn-small" onclick="deleteCloudData('${r.id}', '${teamNumber}', 'movement')">刪除</button>`:``}
             `;
