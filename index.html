@@ -273,8 +273,29 @@
                             <button class="cnt-btn plus" onclick="changeVal('penalty', 5)">+5</button>
                         </div>
                     </div>
-                    
-                    
+                </div>
+
+                <div class="score-section steal-zone">
+                    <h3>steal (幹走)</h3>
+                    <div class="counter-container">
+                        <label>幹走幾顆</label>
+                        <div class="counter-controls">
+                            <button class="cnt-btn minus" onclick="changeVal('steal-fuel', -5)">-5</button>
+                            <button class="cnt-btn minus" onclick="changeVal('steal-fuel', -1)">-</button>
+                            <span id="steal-fuel" class="score-num">0</span>
+                            <button class="cnt-btn plus" onclick="changeVal('steal-fuel', 1)">+</button>
+                            <button class="cnt-btn plus" onclick="changeVal('steal-fuel', 5)">+5</button>
+                        </div>
+
+                        <label>花多少時間偷球</label>
+                        <div class="counter-controls">
+                            <button class="cnt-btn minus" onclick="changeVal('steal-time', -5)">-5</button>
+                            <button class="cnt-btn minus" onclick="changeVal('steal-time', -1)">-</button>
+                            <span id="steal-time" class="score-num">0</span>
+                            <button class="cnt-btn plus" onclick="changeVal('steal-time', 1)">+</button>
+                            <button class="cnt-btn plus" onclick="changeVal('steal-time', 5)">+5</button>
+                        </div>
+                    </div>
                 </div>
 
 

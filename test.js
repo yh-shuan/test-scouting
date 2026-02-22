@@ -28,7 +28,7 @@ const API_KEY = "tGy3U4VfP85N98m17nqzN8XCof0zafvCckCLbgWgmy95bGE0Aw97b4lV7UocJvx
 let AllTeamsList=[];
 
 // --- ⚠️ 重要：請填入 Apps Script 部署後的 Web App URL (結尾通常是 /exec) ---
-const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbzI23YWsclgTH30tuFa0qTFi6892IC-CimvTvDcHUoW0ScYOF46tRkuENGr5kc9dHI/exec"; 
+const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycby3VYt58ZbKX3M5yPnOHVlYBmbaQ5tTUURr7-iYM99XDZX3vPcUUy1wCwE-GuqG6OX-/exec"; 
 
 
 
@@ -425,6 +425,8 @@ function showDetail(teamNumber,bucket) {
                 人動傳球時間: ${r.tranTime}<br>
                 遲滯對方: ${r.defensetime}<br>
                 人動傳球時間: ${r.penalty}<br>
+                遲滯對方: ${r.stealfuel}<br>
+                人動傳球時間: ${r.stealtime}<br>
                 備註: ${r.reporting || "無"}
                 ${(!bucket)?`<button class="delete-btn-small" onclick="deleteCloudData('${r.id}', '${teamNumber}', 'movement')">刪除</button>`:``}
             `;
@@ -559,6 +561,8 @@ async function saveAndExit(type) {
         data.tranTime= getVal('transport-time') || 0;
         data.defensetime= getVal('defense-time') || 0;
         data.penalty= getVal('penalty') || 0;
+        data.stealfuel= getVal('steal-fuel') || 0;
+        data.stealtime= getVal('steal-time') || 0;
         data.reporting= document.getElementById('reporting').value || "";
 
         
@@ -924,6 +928,8 @@ function resetScoring() {
     const tt =  document.getElementById('tele-climb-time');
     const dt =  document.getElementById('defense-time');
     const pp =  document.getElementById('penalty');
+    const stf = document.getElementById('steal-fuel');
+    const stt = document.getElementById('steal-time');
 
     if(af) (af.tagName === "INPUT" ? af.value = "0" : af.innerText = "0");
     if(tf) (tf.tagName === "INPUT" ? tf.value = "0" : tf.innerText = "0");
@@ -933,6 +939,8 @@ function resetScoring() {
     if(tt) (tt.tagName === "INPUT" ? tt.value = "0" : tt.innerText = "0");
     if(dt) (dt.tagName === "INPUT" ? dt.value = "0" : dt.innerText = "0");
     if(pp) (pp.tagName === "INPUT" ? pp.value = "0" : pp.innerText = "0");
+    if(stf) (stf.tagName === "INPUT" ? stf.value = "0" : stf.innerText = "0");
+    if(stt) (stt.tagName === "INPUT" ? stt.value = "0" : stt.innerText = "0");
 
 
     const acp = document.getElementById('auto-climb-position');
