@@ -111,7 +111,7 @@ var currentevent = '2026nysu';
 async function changeevent(whitchevent){
     currentevent = whitchevent;
     const itrain = whitchevent.includes("(train)");
-    currentevent = whitchevent;
+    
 
     // --- A. 強力清空 UI ---
     // 確保在載入新東西前，舊的 DOM 完全消失
@@ -152,7 +152,7 @@ async function changeevent(whitchevent){
         // 官方賽事模式邏輯...
         document.getElementById('Addteam').style.display = 'none';
         document.getElementById('Addteambtn').style.display = 'none';
-        await autoFetchTeams(); 
+        await autoFetchTeams(currentevent); 
     }
 }
 
@@ -213,8 +213,8 @@ async function Addteam() {
 /**
  * 1. 初始化：只抓取 Event 的隊伍號碼清單
  */
-async function autoFetchTeams() {
-    const event_key = "2026nysu";
+async function autoFetchTeams(event_key) {
+    
     // 改用 /teams/keys 接口，只拿隊號清單 (例如 ["frc1678", "frc254"...])，速度最快
     const url = `https://www.thebluealliance.com/api/v3/event/${event_key}/teams/keys`;
     
