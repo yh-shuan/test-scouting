@@ -605,6 +605,11 @@ table{
     .record-item strong{
         font-size: 3vh;
     }
+    .cnt-btn {
+        width: 10vh;
+        height: 10vh;
+        font-size: 7.5vh;
+    }
 }
 
 @media screen and (max-aspect-ratio:1/1) {
