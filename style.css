@@ -239,7 +239,7 @@ table{
 
 .general-select,
 .search-bar,
-#reporting {
+.report {
     display: block; /* 確保它們獨立佔據一行 */
     margin: 10px auto; /* 置中 */
     width: 90%; /* 手機版寬度 */
@@ -252,9 +252,12 @@ table{
     transition: 0.3s;
     text-align: center;
 }
+.report {
+    margin: 20px auto;
+}
 
 .search-bar:focus,
-#reporting:focus {
+.report:focus {
     border-color: #007bff;
     box-shadow: 0 0 8px #007bff33;
     text-align: center;
@@ -489,10 +492,6 @@ table{
     padding: 5px 10px;
     cursor: pointer;
     font-size: 12px;
-}
-.report{
-    margin: 20px auto;
-    text-align: center;
 }
 
 #report-stats {
