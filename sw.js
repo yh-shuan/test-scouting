@@ -1,4 +1,4 @@
-const CACHE_NAME = 'scouter-v168';
+const CACHE_NAME = 'scouter-v169';
 // 這裡修正了 manifest 的拼字錯誤
 const ASSETS_TO_CACHE = [
     './',
