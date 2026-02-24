@@ -252,9 +252,6 @@ table{
     transition: 0.3s;
     text-align: center;
 }
-.report {
-    margin: 20px auto;
-}
 
 .search-bar:focus,
 .report:focus {
