@@ -336,8 +336,9 @@ table{
     color: #ffffff !important;
     font-size: 22px;
     font-weight: bold;
-    user-select: none;
-    -webkit-touch-callout: none;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    -webkit-touch-callout: none !important;
 }
 
 .auto-zone, .tele-zone, .transport-zone, .static-zone {
@@ -352,16 +353,18 @@ table{
     flex-direction: column;
     align-items: center;
     gap: 10px;
-    user-select: none;
-    -webkit-touch-callout: none;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    -webkit-touch-callout: none !important;
 }
 
 .counter-container label, .select-container label {
     font-size: 20px;
     font-weight: bold;
     color: #333;
-    user-select: none;
-    -webkit-touch-callout: none;
+    user-select: none !important; 
+    -webkit-user-select: none !important;
+    -webkit-touch-callout: none !important;
 }
 
 .counter-controls {
