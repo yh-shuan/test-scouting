@@ -1,33 +1,33 @@
 // --- PWA Service Worker 註冊 ---
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        // 這裡的 'sw.js' 檔名必須和你根目錄下的檔案完全一致
+        // 這裡的 'sw.js' 檔名必須和目錄下的檔案完全一致
         navigator.serviceWorker.register('sw.js')
             .then(registration => {
-                console.log('✅ PWA 註冊成功！範圍:', registration.scope);
+                console.log('PWA 註冊成功！範圍:', registration.scope);
             })
             .catch(err => {
-                console.log('❌ PWA 註冊失敗:', err);
+                console.log('PWA 註冊失敗:', err);
             });
     });
 }
-// --- 註冊結束，以下接著你原本的程式碼 ---
+// --- 註冊結束 ---
 
 
 
-// 1. 宣告全域變數
+// 全域儲存格
 let allTeams = []; 
 let allScoresRaw = []; // 動態數據
 let allStaticRaw = []; // 靜態數據 
 let allevent = [];
 
-const API_KEY = "tGy3U4VfP85N98m17nqzN8XCof0zafvCckCLbgWgmy95bGE0Aw97b4lV7UocJvxl"; 
+const API_KEY = "tGy3U4VfP85N98m17nqzN8XCof0zafvCckCLbgWgmy95bGE0Aw97b4lV7UocJvxl"; //TBA的Key
 
 
 
 let AllTeamsList=[];
 
-// --- ⚠️ 重要：請填入 Apps Script 部署後的 Web App URL (結尾通常是 /exec) ---
+// --- 重要：Apps Script 每一次部署後的 Web App URL (結尾通常是 /exec) ---
 const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycby3VYt58ZbKX3M5yPnOHVlYBmbaQ5tTUURr7-iYM99XDZX3vPcUUy1wCwE-GuqG6OX-/exec"; 
 
 
@@ -37,7 +37,7 @@ let currentRankMode = 'teamnumber';
 
 
 
-// --- 新增：從雲端同步數據 ---
+// --- 從雲端同步數據 ---
 async function syncFromCloud() {
     const statsElem = document.getElementById('search-stats');
     const eventselect = document.getElementById('whatevent');
@@ -52,7 +52,7 @@ async function syncFromCloud() {
             fetch(`${GOOGLE_SHEET_URL}?type=geteventteam`).then(r => r.json())
         ]);
 
-        // 檢查數據是否有變動 (簡單檢查長度)
+        // 檢查數據是否有變動
         const isChanged = (allScoresRaw.length !== resMovement.length || allStaticRaw.length !== resStatic.length);
         
         allScoresRaw = resMovement;
@@ -70,7 +70,7 @@ async function syncFromCloud() {
 
         if (currentSelected) eventselect.value = currentSelected; // 復原選取狀態
 
-        // 3. ⭐ 自動推播新隊伍邏輯
+        // 3.自動增加新隊伍邏輯
         // 找出目前選擇賽事的隊伍名單
         const currentEventData = allevent.find(e => e.race === currentevent);
         let hasNewTeamAdded = false;
@@ -94,7 +94,7 @@ async function syncFromCloud() {
         console.log("雲端數據同步成功:", allScoresRaw.length, "筆動態 |", allStaticRaw.length, "筆靜態");
         if (statsElem) statsElem.innerText = `同步完成 (動態:${allScoresRaw.length} | 靜態:${allStaticRaw.length})`;
 
-        // 4. ⭐ 只有資料有變或有新隊伍時，才重新計算與渲染，節省效能
+        // 4.只有資料有變或有新隊伍時，才重新計算與渲染，節省效能
         if (isChanged || hasNewTeamAdded) {
             resetproperty();
             Rankingteam(currentRankMode);
@@ -113,12 +113,11 @@ async function changeevent(whitchevent){
     const itrain = whitchevent.includes("(train)");
     
 
-    // --- A. 強力清空 UI ---
-    // 確保在載入新東西前，舊的 DOM 完全消失
+    // --- 強力清空 UI ---
     const container = document.getElementById('team-container');
     if (container) container.innerHTML = ""; 
     
-    // --- B. 重置數據陣列 ---
+    // --- 重置數據陣列 ---
     allTeams = [];
     
     // 找到對應的賽事資料
@@ -128,7 +127,7 @@ async function changeevent(whitchevent){
         document.getElementById('Addteam').style.display = 'inline-block';
         document.getElementById('Addteambtn').style.display = 'inline-block';
 
-        // --- C. 從 GS 存入的隊伍中叫出來 ---
+        // --- 從 GS 存入的隊伍中叫出來 ---
         // 確保 eventData 存在，且裡面的 teams 是一個陣列
         if (eventData && eventData.teams && Array.isArray(eventData.teams)) {
             console.log("從雲端載入預設隊伍:", eventData.teams);
@@ -137,7 +136,7 @@ async function changeevent(whitchevent){
             }));
         } 
         
-        // --- D. 雙重保險：如果雲端沒設隊伍，但已經有計分紀錄 ---
+        // --- 雙重保險：如果雲端沒設隊伍，但已經有計分紀錄 ---
         if (allTeams.length === 0) {
             const mTeams = allScoresRaw.filter(r => r.identifymark === whitchevent).map(r => parseInt(r.teamNumber));
             const sTeams = allStaticRaw.filter(r => r.identifymark === whitchevent).map(r => parseInt(r.teamNumber));
@@ -145,7 +144,7 @@ async function changeevent(whitchevent){
             allTeams = uniqueTeams.map(num => ({ team_number: num }));
         }
 
-        // --- E. 執行重置與渲染 ---
+        // --- 執行重置與渲染 ---
         resetproperty(); // 重置所有分數統計
         Rankingteam(currentRankMode); // 重新生成卡片
     } else {
@@ -172,7 +171,7 @@ async function Addteam() {
 
     let data = {
         action: "SAVE",
-        target: 'seteventteam', // 注意：這裡要對應你 GS 裡的 switch case
+        target: 'seteventteam', // 注意：這裡要對應 GS 裡的 switch case
         identifymark: currentevent,
         teamNumber: teamNum,
     };
@@ -180,11 +179,11 @@ async function Addteam() {
     try {
         await saveData(data); 
 
-        // 1. 更新目前顯示用的 allTeams
+        // 更新目前顯示用的 allTeams
         allTeams.push({ team_number: teamNum });
 
-        // 2. ⭐ 重要：同步更新全域變數 allevent 裡的資料
-        // 這樣切換賽事再切回來時，隊伍才不會消失
+        // 重要：同步更新全域變數 allevent 裡的資料，這樣切換賽事再切回來時，隊伍才不會消失
+        
         let eventInList = allevent.find(e => e.race === currentevent);
         if (eventInList) {
             if (!eventInList.teams) eventInList.teams = [];
@@ -193,7 +192,7 @@ async function Addteam() {
             }
         }
         
-        // 3. 重新渲染
+        // 重新渲染
         resetproperty();
         Rankingteam(currentRankMode);
 
@@ -210,9 +209,7 @@ async function Addteam() {
 
 
 
-/**
- * 1. 初始化：只抓取 Event 的隊伍號碼清單
- */
+//從TBA自動抓取隊伍數據的函式：
 async function autoFetchTeams(event_key) {
     
     // 改用 /teams/keys 接口，只拿隊號清單 (例如 ["frc1678", "frc254"...])，速度最快
@@ -253,7 +250,7 @@ async function autoFetchTeams(event_key) {
 }
 
 /**
- * 2. 渲染：先畫骨架，再非同步補齊所有資料
+ * 渲染的函式，先把UI渲染上去再跑資料
  */
 function renderCards(tupleList) {
     const container = document.getElementById('team-container');
@@ -272,7 +269,7 @@ function renderCards(tupleList) {
 }
 
 /**
- * 3. 整合函式：根據隊號抓取所有 TBA 資訊並直接更新 UI
+ * 根據隊號抓取所有 TBA 資訊並直接更新 UI
  * 取代舊的 fetchSingleAddress
  */
 async function fetchAndPopulateTeamData(teamNum,bucket) {
@@ -332,7 +329,7 @@ async function fetchAndPopulateTeamData(teamNum,bucket) {
 }
 
 /**
- * 4. 卡片模板 (保持不變，但確保 id 正確)
+ * 卡片模板 (保持不變，但確保 id 正確)
  */
 function generateTeamCardHTML(teamObj, tbaDetail = {},bucket) {
     const teamNum = teamObj.teamNumber;
@@ -367,7 +364,7 @@ function generateTeamCardHTML(teamObj, tbaDetail = {},bucket) {
     `;
 }
 
-// --- 新功能：顯示隊伍詳細資料 ---
+// --- 顯示隊伍詳細資料 ---
 function showDetail(teamNumber,bucket) {
     const overlay = document.getElementById('detail-overlay');
     const list = document.getElementById('detail-list');
@@ -528,7 +525,7 @@ function Rankingteam(rankproperty) {
 
 
 
-// --- 修改：儲存並上傳 ---
+// --- 儲存並上傳 ---
 async function saveAndExit(type) {
     const getVal = (id) => {
         const el = document.getElementById(id);
@@ -579,7 +576,7 @@ async function saveAndExit(type) {
     Rankingteam(currentRankMode);
     saveData(data); 
 
-    // --- 關鍵修正：徹底重置 UI 狀態 ---
+    // --- 徹底重置 UI 狀態 ---
     document.getElementById('main-page').style.display = 'block';
     document.getElementById('score-page').style.display = 'none';
     
@@ -1138,7 +1135,7 @@ function whatmode() {
 
     // 判斷是否為「快速計分」 (currentScoringTeam 已經有值)
     if (currentScoringTeam && currentScoringTeam !== "") {
-        // 🚀 直通車：跳過選隊伍，直接顯示計分欄位
+        // 跳過選隊伍，直接顯示計分欄位
         console.log("偵測到快速計分，跳過隊伍選擇");
         
         // 更新標題
