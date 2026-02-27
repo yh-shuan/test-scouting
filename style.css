@@ -337,6 +337,7 @@ table{
     font-size: 22px;
     font-weight: bold;
     user-select: none;
+    -webkit-touch-callout: none;
 }
 
 .auto-zone, .tele-zone, .transport-zone, .static-zone {
@@ -352,6 +353,7 @@ table{
     align-items: center;
     gap: 10px;
     user-select: none;
+    -webkit-touch-callout: none;
 }
 
 .counter-container label, .select-container label {
@@ -359,6 +361,7 @@ table{
     font-weight: bold;
     color: #333;
     user-select: none;
+    -webkit-touch-callout: none;
 }
 
 .counter-controls {
