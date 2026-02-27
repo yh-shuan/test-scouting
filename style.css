@@ -336,6 +336,7 @@ table{
     color: #ffffff !important;
     font-size: 22px;
     font-weight: bold;
+    user-select: none;
 }
 
 .auto-zone, .tele-zone, .transport-zone, .static-zone {
@@ -350,12 +351,14 @@ table{
     flex-direction: column;
     align-items: center;
     gap: 10px;
+    user-select: none;
 }
 
 .counter-container label, .select-container label {
     font-size: 20px;
     font-weight: bold;
     color: #333;
+    user-select: none;
 }
 
 .counter-controls {
