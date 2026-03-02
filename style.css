@@ -242,7 +242,8 @@ table{
 .report
 #reporting, 
 #static-reporting,
-#yourname{
+#yourname,
+#whatrace{
     display: block; /* 確保它們獨立佔據一行 */
     margin: 10px auto; /* 置中 */
     width: 90%; /* 手機版寬度 */
@@ -259,6 +260,7 @@ table{
 .search-bar:focus,
 #reporting:focus,
 #yourname:focus,
+#whatrace:focus,
 #static-reporting:focus {
     border-color: #007bff;
     box-shadow: 0 0 8px #007bff33;
@@ -640,6 +642,7 @@ table{
     .search-bar,
     #reporting,
     #yourname,
+    #whatrace,
     #static-reporting {
         font-size: 2.5vh !important;
     }

@@ -28,7 +28,7 @@ const API_KEY = "tGy3U4VfP85N98m17nqzN8XCof0zafvCckCLbgWgmy95bGE0Aw97b4lV7UocJvx
 let AllTeamsList=[];
 
 // --- 重要：Apps Script 每一次部署後的 Web App URL (結尾通常是 /exec) ---
-const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbx_IP-EY-RqD_Ebwadxf21PkkYIculmFslog7z_mtSLb8Hlc_y1Mx_NdAT568dqpWV7/exec"; 
+const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbzbE7LLXlxo2zdPzcFlax7rg1jGSLHg3EjvbBhOqwCXEXpPO9Ti25Y_d5vEW0GPRilM/exec"; 
 
 
 
@@ -425,6 +425,7 @@ function showDetail(teamNumber,bucket) {
                 遲滯對方: ${r.stealfuel}<br>
                 人動傳球時間: ${r.stealtime}<br>
                 你的名字:${r.yourname}<br>
+                哪一場:${r.whatrace}<br>
                 備註: ${r.reporting || "無"}
                 ${(!bucket)?`<button class="delete-btn-small" onclick="deleteCloudData('${r.id}', '${teamNumber}', 'movement')">刪除</button>`:``}
             `;
@@ -572,6 +573,7 @@ async function saveAndExit(type, event) {
         data.stealfuel = getVal('steal-fuel');
         data.stealtime = getVal('steal-time');
         data.yourname = document.getElementById('yourname').value || "";
+        data.whatrace = document.getElementById('whatrace').value || "";
         data.reporting = document.getElementById('reporting').value || "";
     } else if(type==='static'){
         data.staticclimb = parseInt(document.getElementById('static-climb').value) || 0;
@@ -966,7 +968,8 @@ function resetScoring() {
     if(document.getElementById('tele-climb')) document.getElementById('tele-climb').value = "0";
     if(document.getElementById('reporting')) document.getElementById('reporting').value = "";
     if(document.getElementById('yourname')) document.getElementById('yourname').value = "";
-
+    if(document.getElementById('whatrace')) document.getElementById('whatrace').value = "";
+    
     // --- 2. 靜態計分欄位重置 ---
     const sc = document.getElementById('static-climb');
     if(sc) sc.value = "0";
