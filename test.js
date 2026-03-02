@@ -526,75 +526,87 @@ function Rankingteam(rankproperty) {
 
 
 
-// --- 儲存並上傳 ---
-async function saveAndExit(type) {
+// 1. 在 test.js 的最頂層定義一個全域變數，充當「保險絲」
+let isProcessingSave = false;
+
+async function saveAndExit(type, event) {
+    // --- 核心修正：如果正在儲存中，直接攔截 ---
+    if (isProcessingSave) return;
+    isProcessingSave = true; // 立即上鎖
+
+    // 如果呼叫時有傳入 event，阻止事件冒泡
+    if (event) event.stopPropagation();
+
     const getVal = (id) => {
         const el = document.getElementById(id);
-        // 增加防呆：找不到元素時回傳 0
         if (!el) return 0; 
-        return el.tagName === "INPUT" ? parseInt(el.value) : parseInt(el.innerText);
+        // 修正：有些可能是 <span>，有些是 <input>
+        const val = el.tagName === "INPUT" ? el.value : el.innerText;
+        return parseInt(val) || 0;
     };
 
+    // 這裡維持你的 ID 產生邏輯
     const uniqueId = "Rec-" + Date.now() + "-" + Math.floor(Math.random() * 1000);
-
 
     let data = {
         action: "SAVE",
-        
         target: type,
         id: uniqueId,
         identifymark: currentevent,
         teamNumber: currentScoringTeam,
-        };
+    };
+
     if(type==='movement'){
-        data.autoFuel= getVal('auto-fuel') || 0;
-        data.autoClimb= parseInt(document.getElementById('auto-climb').value) || 0;
-        data.autoclimbposition=document.getElementById('auto-climb-position').value||"沒有吊掛";
-        data.autoclimbtime= getVal('auto-climb-time') || 0;
-        data.teleFuel= getVal('tele-fuel') || 0;
-        data.teleClimb= parseInt(document.getElementById('tele-climb').value) || 0;
-        data.teleclimbposition=document.getElementById('tele-climb-position').value||"沒有吊掛";
-        data.teleclimbtime= getVal('tele-climb-time') || 0;
-        data.tranFuel= getVal('transport-fuel') || 0;
-        data.tranTime= getVal('transport-time') || 0;
-        data.defensetime= getVal('defense-time') || 0;
-        data.penalty= getVal('penalty') || 0;
-        data.stealfuel= getVal('steal-fuel') || 0;
-        data.stealtime= getVal('steal-time') || 0;
-        data.yourname = document.getElementById('yourname').value||"";
-        data.reporting= document.getElementById('reporting').value || "";
-        
-
-        
-
-    }else if(type==='static'){
-        data.staticclimb= parseInt(document.getElementById('static-climb').value)||0;
-        data.climbposition=document.getElementById('climb-position').value||"";
-        data.staticfuel=getVal('static-fuel') || 0;
-        data.Runandshoot=document.getElementById('Run_and_shoot').checked ? "Yes" : "No";
-        data.staticreporting= document.getElementById('static-reporting').value || "";
+        data.autoFuel = getVal('auto-fuel');
+        data.autoClimb = parseInt(document.getElementById('auto-climb').value) || 0;
+        data.autoclimbposition = document.getElementById('auto-climb-position').value || "沒有吊掛";
+        data.autoclimbtime = getVal('auto-climb-time');
+        data.teleFuel = getVal('tele-fuel');
+        data.teleClimb = parseInt(document.getElementById('tele-climb').value) || 0;
+        data.teleclimbposition = document.getElementById('tele-climb-position').value || "沒有吊掛";
+        data.teleclimbtime = getVal('tele-climb-time');
+        data.tranFuel = getVal('transport-fuel');
+        data.tranTime = getVal('transport-time');
+        data.defensetime = getVal('defense-time');
+        data.penalty = getVal('penalty');
+        data.stealfuel = getVal('steal-fuel');
+        data.stealtime = getVal('steal-time');
+        data.yourname = document.getElementById('yourname').value || "";
+        data.reporting = document.getElementById('reporting').value || "";
+    } else if(type==='static'){
+        data.staticclimb = parseInt(document.getElementById('static-climb').value) || 0;
+        data.climbposition = document.getElementById('climb-position').value || "";
+        data.staticfuel = getVal('static-fuel');
+        data.Runandshoot = document.getElementById('Run_and_shoot').checked ? "Yes" : "No";
+        data.staticreporting = document.getElementById('static-reporting').value || "";
     }
     
+    // 執行儲存
+    saveData(data); 
+
+    // 重新排序與重置
     resetproperty();
     Rankingteam(currentRankMode);
-    saveData(data); 
 
     // --- 徹底重置 UI 狀態 ---
     document.getElementById('main-page').style.display = 'block';
     document.getElementById('score-page').style.display = 'none';
     
-    // 重置所有輸入框數值
     resetScoring(); 
     
     const btn = document.getElementById('toggle-btn');
-    btn.innerText = '+';
-    btn.classList.remove('active');
+    if (btn) {
+        btn.innerText = '+';
+        btn.classList.remove('active');
+    }
     
     window.scrollTo(0, 0); 
-
-    // 在 saveAndExit 函數的最末端加上這句
     selectedMatchMode = "";
 
+    // --- 關鍵：延遲一小段時間再解鎖，防止殘餘點擊觸發 ---
+    setTimeout(() => {
+        isProcessingSave = false;
+    }, 500); 
 }
 
 
