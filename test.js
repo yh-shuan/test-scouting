@@ -420,10 +420,10 @@ function showDetail(teamNumber,bucket) {
                 人動吊掛位置: ${r.teleclimbposition}<br>
                 人動傳球: ${r.tranFuel}<br>
                 人動傳球時間: ${r.tranTime}<br>
-                遲滯對方: ${r.defensetime}<br>
-                人動傳球時間: ${r.penalty}<br>
-                遲滯對方: ${r.stealfuel}<br>
-                人動傳球時間: ${r.stealtime}<br>
+                遲滯對方時間: ${r.defensetime}<br>
+                罰點: ${r.penalty}<br>
+                偷求時間: ${r.stealfuel}<br>
+                幹球所花時間: ${r.stealtime}<br>
                 你的名字:${r.yourname}<br>
                 哪一場:${r.whatrace}<br>
                 備註: ${r.reporting || "無"}
