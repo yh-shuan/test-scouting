@@ -215,8 +215,8 @@ async function autoFetchTeams(event_key) {
     // 改用 /teams/keys 接口，只拿隊號清單 (例如 ["frc1678", "frc254"...])，速度最快
     const url = `https://www.thebluealliance.com/api/v3/event/${event_key}/teams/keys`;
     
-    const statsElem = document.getElementById('search-stats');
-    if (statsElem) statsElem.innerText = "正在取得隊伍名單...";
+    
+    
 
     try {
         const response = await fetch(url, {
@@ -238,7 +238,7 @@ async function autoFetchTeams(event_key) {
         console.log("已取得隊伍清單:", allTeams.length, "支隊伍");
 
         // 抓取雲端分數並計算
-        await syncFromCloud();
+        
         resetproperty();
         Rankingteam(currentRankMode); // 這會觸發 renderCards
 
