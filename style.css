@@ -64,7 +64,6 @@ table{
     touch-action: manipulation; /* 提升觸控裝置的反應速度 */
 }/* 預設狀態（列表模式） */
 
-
 .floating-btn:hover { 
     transform: scale(1.1) rotate(90deg);
     background-color: #6464ff; /* 這裡定義 Hover 色 */
@@ -78,7 +77,6 @@ table{
     background-color: #8b1111 !important; /* 計分模式下的 Hover */
     transform: scale(1.1) rotate(0deg);    /* 叉叉不用旋轉 */
 }
-
 
 .team-card {
     /* --- 寬度與置中 --- */
@@ -184,8 +182,6 @@ table{
 .card-button .material-icons {
     font-size: 40px; /* 調整圖示大小 */
 }/* 針對圖示大小的單獨設定 */
-
-
 
 .team-number {
     font-size: 7.5vw;
@@ -426,13 +422,11 @@ table{
     align-items: center;     /* 讓框框跟文字對齊中線 */
     gap: 15px;
 }
-
 .checkbox label, .checkbox label {
     font-size: 20px;
     font-weight: bold;
     color: #333;
 }
-
 .checking {
     width: 30px;
     height: 30px;
@@ -444,13 +438,10 @@ table{
     background-color: #ffffff;
 }
 
-
 /* --- ⚠️ 新增：詳細資料頁面 (Modal/Overlay) CSS --- */
 #detail-overlay {
     display: none; /* 預設隱藏 */
-    
     top: 0; left: 0; width: 100%; height: 100%;
-    
     z-index: 10000;
     justify-content: center;
     align-items: center;
@@ -460,7 +451,6 @@ table{
     width: 90%;
     max-width: 100%;
     max-height: 100%;
-    
     border-radius: 20px;
     padding: 20px;
     overflow-y: auto;    
@@ -528,7 +518,6 @@ table{
     cursor:pointer;
     transition: transform 0.2s, filter 0.2s;
 }
-
 .save-btn:hover {
     transform: scale(1.05);
     filter: brightness(1.1);
@@ -559,28 +548,20 @@ table{
     padding: 1vw 2vw;
     font-weight: bold;     
 }/* 預設狀態（列表模式） */
-
-
 .half-teamcard {
     /* --- 寬度與置中 --- */
     width: 45%;           /* 手機版建議佔滿一點 */
     max-width: 1000px;     /* 電腦版不要太大 */
     margin: 50px auto;    /* 上下 30px，左右 auto 是置中的靈魂 */
-
     display: flex;
     flex-direction: column; 
     align-items: center;    
     justify-content: flex-start; 
     background: #B199FF; 
-    /* border: 5px solid;
-    border-color: transparent; */
-    /*border-radius: 10px 50px 50px;*/
-    height: auto;               
-    /*min-height: 375px;*/
+    height: auto; 
     min-width: none;
     padding: 0; 
     overflow: hidden;
-
     /* --- 平滑動畫與陰影 --- */
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     box-shadow: 0 5px 4px rgba(0,0,0,0.1);
@@ -624,7 +605,6 @@ table{
         font-size: 7.5vh;
     }
 }
-
 @media screen and (max-aspect-ratio:1/1) {
     h1{
         font-size: 7.5vh;
@@ -646,45 +626,27 @@ table{
     #static-reporting {
         font-size: 2.5vh !important;
     }
-
-
     .card-top {
-
         width: 100% !important;
         padding: 2.5vw 1vw !important; /* 增加一點內距讓標題有厚度 */
         gap: 2.5vw !important;
         word-wrap: break-word !important;
         flex-shrink: 0 !important; /* 確保標題區塊不會被縮小 */
     }
-
-
     .team-number {
         font-size: 7.5vw !important;
-        
-        
     }
-
     .team-name {
         font-size: 7.5vw !important;
-        
     }
-
-
-
     .cnt-btn {
         width: 7.5vh !important;
         height: 7.5vh !important;
         font-size: 5vh !important;   
-          
-        
     }/* 加減按鈕 */
-
-
-    
     .score-num {
         font-size: 5vh !important;
     }/* 數字顯示 */
-
     .score-section{
         width: 95%;
         max-width: 100vw;
@@ -699,8 +661,4 @@ table{
         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         text-align: center;
     }/* 計分頁面大區塊通用樣式 */
-
-
-    
-
-}/* 手機版調整大小與位置 */
+}
