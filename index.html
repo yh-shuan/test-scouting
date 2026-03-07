@@ -47,9 +47,8 @@
             <div id="team-container"></div>
         </div>
 
-        <div id="score-page" style="display: none; padding: 20px;">
+        <div id="score-page" class="unsureUI">
             <h2>Scoring Mode</h2>
-
             <div id="team-select-zone" class="score-section" style="background-color: #7d7dff;">
                 <h3>請選擇隊伍：</h3>
                 <select id="team-dropdown" style="width: 80%; padding: 10px; font-size: 18px;">
@@ -58,8 +57,8 @@
                 <button onclick="confirmTeam()" style="margin-top: 15px; padding: 10px 20px; cursor:pointer;">確認並開始記錄</button>
             </div>
             
-            <div id="mode-selec-zone" style="display: none; padding: 20px; flex-direction: column; align-items: center; justify-content: center;">
-                <h2 style="width: 100%;font-size: 7.5vw;">敵不動、我不動，敵一動、我亂動</h2>
+            <div id="mode-selec-zone" class="mode-selec">
+                <h2 style="width: 100%; font-size: 7.5vw;">敵不動、我不動，敵一動、我亂動</h2>
                 
                 <select id="mode-selec" class="general-select">
                     <option value="">靜態還是動態</option>
@@ -74,7 +73,7 @@
                 </button>
             </div>
 
-            <div id="static-section" style="display: none ;">
+            <div id="static-section" style="display: none;">
                 <div class="score-section static-climb">
                     <h3>靜態 (吊掛)</h3>
                     <div class="select-container">
@@ -282,28 +281,28 @@
                 <button onclick="saveAndExit('movement')" class="save-btn">儲存數據並結束</button>
             </div>
 
-            <div id="battle-page" style="display: none; padding: 20px;">
+            <div id="battle-page" class="unsureUI">
                 <h2 style="display: table; margin: 0 auto 20px auto;">YO battle</h2>
                 <div id="cardpage" style="display: flex; padding: 20px;">
                     <div id="batle-property-page" class="half-teamcard" style="display: grid;">
-                        <div id="property-info" style="display: grid; grid-template-rows: repeat(4, 4em); align-items: center; row-gap: 15px;">
-                            <span style="font-size: 5em; font-weight: bold; white-space: nowrap;">隊伍號碼：</span>
-                            <span style="font-size: 4em; white-space: nowrap;">加總平均分：</span>
-                            <span style="font-size: 4em; white-space: nowrap;">自動平均分：</span>
-                            <span style="font-size: 4em; white-space: nowrap;">人動平均分：</span>
+                        <div id="property-info" class="info-grid">
+                            <span class="battle-team">隊伍號碼：</span>
+                            <span class="battle-score">加總平均分：</span>
+                            <span class="battle-score">自動平均分：</span>
+                            <span class="battle-score">人動平均分：</span>
                         </div>
                     </div>
                     <div id="batle-team1-page" class="half-teamcard" style="display: block;">
-                        <select id="battle-team-dropdown1" style="width: 45%; padding: 10px; font-size: 18px; margin: auto; align-self: left;">
+                        <select id="battle-team-dropdown1" class="battle-team-dropdown" style="align-self: left;">
                             <option value="">-- 正方代表 --</option>
                         </select>
-                        <div id="team1-info"style="display: grid; grid-template-rows: repeat(4, 4em); align-items: center; row-gap: 15px;"></div> 
+                        <div id="team1-info" class="info-grid"></div> 
                     </div>
                     <div id="batle-team2-page" class="half-teamcard" style="display: block;">
-                        <select id="battle-team-dropdown2" style="width: 45%; padding: 10px; font-size: 18px; margin: auto; align-self: right;">
+                        <select id="battle-team-dropdown2" class="battle-team-dropdown" style="align-self: right;">
                             <option value="">-- 反方代表 --</option>
                         </select>
-                        <div id="team2-info"style="display: grid; grid-template-rows: repeat(4, 4em); align-items: center; row-gap: 15px;"></div>
+                        <div id="team2-info" class="info-grid"></div>
                     </div>
                 </div>
             </div>
