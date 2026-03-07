@@ -13,8 +13,6 @@ if ('serviceWorker' in navigator) {
 }
 // --- 註冊結束 ---
 
-
-
 // 全域儲存格
 let allTeams = []; 
 let allScoresRaw = []; // 動態數據
@@ -23,19 +21,12 @@ let allevent = [];
 
 const API_KEY = "tGy3U4VfP85N98m17nqzN8XCof0zafvCckCLbgWgmy95bGE0Aw97b4lV7UocJvxl"; //TBA的Key
 
-
-
 let AllTeamsList=[];
 
 // --- 重要：Apps Script 每一次部署後的 Web App URL (結尾通常是 /exec) ---
 const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbzbE7LLXlxo2zdPzcFlax7rg1jGSLHg3EjvbBhOqwCXEXpPO9Ti25Y_d5vEW0GPRilM/exec"; 
 
-
-
 let currentRankMode = 'teamnumber';
-
-
-
 
 // --- 從雲端同步數據 ---
 async function syncFromCloud() {
@@ -66,7 +57,6 @@ async function syncFromCloud() {
             return `<option value="${ev.race}">${ev.race}</option>`;
         }).join('');
         eventselect.innerHTML = '<option value="" disabled selected hidden>you are a soldier Choose your battle...</option>' + optionsHTML;
-
 
         if (currentSelected) eventselect.value = currentSelected; // 復原選取狀態
 
@@ -111,8 +101,6 @@ var currentevent = '2026nysu';
 async function changeevent(whitchevent){
     currentevent = whitchevent;
     const itrain = whitchevent.includes("(train)");
-    
-
     // --- 強力清空 UI ---
     const container = document.getElementById('team-container');
     if (container) container.innerHTML = ""; 
@@ -205,18 +193,11 @@ async function Addteam() {
     }
 }
 
-
-
-
-
 //從TBA自動抓取隊伍數據的函式：
 async function autoFetchTeams(event_key) {
     
     // 改用 /teams/keys 接口，只拿隊號清單 (例如 ["frc1678", "frc254"...])，速度最快
     const url = `https://www.thebluealliance.com/api/v3/event/${event_key}/teams/keys`;
-    
-    
-    
 
     try {
         const response = await fetch(url, {
@@ -234,7 +215,6 @@ async function autoFetchTeams(event_key) {
 
         // 按隊號排序
         allTeams.sort((a, b) => a.team_number - b.team_number);
-        
         console.log("已取得隊伍清單:", allTeams.length, "支隊伍");
 
         // 抓取雲端分數並計算
@@ -372,7 +352,6 @@ function showDetail(teamNumber,bucket) {
     document.getElementById((!bucket)?'main-page':'bucket-page').style.display = 'none';
     const closbotton = document.getElementById('closedetail-btn');
     closbotton.onclick = () => closeDetail(bucket);
-
     
     // 過濾出該隊伍的資料
     const moveRecords = allScoresRaw.filter(r => r.teamNumber == teamNumber);
@@ -466,8 +445,6 @@ async function deleteCloudData(id, teamNumber, targetTable) {
     }
 }
 
-
-
 function resetproperty(){
 
 if (!allTeams || allTeams.length === 0) return;
@@ -523,9 +500,6 @@ function Rankingteam(rankproperty) {
     // --- 關鍵：直接渲染排好的 Tuple ---
     renderCards(AllTeamsList);
 }
-
-
-
 
 // 1. 在 test.js 的最頂層定義一個全域變數，充當「保險絲」
 let isProcessingSave = false;
@@ -622,7 +596,6 @@ function saveData(data) {
     processQueue(); 
 }
 
-
 // --- 修改：平均分計算 (從 allScoresRaw 陣列過濾) ---
 function calculateAverage(teamNumber,type) {
     // 這裡改用 filter 從原始陣列抓
@@ -636,7 +609,6 @@ function calculateAverage(teamNumber,type) {
             records.forEach(r => {
                 totalScore += (parseInt(r.autoFuel) || 0) * 1;
                 totalScore += (parseInt(r.teleFuel) || 0) * 1;
-                
                 totalScore += getClimbScore(r.autoClimb, true);
                 totalScore += getClimbScore(r.teleClimb, false);
             });
@@ -644,27 +616,17 @@ function calculateAverage(teamNumber,type) {
         case('auto'):
             records.forEach(r => {
                 totalScore += (parseInt(r.autoFuel) || 0) * 1;
-                
-                
                 totalScore += getClimbScore(r.autoClimb, true);
-                
             });
 
         break;
         case('tele'):
             records.forEach(r => {
-                
                 totalScore += (parseInt(r.teleFuel) || 0) * 1;
-                
-                
                 totalScore += getClimbScore(r.teleClimb, false);
             });
         break;
-
-        
-
     }
-
     return (totalScore / records.length).toFixed(1);
 }
 
@@ -780,32 +742,22 @@ function battle(){
    
     const propertypage = document.getElementById('batle-property-page');
 
-
     dropdown1.style.display ='block';
     dropdown2.style.display ='block';
     // 1. 重製下拉選單到預設狀態 
     dropdown1.selectedIndex = 0;
     dropdown2.selectedIndex = 0;
 
-        // 2. 清空原本顯示隊伍資訊的文字區塊
+    // 2. 清空原本顯示隊伍資訊的文字區塊
     if (info1) info1.innerHTML = '';
     if (info2) info2.innerHTML = '';
-
-
     
     // 1. 先重置所有狀態
     resetScoring();
 
-
     // 2. 切換大頁面
         
-        
     battlepage.style.display = 'block';
-
-
-        
-        
-        
         // 4. 填充下拉選單
     dropdown1.innerHTML = '<option value="">-- 正方代表 --</option>';
 
@@ -816,7 +768,6 @@ function battle(){
         dropdown1.appendChild(opt);
     });
     batleteam1page.style.display = 'flex';
-
 
     dropdown2.innerHTML = '<option value="">-- 反方代表 --</option>';
 
@@ -836,25 +787,20 @@ function battle(){
         const teamData = AllTeamsList.find(tuple => tuple.teamNumber === selectedTeamNum);
         dropdown1.style.display='none';
         
-       
         if (teamData) {
             const teamNum = teamData.teamNumber;
             const score = teamData.avragescore;
             const autoscore=teamData.autoavgscore;
             const telescore =teamData.teleavgscore;
 
-            
             info1.innerHTML = `
-                
                     <span style="font-size: 5em; font-weight: bold;">${teamNum}</span>
                     <span style="font-size: 4em;">${score === -1 ? 'N/A' : score.toFixed(1)}</span>
                     <span style="font-size: 4em;">${autoscore === -1 ? 'N/A' : autoscore.toFixed(1)}</span>
                     <span style="font-size: 4em;">${telescore === -1 ? 'N/A' : telescore.toFixed(1)}</span>
-                
             `;
         }
     };
-
     // 第二個隊伍選單同理
     dropdown2.onchange = function() {
         const selectedTeamNum = parseInt(this.value);
@@ -868,20 +814,13 @@ function battle(){
             const telescore =teamData.teleavgscore;
 
             info2.innerHTML = `
-                
                     <span style="font-size: 5em; font-weight: bold;">${teamNum}</span>
                     <span style="font-size: 4em;">${score === -1 ? 'N/A' : score.toFixed(1)}</span>
                     <span style="font-size: 4em;">${autoscore === -1 ? 'N/A' : autoscore.toFixed(1)}</span>
                     <span style="font-size: 4em;">${telescore === -1 ? 'N/A' : telescore.toFixed(1)}</span>
-                
             `;
         }
     };
-
-
-
-
-
 }
 
 function bucket() {
@@ -956,20 +895,17 @@ function resetScoring() {
     if(stf) (stf.tagName === "INPUT" ? stf.value = "0" : stf.innerText = "0");
     if(stt) (stt.tagName === "INPUT" ? stt.value = "0" : stt.innerText = "0");
 
-
     const acp = document.getElementById('auto-climb-position');
     if(acp) acp.value = ""; 
 
     const tcp = document.getElementById('tele-climb-position');
     if(tcp) tcp.value = ""; 
 
-
     if(document.getElementById('auto-climb')) document.getElementById('auto-climb').value = "0";
     if(document.getElementById('tele-climb')) document.getElementById('tele-climb').value = "0";
     if(document.getElementById('reporting')) document.getElementById('reporting').value = "";
     if(document.getElementById('yourname')) document.getElementById('yourname').value = "";
     if(document.getElementById('whatrace')) document.getElementById('whatrace').value = "";
-    
     // --- 2. 靜態計分欄位重置 ---
     const sc = document.getElementById('static-climb');
     if(sc) sc.value = "0";
@@ -985,7 +921,6 @@ function resetScoring() {
 
     const sr = document.getElementById('static-reporting');
     if(sr) sr.value = "";
-
     // --- 3. UI 顯示狀態重置 ---
     // 強制隱藏所有子區域
     const zones = ['team-select-zone', 'mode-selec-zone', 'static-section', 'actual-scoring-content','battle-page','bucket-page', 'batle-team1-page', 'batle-team2-page'];
@@ -993,7 +928,6 @@ function resetScoring() {
         const el = document.getElementById(id);
         if (el) el.style.setProperty('display', 'none', 'important'); 
     });
-    
     // 重置模式選擇下拉選單
     const modeDropdown = document.getElementById('mode-selec');
     if(modeDropdown) {
@@ -1004,14 +938,12 @@ function resetScoring() {
             option.style.display = 'block';
         });
     }
-
     // 抹除計分頁面標題
     const h2Title = document.querySelector('#score-page h2');
     if (h2Title) {
         h2Title.innerText = ""; 
         h2Title.style.display = 'none';
     }
-
     // --- 4. 變數狀態重置 (重要) ---
     // 這裡不清空 currentScoringTeam，因為快速計分需要它。
     // currentScoringTeam 的清空由 saveAndExit 或 togglePage 負責。
@@ -1053,21 +985,17 @@ function quickSelectTeam(num) {
     if (scorePage.style.display === 'none') {
         // 1. 先執行大掃除
         resetScoring(); 
-
         // 2. 設定目前的隊伍
         currentScoringTeam = num;
-        
         // 3. 切換大頁面顯示
         document.getElementById('main-page').style.display = 'none';
         scorePage.style.display = 'block';
-        
         // 4. 更新標題
         const h2Title = scorePage.querySelector('h2');
         if (h2Title) {
             h2Title.innerText = `正在為 #${num} 計分`;
             h2Title.style.display = 'block';
         }
-
         // --- 關鍵修改：過濾下拉選單選項 ---
         const modeDropdown = document.getElementById('mode-selec');
         if (modeDropdown) {
@@ -1082,11 +1010,9 @@ function quickSelectTeam(num) {
             // 重置到第一個選項 "請選擇模式"
             modeDropdown.selectedIndex = 0;
         }
-
         // 5. 顯示模式選擇區
         document.getElementById('team-select-zone').style.display = 'none';
         document.getElementById('mode-selec-zone').style.setProperty('display', 'block', 'important');
-
         btn.innerText = '×';
         btn.classList.add('active');
     }
@@ -1117,16 +1043,13 @@ function whatmode() {
 
     selectedMatchMode = val; // 紀錄模式
     console.log("已選擇模式:", selectedMatchMode);
-
     // 1. 隱藏模式選擇區
     document.getElementById('mode-selec-zone').style.setProperty('display', 'none', 'important');
-
     // --- 特殊模式處理 ---
     if (selectedMatchMode === "battle") {
         battle();
         return;
     } 
-    
     if (selectedMatchMode === "bucket") {
         // Bucket 模式邏輯
         const bucketZone = document.getElementById('bucket-page');
@@ -1145,13 +1068,10 @@ function whatmode() {
             opt.innerText = `#${t.team_number} - ${t.nickname || "無名稱"}`;
             bucketDropdown.appendChild(opt);
         });
-        
         // Bucket 不需要進入 confirmTeam 流程
         return;
     }
-
     // --- 一般計分模式 (Static / Movement) ---
-
     // 判斷是否為「快速計分」 (currentScoringTeam 已經有值)
     if (currentScoringTeam && currentScoringTeam !== "") {
         // 跳過選隊伍，直接顯示計分欄位
@@ -1163,14 +1083,12 @@ function whatmode() {
             h2Title.innerText = `正在 ${selectedMatchMode === 'static' ? '質詢' : '視監'}#${currentScoringTeam}  `;
             h2Title.style.display = 'block';
         }
-
         // 直接顯示對應區塊
         if (selectedMatchMode === 'static') {
             document.getElementById('static-section').style.setProperty('display', 'block', 'important');
         } else {
             document.getElementById('actual-scoring-content').style.setProperty('display', 'block', 'important');
         }
-
     } else {
         //  一般流程：顯示隊伍選擇選單
         const teamZone = document.getElementById('team-select-zone');
@@ -1180,8 +1098,6 @@ function whatmode() {
 
         // --- 修正：清空舊選項，避免重複 ---
         teamDropdown.innerHTML = '<option value="">請選擇隊伍</option>';
-
-
         allTeams.forEach(t => {
             const opt = document.createElement('option');
             opt.value = t.team_number;
@@ -1191,34 +1107,26 @@ function whatmode() {
     }
 }
 
-
 // 移除 clearAllData (因為已經改為雲端，且支援單筆刪除，不需要全清功能)
-
 // --- 從 app.js 搬過來的核心同步邏輯 ---
-
 // 1. 處理上傳隊列
 async function processQueue() {
     if (!navigator.onLine) {
         updateSyncStatusDisplay();
         return;
     }
-
     let pending = JSON.parse(localStorage.getItem('pendingRecords') || '[]');
     if (pending.length === 0) {
         updateSyncStatusDisplay();
         return;
     }
-
     console.log(`偵測到網路，正在補傳 ${pending.length} 筆離線數據...`);
-
     for (const record of [...pending]) {
         try {
             await fetch(GOOGLE_SHEET_URL, {
                 method: "POST",
                 mode: "no-cors",
                 body: JSON.stringify(record)
-
-
             });
 
             // 成功後移除該筆
@@ -1246,8 +1154,6 @@ function updateSyncStatusDisplay() {
         statsElem.innerText = `同步完成 (動態:${allScoresRaw.length} | 靜態:${allStaticRaw.length})`;
     }
 }
-
-
 
 // 網頁載入後啟動
 window.onload = async () => {
