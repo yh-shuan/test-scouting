@@ -794,10 +794,10 @@ function battle(){
             const telescore =teamData.teleavgscore;
 
             info1.innerHTML = `
-                    <span class="team-number">${teamNum}</span>
-                    <span class="team-score">${score === -1 ? 'N/A' : score.toFixed(1)}</span>
-                    <span class="team-score">${autoscore === -1 ? 'N/A' : autoscore.toFixed(1)}</span>
-                    <span class="team-score">${telescore === -1 ? 'N/A' : telescore.toFixed(1)}</span>
+                    <span class="battle-team">${teamNum}</span>
+                    <span class="battle-score">${score === -1 ? 'N/A' : score.toFixed(1)}</span>
+                    <span class="battle-score">${autoscore === -1 ? 'N/A' : autoscore.toFixed(1)}</span>
+                    <span class="battle-score">${telescore === -1 ? 'N/A' : telescore.toFixed(1)}</span>
             `;
         }
     };
@@ -814,10 +814,10 @@ function battle(){
             const telescore =teamData.teleavgscore;
 
             info2.innerHTML = `
-                    <span class="team-number">${teamNum}</span>
-                    <span class="team-score">${score === -1 ? 'N/A' : score.toFixed(1)}</span>
-                    <span class="team-score">${autoscore === -1 ? 'N/A' : autoscore.toFixed(1)}</span>
-                    <span class="team-score">${telescore === -1 ? 'N/A' : telescore.toFixed(1)}</span>
+                    <span class="battle-team">${teamNum}</span>
+                    <span class="battle-score">${score === -1 ? 'N/A' : score.toFixed(1)}</span>
+                    <span class="battle-score">${autoscore === -1 ? 'N/A' : autoscore.toFixed(1)}</span>
+                    <span class="battle-score">${telescore === -1 ? 'N/A' : telescore.toFixed(1)}</span>
             `;
         }
     };
