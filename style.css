@@ -578,16 +578,16 @@ table{
     justify-content: center;
 }
 .battle-team{
-    font-size: 5em; 
+    font-size: 7.5vh; 
     font-weight: bold; 
     white-space: nowrap;
 }
 .battle-score {
-    font-size: 4em; 
+    font-size: 5vh; 
     white-space: nowrap;
 }
 .battle-team-dropdown{
-    width: 45%; 
+    width: 60%; 
     padding: 10px; 
     font-size: 18px; 
     margin: auto; 
@@ -693,4 +693,7 @@ table{
         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         text-align: center;
     }/* 計分頁面大區塊通用樣式 */
+    .battle-team-dropdown {
+        width: 90%; 
+    }
 }
