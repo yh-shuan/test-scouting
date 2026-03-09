@@ -75,31 +75,31 @@
 
             <div id="static-section" style="display: none;">
                 <div class="score-section static-climb">
-                    <h3>靜態 (吊掛)</h3>
+                    <h3>靜態吊掛(climb)</h3>
                     <div class="select-container">
-                        <label>吊掛等級：</label>
+                        <label>吊掛等級(level):</label>
                         <select id="static-climb" class="score-input">
-                            <option value="0">None (沒有吊掛)</option>
+                            <option value="0">沒有吊掛(None)</option>
                             <option value="1">Level 1</option>
                             <option value="2">Level 2</option>
                             <option value="3">Level 3</option>
                         </select>
                     </div>
                     <div class="select-container">
-                        <label>吊掛位置：</label>
+                        <label>吊掛位置(position):</label>
                         <select id="climb-position" class="score-input">
-                            <option value="0">None (沒有吊掛)</option>
-                            <option value="左">左</option>
-                            <option value="中">中</option>
-                            <option value="右">右</option>
+                            <option value="0">沒有吊掛(None)</option>
+                            <option value="左">左(left)</option>
+                            <option value="中">中(middle)</option>
+                            <option value="右">右(right)</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="score-section static-ball">
-                    <h3>靜態 (球)</h3>
+                    <h3>靜態球:</h3>
                     <div class="counter-container">
-                        <label>儲存球數：</label>
+                        <label>儲存球數(max capacity):</label>
                         <div class="counter-controls">
                             <button class="cnt-btn minus" onclick="changeVal('static-fuel', -5)">-5</button>
                             <button class="cnt-btn minus" onclick="changeVal('static-fuel', -1)">-</button>
@@ -111,16 +111,16 @@
                     <div class="checkbox">
                         <label>
                             <input type="checkbox" id="Run_and_shoot" class="checking"></input>
-                            能不能走射
+                            能不能走射(can shoot while moving):
                         </label>
                     </div>
                 </div>
                 
                 <div class="report">
-                    <input type="text" id="static-reporting" placeholder="備註:...">
+                    <input type="text" id="static-reporting" placeholder="備註(note)...">
                 </div>
 
-                <button onclick="saveAndExit('static')" class="save-btn">儲存數據並結束</button>
+                <button onclick="saveAndExit('static')" class="save-btn">儲存數據並結束(saveandexit)</button>
             </div>
             
             <div id="actual-scoring-content" style="display: none;">
