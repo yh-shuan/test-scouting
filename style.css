@@ -696,4 +696,10 @@ table{
     .battle-team-dropdown {
         width: 90%; 
     }
+    .battle-team{
+        font-size: 30vw;
+    }
+    .battle-score{
+        font-size: 25vw;
+    }
 }
