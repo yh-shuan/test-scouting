@@ -24,7 +24,7 @@ const API_KEY = "tGy3U4VfP85N98m17nqzN8XCof0zafvCckCLbgWgmy95bGE0Aw97b4lV7UocJvx
 let AllTeamsList=[];
 
 // --- 重要：Apps Script 每一次部署後的 Web App URL (結尾通常是 /exec) ---
-const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbzbE7LLXlxo2zdPzcFlax7rg1jGSLHg3EjvbBhOqwCXEXpPO9Ti25Y_d5vEW0GPRilM/exec"; 
+const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbx_j0hCfpBwN9Y5uE6dw8CuWoZlpBq_mhmIzqvgC1Jc_4iXTxu1PmtSjyIJHt1UA-Uf/exec"; 
 
 let currentRankMode = 'teamnumber';
 
@@ -399,7 +399,7 @@ function showDetail(teamNumber,bucket) {
                 人動吊掛時間: ${r.teleclimbtime}<br>
                 人動吊掛位置: ${r.teleclimbposition}<br>
                 人動傳球: ${r.tranFuel}<br>
-                人動傳球時間: ${r.tranTime}<br>
+                總趟數: ${r.cycleTime}<br>
                 遲滯對方時間: ${r.defensetime}<br>
                 罰點: ${r.penalty}<br>
                 偷求時間: ${r.stealfuel}<br>
@@ -542,7 +542,7 @@ async function saveAndExit(type, event) {
         data.teleclimbposition = document.getElementById('tele-climb-position').value || "沒有吊掛";
         data.teleclimbtime = getVal('tele-climb-time');
         data.tranFuel = getVal('transport-fuel');
-        data.tranTime = getVal('transport-time');
+        data.cycleTime = getVal('cycle-time');
         data.defensetime = getVal('defense-time');
         data.penalty = getVal('penalty');
         data.stealfuel = getVal('steal-fuel');
@@ -877,7 +877,7 @@ function resetScoring() {
     const af = document.getElementById('auto-fuel');
     const tf = document.getElementById('tele-fuel');
     const trf = document.getElementById('transport-fuel');
-    const trt = document.getElementById('transport-time');
+    const trt = document.getElementById('cycle-time');
     const at =  document.getElementById('auto-climb-time');
     const tt =  document.getElementById('tele-climb-time');
     const dt =  document.getElementById('defense-time');
