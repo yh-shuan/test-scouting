@@ -388,7 +388,8 @@ function showDetail(teamNumber,bucket) {
             
             div.innerHTML = `
                 <strong>紀錄 #${idx + 1}</strong> <span style="color:#888; font-size:0.75em">(ID: ${r.id})</span><br>
-                單場預估分: ${total} 分<br>
+                哪一個賽事:${r.identifymark}<br>
+                單場總分: ${total} 分<br>
                 auto進球: ${r.autoFuel}<br>
                 auto吊掛: ${r.autoClimb}<br>
                 auto吊掛時間: ${r.autoclimbtime}<br>
