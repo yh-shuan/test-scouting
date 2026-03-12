@@ -451,19 +451,22 @@ function resetproperty(){
 if (!allTeams || allTeams.length === 0) return;
 
     AllTeamsList = allTeams.map(t => {
-        const avg = calculateAverage(t.team_number,'allscore');
-        const autoavg   = calculateAverage(t.team_number,'auto');
-        const teleavg   = calculateAverage(t.team_number,'tele');
-        // 防呆：如果是 N/A 就給 -1，確保這隊排在最後；轉成浮點數以便排序
-        const score = avg === "N/A" ? -1 : parseFloat(avg);
-        const autoscore = autoavg === "N/A" ? -1 : parseFloat(autoavg);
-        const telescore = teleavg === "N/A" ? -1 : parseFloat(teleavg);
-        return {
-            teamNumber :t.team_number, // 隊伍的號碼
-            avragescore:score,        // 加總平均分
-            autoavgscore:autoscore,  // 自動平均分
-            teleavgscore:telescore  // 人動平均分 
-        };
+    const avg = calculateAverage(t.team_number,'allscore');
+            const autoavg   = calculateAverage(t.team_number,'auto');
+            const teleavg   = calculateAverage(t.team_number,'tele');
+            const cycleavg   = calculateAverage(t.team_number,'avgcycle');
+            // 防呆：如果是 N/A 就給 -1，確保這隊排在最後；轉成浮點數以便排序
+            const score = avg === "N/A" ? -1 : parseFloat(avg);
+            const autoscore = autoavg === "N/A" ? -1 : parseFloat(autoavg);
+            const telescore = teleavg === "N/A" ? -1 : parseFloat(teleavg);
+            const cyclescore = cycleavg === "N/A" ? -1 : parseFloat(cycleavg);
+            return {
+                teamNumber :t.team_number,   // 隊伍的號碼
+                avragescore:score,          // 加總平均分
+                autoavgscore:autoscore,    // 自動平均分
+                teleavgscore:telescore,   // 人動平均分 
+                cycleavgscore:cyclescore // cycle平均分 
+            };
     });
 
 }
@@ -627,6 +630,18 @@ function calculateAverage(teamNumber,type) {
                 totalScore += getClimbScore(r.teleClimb, false);
             });
         break;
+        case('avgcycle'):
+            records.forEach(r => {
+                let onerace = 0;
+                onerace += (parseInt(r.autoFuel) || 0) * 1;
+                onerace += (parseInt(r.teleFuel) || 0) * 1;
+                onerace += getClimbScore(r.autoClimb, true);
+                onerace += getClimbScore(r.teleClimb, false);
+
+                totalScore += (r.cycleTime)? onerace/(parseInt(r.cycleTime) ):0;
+                
+            });
+        break;
     }
     return (totalScore / records.length).toFixed(1);
 }
@@ -665,15 +680,18 @@ if (searchBar) {
             const avg = calculateAverage(t.team_number,'allscore');
             const autoavg   = calculateAverage(t.team_number,'auto');
             const teleavg   = calculateAverage(t.team_number,'tele');
+            const cycleavg   = calculateAverage(t.team_number,'avgcycle');
             // 防呆：如果是 N/A 就給 -1，確保這隊排在最後；轉成浮點數以便排序
             const score = avg === "N/A" ? -1 : parseFloat(avg);
             const autoscore = autoavg === "N/A" ? -1 : parseFloat(autoavg);
             const telescore = teleavg === "N/A" ? -1 : parseFloat(teleavg);
+            const cyclescore = cycleavg === "N/A" ? -1 : parseFloat(cycleavg);
             return {
-                teamNumber :t.team_number, // 隊伍的號碼
-                avragescore:score,        // 加總平均分
-                autoavgscore:autoscore,  // 自動平均分
-                teleavgscore:telescore  // 人動平均分 
+                teamNumber :t.team_number,   // 隊伍的號碼
+                avragescore:score,          // 加總平均分
+                autoavgscore:autoscore,    // 自動平均分
+                teleavgscore:telescore,   // 人動平均分 
+                cycleavgscore:cyclescore // cycle平均分 
             };
         });
 
@@ -793,12 +811,14 @@ function battle(){
             const score = teamData.avragescore;
             const autoscore=teamData.autoavgscore;
             const telescore =teamData.teleavgscore;
+            const cyclescore =teamData.cycleavgscore;
 
             info1.innerHTML = `
                     <span class="battle-team">${teamNum}</span>
                     <span class="battle-score">${score === -1 ? 'N/A' : score.toFixed(1)}</span>
                     <span class="battle-score">${autoscore === -1 ? 'N/A' : autoscore.toFixed(1)}</span>
                     <span class="battle-score">${telescore === -1 ? 'N/A' : telescore.toFixed(1)}</span>
+                    <span class="battle-score">${cyclescore < 0 ? 'N/A' : cyclescore.toFixed(1)}</span>
             `;
         }
     };
@@ -813,12 +833,14 @@ function battle(){
             const score = teamData.avragescore;
             const autoscore=teamData.autoavgscore;
             const telescore =teamData.teleavgscore;
+            const cyclescore =teamData.cycleavgscore;
 
             info2.innerHTML = `
                     <span class="battle-team">${teamNum}</span>
                     <span class="battle-score">${score === -1 ? 'N/A' : score.toFixed(1)}</span>
                     <span class="battle-score">${autoscore === -1 ? 'N/A' : autoscore.toFixed(1)}</span>
                     <span class="battle-score">${telescore === -1 ? 'N/A' : telescore.toFixed(1)}</span>
+                    <span class="battle-score">${cyclescore < 0 ? 'N/A' : cyclescore.toFixed(1)}</span>
             `;
         }
     };
