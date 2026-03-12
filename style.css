@@ -581,10 +581,16 @@ table{
     font-size: 7.5vh; 
     font-weight: bold; 
     white-space: nowrap;
+    background-color:white;
+    border-radius: 20%;
+    
+    
 }
 .battle-score {
     font-size: 5vh; 
     white-space: nowrap;
+    background-color:white;
+    border-radius: 20%;
 }
 .battle-team-dropdown{
     width: 60%; 
